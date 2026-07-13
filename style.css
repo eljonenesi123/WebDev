@@ -244,7 +244,8 @@ p { margin: 0; color: var(--text-dim); }
 .cw-str { color: #7ec98f; }
 
 @media (max-width: 1000px) {
-  .hero-visual { display: none; }
+  .hero-visual { max-width: 100%; margin-top: 2.5rem; justify-content: stretch; }
+  .code-window-body { font-size: 0.78rem; }
 }
 
 .eyebrow {
