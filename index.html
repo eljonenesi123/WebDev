@@ -26,16 +26,48 @@
   </div>
 </header>
 
+<nav class="side-nav" aria-label="Section navigation">
+  <button type="button" data-target=".hero">01</button>
+  <button type="button" data-target=".work">02</button>
+  <button type="button" data-target=".services">03</button>
+  <button type="button" data-target=".process">04</button>
+  <button type="button" data-target=".contact">05</button>
+</nav>
+
 <main id="top">
 
   <section class="hero">
-    <p class="eyebrow" data-i18n="hero.eyebrow">Web developer — Tirana, Albania</p>
-    <h1 class="hero-title" data-i18n="hero.title">I build websites that work, load fast, and don't need explaining.</h1>
-    <p class="hero-sub" data-i18n="hero.sub">I design and build sites and web apps for small businesses, coaches, and independent projects — from a blank page to a live URL you can send to anyone.</p>
-    <div class="hero-actions">
-      <a href="#contact" class="btn-primary" data-i18n="hero.cta1">Get in touch</a>
-      <a href="#work" class="btn-line" data-i18n="hero.cta2">See my work</a>
-      <a href="assets/cv-eljon-enesi.pdf" target="_blank" rel="noopener" class="btn-line btn-cv" data-i18n="hero.cta3">Preview CV</a>
+    <div class="hero-text">
+      <p class="eyebrow" data-i18n="hero.eyebrow">Web developer — Tirana, Albania</p>
+      <h1 class="hero-title" data-i18n="hero.title">I build websites that work, load fast, and don't need explaining.</h1>
+      <p class="hero-sub" data-i18n="hero.sub">I design and build sites and web apps for small businesses, coaches, and independent projects — from a blank page to a live URL you can send to anyone.</p>
+      <div class="hero-actions">
+        <a href="#contact" class="btn-primary" data-i18n="hero.cta1">Get in touch</a>
+        <a href="#work" class="btn-line" data-i18n="hero.cta2">See my work</a>
+        <a href="assets/cv-eljon-enesi.pdf" target="_blank" rel="noopener" class="btn-line btn-cv" data-i18n="hero.cta3">Preview CV</a>
+      </div>
+    </div>
+    <div class="hero-visual" aria-hidden="true">
+      <span class="float-shape float-shape-1"></span>
+      <span class="float-shape float-shape-2"></span>
+      <div class="code-window">
+        <div class="code-window-bar">
+          <span></span><span></span><span></span>
+        </div>
+        <div class="code-window-inner">
+          <div class="code-window-gutter">
+            <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span>
+          </div>
+          <div class="code-window-body" contenteditable="true" spellcheck="false">
+            <p><span class="cw-kw">const</span> <span class="cw-var">developer</span> = {</p>
+            <p>&nbsp;&nbsp;name: <span class="cw-str">"Eljon Enesi"</span>,</p>
+            <p>&nbsp;&nbsp;based: <span class="cw-str">"Tirana"</span>,</p>
+            <p>&nbsp;&nbsp;stack: [<span class="cw-str">"HTML"</span>, <span class="cw-str">"CSS"</span>, <span class="cw-str">"JS"</span>],</p>
+            <p>&nbsp;&nbsp;available: <span class="cw-kw">true</span><span class="cw-cursor"></span></p>
+            <p>};</p>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -180,6 +212,9 @@
   <a href="mailto:eljonenesi9@gmail.com">eljonenesi9@gmail.com</a>
 </footer>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
 <script src="i18n.js"></script>
 <script src="script.js"></script>
 </body>
