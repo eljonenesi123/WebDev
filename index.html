@@ -3,139 +3,184 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Eljon Enesi — Developer</title>
-<meta name="description" content="Eljon Enesi — developer in Tirana, Albania. Building Just Pick Something and Top Level Performance.">
+<title>Eljon Enesi — Web Developer</title>
+<meta name="description" content="Eljon Enesi builds websites and web apps. Based in Tirana, Albania. Available for freelance work.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="grain" aria-hidden="true"></div>
-
 <header class="topbar">
-  <span class="brand">EE<span class="brand-dot">.</span></span>
+  <a href="#top" class="brand">Eljon Enesi</a>
   <nav class="topnav">
-    <a href="#work">Work</a>
-    <a href="#log">Log</a>
-    <a href="#contact">Contact</a>
+    <a href="#work" data-i18n="nav.work">Work</a>
+    <a href="#services" data-i18n="nav.services">Services</a>
+    <a href="#process" data-i18n="nav.process">Process</a>
+    <a href="#contact" data-i18n="nav.contact">Contact</a>
   </nav>
+  <div class="lang-switch" role="group" aria-label="Language">
+    <button type="button" class="lang-btn" data-lang="en">EN</button>
+    <button type="button" class="lang-btn" data-lang="sq">SQ</button>
+    <button type="button" class="lang-btn" data-lang="de">DE</button>
+  </div>
 </header>
 
-<main>
+<main id="top">
 
   <section class="hero">
-    <p class="status-line"><span class="status-dot"></span>available for freelance &amp; full-time — Tirana, Albania</p>
-    <h1 class="hero-title">Eljon Enesi<br>builds things<br>that actually ship.</h1>
-    <p class="hero-sub">Frontend-leaning developer. I take an idea from a blank file to a live URL — usually with a personality of its own.</p>
+    <p class="eyebrow" data-i18n="hero.eyebrow">Web developer — Tirana, Albania</p>
+    <h1 class="hero-title" data-i18n="hero.title">I build websites that work, load fast, and don't need explaining.</h1>
+    <p class="hero-sub" data-i18n="hero.sub">I design and build sites and web apps for small businesses, coaches, and independent projects — from a blank page to a live URL you can send to anyone.</p>
     <div class="hero-actions">
-      <a href="#work" class="btn-primary">See the work ↓</a>
-      <a href="https://www.linkedin.com/in/eljonenesi/" target="_blank" rel="noopener" class="btn-ghost">LinkedIn ↗</a>
+      <a href="#contact" class="btn-primary" data-i18n="hero.cta1">Get in touch</a>
+      <a href="#work" class="btn-line" data-i18n="hero.cta2">See my work</a>
+      <a href="assets/cv-eljon-enesi.pdf" target="_blank" rel="noopener" class="btn-line btn-cv" data-i18n="hero.cta3">Preview CV</a>
     </div>
   </section>
 
   <section class="work" id="work">
-    <p class="section-label">002 — SELECTED WORK</p>
+    <h2 class="section-title" data-i18n="work.title">Work</h2>
 
-    <article class="project" id="proj-jps" style="--proj-accent: var(--accent-jps); --proj-accent-dim: var(--accent-jps-dim);">
-      <div class="project-visual" aria-hidden="true">
-        <div class="browser-chrome">
-          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
-          <span class="browser-url">justpicksomething</span>
+    <div class="work-grid">
+      <article class="project">
+        <a class="project-preview" href="https://eljonenesi123.github.io/MovieDecider/" target="_blank" rel="noopener">
+          <img src="assets/JUST.png" alt="Screenshot of Just Pick Something" loading="lazy">
+        </a>
+        <div class="project-head">
+          <h3>Just Pick Something</h3>
+          <span class="project-tag" data-i18n="work.p1.tag">Movie &amp; TV picker</span>
         </div>
-        <div class="mock-screen mock-jps">
-          <div class="mock-wheel"></div>
-          <div class="mock-ticket"></div>
-          <div class="mock-ticket short"></div>
+        <p class="project-desc" data-i18n="work.p1.desc">A tool for groups who can't agree on what to watch. Spin a wheel, describe a mood, or swipe through picks together. Includes four built-in games, works offline as an installable app, and is available in three languages.</p>
+        <p class="project-stack">HTML · CSS · JavaScript · TMDB API · PWA · i18n (EN/SQ/DE)</p>
+        <div class="project-links">
+          <a href="https://eljonenesi123.github.io/MovieDecider/" target="_blank" rel="noopener" data-i18n="work.live">Live site ↗</a>
+          <a href="https://github.com/eljonenesi123/MovieDecider" target="_blank" rel="noopener" data-i18n="work.source">Source code ↗</a>
         </div>
-      </div>
-      <div class="project-info">
-        <p class="project-eyebrow">01 · Movie &amp; TV picker</p>
-        <h2 class="project-title">Just Pick Something</h2>
-        <p class="project-desc">Can't agree on what to watch? Spin a wheel, describe your mood, or let the group swipe it out Tinder-style. Four built-in party games — trivia, imposter, higher-or-lower, and movie battles — turn "what should we watch" into the thing you do before the movie.</p>
-        <ul class="project-stack">
-          <li>HTML / CSS / JS</li>
-          <li>TMDB API</li>
-          <li>PWA + offline shell</li>
-          <li>EN / SQ / DE</li>
-        </ul>
-        <div class="project-actions">
-          <a href="https://eljonenesi123.github.io/MovieDecider/" target="_blank" rel="noopener" class="btn-primary">Open live ↗</a>
-          <a href="https://github.com/eljonenesi123/MovieDecider" target="_blank" rel="noopener" class="btn-ghost">View code</a>
-        </div>
-      </div>
-    </article>
+      </article>
 
-    <article class="project reverse" id="proj-tlp" style="--proj-accent: var(--accent-perf); --proj-accent-dim: var(--accent-perf-dim);">
-      <div class="project-visual" aria-hidden="true">
-        <div class="browser-chrome">
-          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
-          <span class="browser-url">toplevelperformance</span>
+      <article class="project">
+        <a class="project-preview" href="https://eljonenesi123.github.io/TopLevelPerformance/" target="_blank" rel="noopener">
+          <img src="assets/TOP.png" alt="Screenshot of Top Level Performance" loading="lazy">
+        </a>
+        <div class="project-head">
+          <h3>Top Level Performance</h3>
+          <span class="project-tag" data-i18n="work.p2.tag">Coaching platform</span>
         </div>
-        <div class="mock-screen mock-tlp">
-          <div class="mock-bar b1"></div>
-          <div class="mock-bar b2"></div>
-          <div class="mock-bar b3"></div>
-          <div class="mock-badge"></div>
+        <p class="project-desc" data-i18n="work.p2.desc">A site for a coach offering online and 1-on-1 sessions, built so a new visitor can understand the offer and book a session without friction.</p>
+        <p class="project-stack">HTML · CSS · JavaScript · Responsive layout · Booking flow</p>
+        <div class="project-links">
+          <a href="https://eljonenesi123.github.io/TopLevelPerformance/" target="_blank" rel="noopener" data-i18n="work.live">Live site ↗</a>
+          <a href="https://github.com/eljonenesi123/TopLevelPerformance" target="_blank" rel="noopener" data-i18n="work.source">Source code ↗</a>
         </div>
-      </div>
-      <div class="project-info">
-        <p class="project-eyebrow">02 · Coaching platform</p>
-        <h2 class="project-title">Top Level Performance</h2>
-        <p class="project-desc">A site for online and 1-on-1 coaching, built to make it easy for a client to understand the offer and book a session without friction. Clean, disciplined, and built for someone whose actual product is their time and attention.</p>
-        <ul class="project-stack">
-          <li>HTML / CSS / JS</li>
-          <li>Responsive layout</li>
-          <li>Booking flow</li>
-        </ul>
-        <div class="project-actions">
-          <a href="https://eljonenesi123.github.io/TopLevelPerformance/" target="_blank" rel="noopener" class="btn-primary">Open live ↗</a>
-          <a href="https://github.com/eljonenesi123/TopLevelPerformance" target="_blank" rel="noopener" class="btn-ghost">View code</a>
-        </div>
-      </div>
-    </article>
+      </article>
+    </div>
   </section>
 
-  <section class="log" id="log">
-    <p class="section-label">003 — LOG</p>
-    <div class="log-list">
-      <div class="log-entry">
-        <span class="log-hash">a3f9c2</span>
-        <span class="log-msg">Shipped <strong>Just Pick Something</strong> — movie picker with four built-in party games and a PWA shell.</span>
-        <span class="log-tag">2026</span>
+  <section class="services" id="services">
+    <h2 class="section-title" data-i18n="services.title">Services</h2>
+    <p class="services-sub" data-i18n="services.sub">Pricing depends on scope — pages, features, and how sophisticated the build needs to be. This is a starting point, not a fixed menu.</p>
+
+    <div class="pricing-grid">
+      <div class="price-card">
+        <p class="price-tag" data-i18n="services.p1.tag">Landing page</p>
+        <p class="price-amount">€75<span data-i18n="services.from">+</span></p>
+        <p class="price-desc" data-i18n="services.p1.desc">A single, focused page — for a business, event, or launch. Fast to build, fast to load.</p>
+        <ul class="price-list">
+          <li data-i18n="services.p1.i1">Custom design, no templates</li>
+          <li data-i18n="services.p1.i2">Mobile-first, responsive layout</li>
+          <li data-i18n="services.p1.i3">Basic SEO setup</li>
+        </ul>
       </div>
-      <div class="log-entry">
-        <span class="log-hash">7e21d0</span>
-        <span class="log-msg">Built <strong>Top Level Performance</strong> — a booking-first coaching site.</span>
-        <span class="log-tag">2026</span>
+
+      <div class="price-card price-card-featured">
+        <p class="price-tag" data-i18n="services.p2.tag">Multi-page website</p>
+        <p class="price-amount">€100<span data-i18n="services.from">+</span></p>
+        <p class="price-desc" data-i18n="services.p2.desc">Several pages, a contact form, and content structured the way your visitors actually browse.</p>
+        <ul class="price-list">
+          <li data-i18n="services.p2.i1">Everything in Landing page</li>
+          <li data-i18n="services.p2.i2">Contact form &amp; content pages</li>
+          <li data-i18n="services.p2.i3">Multi-language support</li>
+        </ul>
       </div>
-      <div class="log-entry">
-        <span class="log-hash">4b7f18</span>
-        <span class="log-msg">Added EN / SQ / DE localization across a full app — UI, dynamic content, and games.</span>
-        <span class="log-tag">2026</span>
+    </div>
+    <p class="price-note" data-i18n="services.note">Final price depends on number of pages, custom features, and content — I'll give you an exact quote before any work starts.</p>
+  </section>
+
+  <section class="process" id="process">
+    <h2 class="section-title" data-i18n="process.title">How it works</h2>
+    <div class="process-list">
+      <div class="process-step">
+        <span class="step-num">01</span>
+        <div>
+          <h3 data-i18n="process.s1.h">Brief</h3>
+          <p data-i18n="process.s1.p">You tell me what you need and who it's for. I ask questions until the scope, pages, and features are clear, then send you a fixed quote before anything starts.</p>
+        </div>
       </div>
-      <div class="log-entry">
-        <span class="log-hash">1c88ab</span>
-        <span class="log-msg">Based in Tirana, Albania. Open to freelance work and full-time roles.</span>
-        <span class="log-tag">now</span>
+      <div class="process-step">
+        <span class="step-num">02</span>
+        <div>
+          <h3 data-i18n="process.s2.h">Domain &amp; hosting</h3>
+          <p data-i18n="process.s2.p">You purchase your own domain name (I'll point you to a registrar and help pick one if needed) — this keeps it fully in your name and under your control. I handle connecting it to the finished site.</p>
+        </div>
+      </div>
+      <div class="process-step">
+        <span class="step-num">03</span>
+        <div>
+          <h3 data-i18n="process.s3.h">Build</h3>
+          <p data-i18n="process.s3.p">I build it, and you see progress along the way — not just a reveal at the end.</p>
+        </div>
+      </div>
+      <div class="process-step">
+        <span class="step-num">04</span>
+        <div>
+          <h3 data-i18n="process.s4.h">Launch</h3>
+          <p data-i18n="process.s4.p">Your site goes live on your domain. I stay reachable after launch for fixes and small changes.</p>
+        </div>
       </div>
     </div>
   </section>
 
   <section class="contact" id="contact">
-    <p class="section-label">004 — CONTACT</p>
-    <h2 class="contact-title">Got something to build?</h2>
-    <p class="contact-sub">Reach out on LinkedIn — I read everything that lands there.</p>
-    <a href="https://www.linkedin.com/in/eljonenesi/" target="_blank" rel="noopener" class="btn-primary large">Message me on LinkedIn ↗</a>
+    <h2 class="section-title" data-i18n="contact.title">Contact</h2>
+    <p class="contact-sub" data-i18n="contact.sub">Tell me what you're trying to build. I'll reply within a day or two.</p>
+
+    <div class="contact-grid">
+      <form class="contact-form" action="https://formsubmit.co/eljonenesi9@gmail.com" method="POST">
+        <input type="hidden" name="_subject" value="New message from portfolio site">
+        <input type="hidden" name="_captcha" value="false">
+        <label for="cf-name" data-i18n="contact.name">Name</label>
+        <input type="text" id="cf-name" name="Name" required>
+
+        <label for="cf-email" data-i18n="contact.email">Email</label>
+        <input type="email" id="cf-email" name="Email" required>
+
+        <label for="cf-message" data-i18n="contact.msg">What do you need built?</label>
+        <textarea id="cf-message" name="Message" rows="5" required></textarea>
+
+        <button type="submit" class="btn-primary" data-i18n="contact.send">Send message</button>
+      </form>
+
+      <div class="contact-alt">
+        <p class="contact-alt-label" data-i18n="contact.alt">Or reach me directly</p>
+        <a href="mailto:eljonenesi9@gmail.com" class="contact-link">eljonenesi9@gmail.com</a>
+        <a href="https://www.linkedin.com/in/eljonenesi/" target="_blank" rel="noopener" class="contact-link">LinkedIn ↗</a>
+        <a href="https://github.com/eljonenesi123" target="_blank" rel="noopener" class="contact-link">GitHub ↗</a>
+        <a href="tel:+355688944708" class="contact-link">+355 68 894 4708</a>
+        <a href="https://wa.me/355688944708" target="_blank" rel="noopener" class="contact-link">WhatsApp ↗</a>
+        <a href="assets/cv-eljon-enesi.pdf" target="_blank" rel="noopener" class="contact-link" data-i18n="contact.cv">Preview CV ↗</a>
+      </div>
+    </div>
   </section>
 
 </main>
 
 <footer class="site-footer">
-  <span>© 2026 Eljon Enesi</span>
-  <a href="https://github.com/eljonenesi123" target="_blank" rel="noopener">GitHub ↗</a>
+  <span data-i18n="footer.loc">Eljon Enesi — Tirana, Albania</span>
+  <a href="mailto:eljonenesi9@gmail.com">eljonenesi9@gmail.com</a>
 </footer>
 
+<script src="i18n.js"></script>
 <script src="script.js"></script>
 </body>
 </html>
