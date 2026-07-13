@@ -579,6 +579,8 @@ p { margin: 0; color: var(--text-dim); }
 @media (max-width: 760px) {
   html { scroll-snap-type: none; }
   .hero, .work, .services, .process, .contact { min-height: auto; }
+  .hero { flex-direction: column; align-items: stretch; }
+  .hero-text { max-width: 100%; flex-shrink: 1; }
   .topnav { display: none; }
   .hero, .work, .services, .process, .contact { padding: 3rem 6vw; }
   .service-list { grid-template-columns: 1fr; gap: 2rem; }
