@@ -300,6 +300,7 @@ if (!prefersReducedMotion && !window.matchMedia("(max-width: 760px)").matches &&
   if (!el) return;
 
   el.addEventListener("mousemove", (e) => {
+    if (el.classList.contains("dragging")) return;
     const rect = el.getBoundingClientRect();
     const x = (e.clientX - rect.left) / rect.width - 0.5;
     const y = (e.clientY - rect.top) / rect.height - 0.5;
@@ -307,6 +308,7 @@ if (!prefersReducedMotion && !window.matchMedia("(max-width: 760px)").matches &&
   });
 
   el.addEventListener("mouseleave", () => {
+    if (el.classList.contains("dragging")) return;
     el.style.transform = "rotateY(0deg) rotateX(0deg)";
   });
 })();
@@ -368,3 +370,155 @@ document.addEventListener("DOMContentLoaded", () => {
     }, { passive: true });
   }
 });
+// --- Hero stat cards: tap to flip on touch devices (hover handles desktop).
+document.querySelectorAll(".stat-flip").forEach((card) => {
+  card.addEventListener("click", () => card.classList.toggle("flipped"));
+});
+
+// --- Hero buttons: drag them around, they snap back to their exact
+// original spot with a bounce on release. A real click (no movement)
+// still navigates normally.
+// Note: preventDefault on pointerup does NOT stop the separate click event
+// that browsers fire afterward — we track "just dragged" and cancel that
+// click event specifically, or a drag would still trigger navigation.
+document.querySelectorAll(".hero-actions a").forEach((btn) => {
+  let startX = 0, startY = 0, dragging = false, justDragged = false;
+  let pendingDx = 0, pendingDy = 0, rafId = null;
+
+  function applyTransform() {
+    btn.style.transform = `translate(${pendingDx}px, ${pendingDy}px)`;
+    rafId = null;
+  }
+
+  btn.addEventListener("pointerdown", (e) => {
+    startX = e.clientX;
+    startY = e.clientY;
+    dragging = true;
+    btn.classList.add("dragging");
+    btn.setPointerCapture(e.pointerId);
+  });
+
+  btn.addEventListener("pointermove", (e) => {
+    if (!dragging) return;
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+    if (Math.abs(dx) > 4 || Math.abs(dy) > 4) justDragged = true;
+    pendingDx = dx;
+    pendingDy = dy;
+    if (rafId === null) rafId = requestAnimationFrame(applyTransform);
+  });
+
+  function release() {
+    if (!dragging) return;
+    dragging = false;
+    if (rafId !== null) { cancelAnimationFrame(rafId); rafId = null; }
+    btn.classList.remove("dragging");
+    // Exact original position: clear the inline transform entirely (rather
+    // than translate(0,0), which is visually the same but this is explicit).
+    requestAnimationFrame(() => {
+      btn.style.transform = "";
+    });
+  }
+
+  btn.addEventListener("pointerup", release);
+  btn.addEventListener("pointercancel", release);
+
+  // This is what actually stops navigation after a drag.
+  btn.addEventListener("click", (e) => {
+    if (justDragged) {
+      e.preventDefault();
+      justDragged = false;
+    }
+  });
+});
+
+// --- Code window: drag by its title bar, snaps back to its exact original
+// spot with a bounce on release. Dragging from inside the editable text
+// area is intentionally NOT draggable, so typing/selecting text still works.
+(function () {
+  const win = document.querySelector(".code-window");
+  const bar = document.querySelector(".code-window-bar");
+  if (!win || !bar) return;
+
+  let startX = 0, startY = 0, dragging = false;
+  let pendingDx = 0, pendingDy = 0, rafId = null;
+
+  function applyTransform() {
+    win.style.transform = `translate(${pendingDx}px, ${pendingDy}px)`;
+    rafId = null;
+  }
+
+  bar.style.cursor = "grab";
+  bar.style.touchAction = "none";
+
+  bar.addEventListener("pointerdown", (e) => {
+    startX = e.clientX;
+    startY = e.clientY;
+    dragging = true;
+    win.classList.add("dragging");
+    bar.style.cursor = "grabbing";
+    bar.setPointerCapture(e.pointerId);
+  });
+
+  bar.addEventListener("pointermove", (e) => {
+    if (!dragging) return;
+    pendingDx = e.clientX - startX;
+    pendingDy = e.clientY - startY;
+    if (rafId === null) rafId = requestAnimationFrame(applyTransform);
+  });
+
+  function release() {
+    if (!dragging) return;
+    dragging = false;
+    if (rafId !== null) { cancelAnimationFrame(rafId); rafId = null; }
+    win.classList.remove("dragging");
+    bar.style.cursor = "grab";
+    win.style.transition = "transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease";
+    win.style.transform = "translate(0px, 0px) rotateY(0deg) rotateX(0deg)";
+    setTimeout(() => {
+      // Fully clear — exact original state, and restores the fast
+      // CSS-defined tilt transition for hover afterward.
+      win.style.transition = "";
+      win.style.transform = "";
+    }, 520);
+  }
+
+  bar.addEventListener("pointerup", release);
+  bar.addEventListener("pointercancel", release);
+})();
+
+// --- Boot screen: waits for the visitor to actually do something
+// (key press, click, or tap) after the typed lines finish, rather than
+// just auto-hiding — makes it a real interaction, not passive animation.
+(function () {
+  const boot = document.getElementById("boot-screen");
+  if (!boot) return;
+
+  let dismissed = false;
+  function dismiss(e) {
+    if (dismissed) return;
+    dismissed = true;
+    // Stop this same touch/click from also reaching whatever is now
+    // revealed underneath (mobile browsers can fire a synthetic "click"
+    // ~300ms after touchstart at the same coordinates).
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    boot.classList.add("hidden");
+    document.removeEventListener("keydown", dismiss);
+    document.removeEventListener("click", dismiss);
+    document.removeEventListener("touchstart", dismiss);
+  }
+
+  // Allow dismissal only once the typed lines have had time to appear,
+  // so an accidental early click doesn't skip the sequence instantly.
+  setTimeout(() => {
+    document.addEventListener("keydown", dismiss);
+    document.addEventListener("click", dismiss);
+    document.addEventListener("touchstart", dismiss, { passive: false });
+  }, 1800);
+
+  // Safety net: if someone never interacts, don't trap them forever.
+  setTimeout(dismiss, 8000);
+})();
