@@ -13,7 +13,6 @@ const translations = {
     "hero.sub": "I design and build sites and web apps for small businesses, coaches, and independent projects — from a blank page to a live URL you can send to anyone.",
     "hero.cta1": "Get in touch",
     "hero.cta2": "See my work",
-    "hero.cta3": "Preview CV",
     "work.title": "Work",
     "work.p1.tag": "Movie & TV picker",
     "work.p1.desc": "A tool for groups who can't agree on what to watch. Spin a wheel, describe a mood, or swipe through picks together. Includes four built-in games, works offline as an installable PWA, and is available in three languages.",
@@ -57,7 +56,6 @@ const translations = {
     "contact.msg": "What do you need built?",
     "contact.send": "Send message",
     "contact.alt": "Or reach me directly",
-    "contact.cv": "Preview CV ↗",
     "footer.loc": "Eljon Enesi — Tirana, Albania"
   },
 
@@ -71,7 +69,6 @@ const translations = {
     "hero.sub": "Dizajnoj dhe ndërtoj sajte dhe web app për biznese të vogla, trajnerë, dhe projekte individuale — nga një faqe bosh deri te një URL live që mund t'ia dërgosh kujtdo.",
     "hero.cta1": "Na kontaktoni",
     "hero.cta2": "Shiko punimet",
-    "hero.cta3": "Shiko CV-në",
     "work.title": "Punimet",
     "work.p1.tag": "Zgjedhës filmash & seriale",
     "work.p1.desc": "Një mjet për grupe që nuk bien dakord se çfarë të shohin. Rrotullo timonin, përshkruaj humorin e momentit, ose kalo nëpër zgjedhje së bashku. Përfshin katër lojëra të integruara, punon offline si një PWA e instalueshme, dhe ofrohet në tre gjuhë.",
@@ -115,7 +112,6 @@ const translations = {
     "contact.msg": "Çfarë ju duhet të ndërtohet?",
     "contact.send": "Dërgo mesazhin",
     "contact.alt": "Ose më kontaktoni direkt",
-    "contact.cv": "Shiko CV-në ↗",
     "footer.loc": "Eljon Enesi — Tiranë, Shqipëri"
   },
 
@@ -129,7 +125,6 @@ const translations = {
     "hero.sub": "Ich entwerfe und baue Websites und Web-Apps für kleine Unternehmen, Coaches und unabhängige Projekte — von der leeren Seite bis zur fertigen URL, die du jedem schicken kannst.",
     "hero.cta1": "Kontakt aufnehmen",
     "hero.cta2": "Projekte ansehen",
-    "hero.cta3": "Lebenslauf ansehen",
     "work.title": "Projekte",
     "work.p1.tag": "Film- & Serien-Picker",
     "work.p1.desc": "Ein Tool für Gruppen, die sich nicht einigen können, was sie schauen sollen. Rad drehen, Stimmung beschreiben, oder gemeinsam durch Vorschläge swipen. Enthält vier integrierte Spiele, funktioniert offline als installierbare PWA und ist in drei Sprachen verfügbar.",
@@ -173,7 +168,6 @@ const translations = {
     "contact.msg": "Was soll gebaut werden?",
     "contact.send": "Nachricht senden",
     "contact.alt": "Oder erreiche mich direkt",
-    "contact.cv": "Lebenslauf ansehen ↗",
     "footer.loc": "Eljon Enesi — Tirana, Albanien"
   }
 };

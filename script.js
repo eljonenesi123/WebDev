@@ -522,3 +522,39 @@ document.querySelectorAll(".hero-actions a").forEach((btn) => {
   // Safety net: if someone never interacts, don't trap them forever.
   setTimeout(dismiss, 8000);
 })();
+
+// --- Top menu (grid-dot button): toggles a popup panel with nav links.
+// Closes on outside click, on Escape, or after picking a link.
+(function () {
+  const btn = document.getElementById("menu-toggle");
+  const panel = document.getElementById("menu-panel");
+  if (!btn || !panel) return;
+
+  function close() {
+    panel.classList.remove("open");
+    btn.classList.remove("active");
+    btn.setAttribute("aria-expanded", "false");
+  }
+  function open() {
+    panel.classList.add("open");
+    btn.classList.add("active");
+    btn.setAttribute("aria-expanded", "true");
+  }
+
+  btn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    panel.classList.contains("open") ? close() : open();
+  });
+
+  panel.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", close);
+  });
+
+  document.addEventListener("click", (e) => {
+    if (!panel.contains(e.target) && e.target !== btn) close();
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") close();
+  });
+})();
