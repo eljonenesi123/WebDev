@@ -604,3 +604,65 @@ document.querySelectorAll(".hero-actions a").forEach((btn) => {
 
   render();
 })();
+
+// --- Google Analytics: only loads/activates after cookie consent (GDPR-
+// friendly). Also tracks specific high-value actions as events, not just
+// page views — clicking a contact channel, requesting a quote, viewing CV.
+const GA_MEASUREMENT_ID = "G-99LLMQ1D8E"; // <-- replace with your real ID if different
+
+function loadGoogleAnalytics() {
+  const script = document.createElement("script");
+  script.async = true;
+  script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;
+  document.head.appendChild(script);
+
+  gtag('consent', 'update', { analytics_storage: 'granted' });
+  gtag('config', GA_MEASUREMENT_ID);
+}
+
+function trackEvent(name, params = {}) {
+  if (typeof gtag === "function") gtag('event', name, params);
+}
+
+(function () {
+  const banner = document.getElementById("cookie-banner");
+  const acceptBtn = document.getElementById("cookie-accept");
+  const declineBtn = document.getElementById("cookie-decline");
+  if (!banner) return;
+
+  let consent = null;
+  try { consent = localStorage.getItem("cookie-consent"); } catch (e) { /* ignore */ }
+
+  if (consent === "granted") {
+    loadGoogleAnalytics();
+  } else if (consent === null) {
+    // Show banner after the boot screen dismisses, not immediately.
+    setTimeout(() => banner.classList.add("visible"), 3500);
+  }
+
+  acceptBtn.addEventListener("click", () => {
+    try { localStorage.setItem("cookie-consent", "granted"); } catch (e) { /* ignore */ }
+    loadGoogleAnalytics();
+    banner.classList.remove("visible");
+  });
+
+  declineBtn.addEventListener("click", () => {
+    try { localStorage.setItem("cookie-consent", "denied"); } catch (e) { /* ignore */ }
+    banner.classList.remove("visible");
+  });
+
+  // Track key conversion actions — what actually tells you if this site
+  // is working, not just that someone loaded a page.
+  document.querySelectorAll(".channel-card").forEach((el) => {
+    el.addEventListener("click", () => trackEvent("contact_click", { channel: el.className.split(" ")[1] }));
+  });
+  document.querySelectorAll(".price-cta").forEach((el) => {
+    el.addEventListener("click", () => trackEvent("quote_click", { tier: el.closest(".price-card")?.querySelector(".price-tag")?.textContent }));
+  });
+  document.querySelectorAll('a[href*="cv-eljon-enesi"]').forEach((el) => {
+    el.addEventListener("click", () => trackEvent("cv_preview"));
+  });
+  document.querySelectorAll('.device-frame').forEach((el) => {
+    el.addEventListener("click", () => trackEvent("project_click", { project: el.getAttribute("aria-label") }));
+  });
+})();
