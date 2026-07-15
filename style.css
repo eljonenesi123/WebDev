@@ -834,8 +834,8 @@ html[data-theme="light"] .theme-icon-moon { opacity: 0; transform: translateY(16
 .project-links a:hover { border-color: var(--accent); color: var(--accent); }
 
 @media (max-width: 900px) {
-  .work-carousel { width: 300%; }
-  .work-slide { padding: 1.5rem 4vw; gap: 1rem; min-height: auto; align-items: center; }
+  .work-carousel { width: 300%; height: 100vh; }
+  .work-slide { padding: 1.5rem 4vw; gap: 1rem; height: 100vh; align-items: center; }
   .work-slide-intro { text-align: center; }
   .work-slide-text { max-width: 42%; }
   .work-slide-text h3 { font-size: 1.05rem; margin: 0.3rem 0 0.5rem; }
@@ -1148,7 +1148,6 @@ html[data-theme="light"] .theme-icon-moon { opacity: 0; transform: translateY(16
 
 @media (max-width: 760px) {
   html { scroll-snap-type: none; }
-  .hero, .work, .skills, .services, .process, .contact { min-height: auto; }
   .hero { flex-direction: column; align-items: stretch; }
   .hero-text { max-width: 100%; flex-shrink: 1; }
   .menu-panel { min-width: 160px; }
