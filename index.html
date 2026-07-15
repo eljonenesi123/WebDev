@@ -110,6 +110,7 @@
 
   <nav class="menu-panel" id="menu-panel">
     <a href="#work" data-i18n="nav.work">Work</a>
+    <a href="#skills" data-i18n="nav.skills">Skills</a>
     <a href="#services" data-i18n="nav.services">Services</a>
     <a href="#process" data-i18n="nav.process">Process</a>
     <a href="#contact" data-i18n="nav.contact">Contact</a>
@@ -119,9 +120,10 @@
 <nav class="side-nav" aria-label="Section navigation">
   <button type="button" data-target=".hero">01</button>
   <button type="button" data-target=".work">02</button>
-  <button type="button" data-target=".services">03</button>
-  <button type="button" data-target=".process">04</button>
-  <button type="button" data-target=".contact">05</button>
+  <button type="button" data-target=".skills">03</button>
+  <button type="button" data-target=".services">04</button>
+  <button type="button" data-target=".process">05</button>
+  <button type="button" data-target=".contact">06</button>
 </nav>
 
 <main id="top">
@@ -181,40 +183,103 @@
   </section>
 
   <section class="work" id="work">
-    <h2 class="section-title" data-i18n="work.title">Work</h2>
+    <div class="work-carousel" id="work-carousel">
 
-    <div class="work-grid">
-      <article class="project">
-        <a class="project-preview" href="https://eljonenesi123.github.io/MovieDecider/" target="_blank" rel="noopener">
-          <img src="assets/JUST.png" alt="Screenshot of Just Pick Something" loading="lazy">
-        </a>
-        <div class="project-head">
-          <h3>Just Pick Something</h3>
-          <span class="project-tag" data-i18n="work.p1.tag">Movie &amp; TV picker</span>
-        </div>
-        <p class="project-desc" data-i18n="work.p1.desc">A tool for groups who can't agree on what to watch. Spin a wheel, describe a mood, or swipe through picks together. Includes four built-in games, works offline as an installable app, and is available in three languages.</p>
-        <p class="project-stack">HTML · CSS · JavaScript · TMDB API · PWA · i18n (EN/SQ/DE)</p>
-        <div class="project-links">
-          <a href="https://eljonenesi123.github.io/MovieDecider/" target="_blank" rel="noopener" data-i18n="work.live">Live site ↗</a>
-          <a href="https://github.com/eljonenesi123/MovieDecider" target="_blank" rel="noopener" data-i18n="work.source">Source code ↗</a>
-        </div>
-      </article>
+      <div class="work-slide work-slide-intro">
+        <h2 class="section-title" data-i18n="work.title">Work</h2>
+        <p class="work-intro-text">A couple of projects, shown the way they actually run — not just a screenshot. Live sites you can click through, built end to end: design, code, and deployment.</p>
+        <p class="work-intro-count">2 live projects</p>
+        <button type="button" class="work-nav-hint" data-work-next>Next ↗</button>
+      </div>
 
-      <article class="project">
-        <a class="project-preview" href="https://eljonenesi123.github.io/TopLevelPerformance/" target="_blank" rel="noopener">
-          <img src="assets/TOP.png" alt="Screenshot of Top Level Performance" loading="lazy">
-        </a>
-        <div class="project-head">
+      <div class="work-slide">
+        <div class="work-slide-text">
+          <p class="project-tag" data-i18n="work.p2.tag">Coaching platform</p>
           <h3>Top Level Performance</h3>
-          <span class="project-tag" data-i18n="work.p2.tag">Coaching platform</span>
+          <p class="project-desc" data-i18n="work.p2.desc">A site for a coach offering online and 1-on-1 sessions, built so a new visitor can understand the offer and book a session without friction.</p>
+          <p class="project-stack">HTML · CSS · JavaScript · Responsive layout · Booking flow</p>
+          <div class="project-links">
+            <a href="https://eljonenesi123.github.io/TopLevelPerformance/" target="_blank" rel="noopener" data-i18n="work.live">Live site ↗</a>
+            <a href="https://github.com/eljonenesi123/TopLevelPerformance" target="_blank" rel="noopener" data-i18n="work.source">Source code ↗</a>
+          </div>
         </div>
-        <p class="project-desc" data-i18n="work.p2.desc">A site for a coach offering online and 1-on-1 sessions, built so a new visitor can understand the offer and book a session without friction.</p>
-        <p class="project-stack">HTML · CSS · JavaScript · Responsive layout · Booking flow</p>
-        <div class="project-links">
-          <a href="https://eljonenesi123.github.io/TopLevelPerformance/" target="_blank" rel="noopener" data-i18n="work.live">Live site ↗</a>
-          <a href="https://github.com/eljonenesi123/TopLevelPerformance" target="_blank" rel="noopener" data-i18n="work.source">Source code ↗</a>
+        <a class="device-frame device-laptop" href="https://eljonenesi123.github.io/TopLevelPerformance/" target="_blank" rel="noopener" aria-label="Open Top Level Performance live site">
+          <div class="device-laptop-screen">
+            <img src="assets/TOP.png" alt="Screenshot of Top Level Performance" loading="lazy">
+          </div>
+          <div class="device-laptop-hinge"></div>
+          <div class="device-laptop-keyboard"></div>
+        </a>
+      </div>
+
+      <div class="work-slide">
+        <div class="work-slide-text">
+          <p class="project-tag" data-i18n="work.p1.tag">Movie &amp; TV picker</p>
+          <h3>Just Pick Something</h3>
+          <p class="project-desc" data-i18n="work.p1.desc">A tool for groups who can't agree on what to watch. Spin a wheel, describe a mood, or swipe through picks together. Includes four built-in games, works offline as an installable app, and is available in three languages.</p>
+          <p class="project-stack">HTML · CSS · JavaScript · TMDB API · PWA · i18n (EN/SQ/DE)</p>
+          <div class="project-links">
+            <a href="https://eljonenesi123.github.io/MovieDecider/" target="_blank" rel="noopener" data-i18n="work.live">Live site ↗</a>
+            <a href="https://github.com/eljonenesi123/MovieDecider" target="_blank" rel="noopener" data-i18n="work.source">Source code ↗</a>
+          </div>
         </div>
-      </article>
+        <a class="device-frame device-phone" href="https://eljonenesi123.github.io/MovieDecider/" target="_blank" rel="noopener" aria-label="Open Just Pick Something live site">
+          <div class="device-phone-notch"></div>
+          <div class="device-phone-screen">
+            <img src="assets/phone.png" alt="Screenshot of Just Pick Something" loading="lazy">
+          </div>
+        </a>
+      </div>
+
+    </div>
+
+    <div class="work-dots" id="work-dots">
+      <button type="button" data-slide="0" class="active" aria-label="Intro"></button>
+      <button type="button" data-slide="1" aria-label="Top Level Performance"></button>
+      <button type="button" data-slide="2" aria-label="Just Pick Something"></button>
+    </div>
+    <button type="button" class="work-arrow work-arrow-prev" id="work-prev" aria-label="Previous">←</button>
+    <button type="button" class="work-arrow work-arrow-next" id="work-next" aria-label="Next">→</button>
+  </section>
+
+  <section class="skills" id="skills">
+    <h2 class="section-title" data-i18n="skills.title">Skills &amp; Experience</h2>
+    <p class="skills-copy">I build with a focused set of tools I actually know well, rather than a long list I barely use. HTML, CSS, and JavaScript are the foundation of everything I ship. When a project needs more — a CMS, a Node backend — I bring in exactly what fits, nothing more.</p>
+    <p class="skills-copy">For a fuller look at my background and experience, visit my <a href="https://www.linkedin.com/in/eljonenesi/" target="_blank" rel="noopener" class="skills-link">LinkedIn</a>.</p>
+
+    <div class="skills-grid">
+      <div class="skill-item">
+        <svg viewBox="0 0 24 24" width="40" height="40"><rect width="24" height="24" rx="4" fill="#f0db4f"/><path d="M6.5 17.3c.4.7 1 1.2 2 1.2 1 0 1.7-.5 1.7-1.6v-5.4h-1.6v5.4c0 .5-.2.7-.6.7-.4 0-.6-.3-.8-.6l-1.7.3zm5.7-.2c.5.9 1.5 1.5 2.9 1.5 1.5 0 2.6-.8 2.6-2.2 0-1.3-.8-1.9-2.1-2.4l-.4-.2c-.7-.3-1-.5-1-1 0-.4.3-.7.8-.7.5 0 .8.2 1.1.7l1.3-.8c-.5-.9-1.2-1.3-2.4-1.3-1.4 0-2.4.9-2.4 2.1 0 1.2.7 1.8 1.9 2.3l.4.2c.8.3 1.2.6 1.2 1.1 0 .4-.4.8-1.1.8-.8 0-1.2-.4-1.6-1l-1.4.7z"/></svg>
+        <span>JavaScript</span>
+      </div>
+      <div class="skill-item">
+        <svg viewBox="0 0 24 24" width="40" height="40"><path fill="#264de4" d="M3.5 2h17l-1.5 17L12 22 5 19z"/><path fill="#2965f1" d="M12 4v16.4l5.7-1.9L19 4z"/><path fill="#ebebeb" d="M12 12.8H8.9L8.7 10H12V7H5.6l.1 1.2L6.4 15h5.6zM12 17.5l-3-.8-.2-2.2H6l.4 4.4 5.6 1.6z"/><path fill="#fff" d="M12 12.8h2.8l-.3 3-2.5.7v2.9l5.1-1.4.8-8.9H12zM12 7v3h6.3l.3-3z"/></svg>
+        <span>CSS3</span>
+      </div>
+      <div class="skill-item">
+        <svg viewBox="0 0 24 24" width="40" height="40"><path fill="#e34f26" d="M3.5 2h17l-1.5 17L12 22 5 19z"/><path fill="#ef652a" d="M12 4v16.4l5.7-1.9L19 4z"/><path fill="#ebebeb" d="M12 12.5H9l-.2-2.4H12V7.7H6.2l.5 6.2H12zM12 17.8l-3-.8-.2-2.3H6.4l.4 4.3L12 20.4z"/><path fill="#fff" d="M12 12.5h2.7l-.3 3-2.4.7v2.5l4.6-1.3.7-7.5H12zM12 7.7v2.4h5.4l.2-2.4z"/></svg>
+        <span>HTML5</span>
+      </div>
+      <div class="skill-item">
+        <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="#5c9ee7" stroke-width="1.6"><path d="M17.5 3.5l-11 5v7l11 5 3-1.5v-14z"/><path d="M6.5 8.5l8 3.5-8 3.5"/></svg>
+        <span>Visual Studio</span>
+      </div>
+      <div class="skill-item">
+        <svg viewBox="0 0 24 24" width="40" height="40"><path fill="#83cd29" d="M12 1.5L2 7v10l10 5.5 10-5.5V7z"/><path fill="#fff" d="M12 5.2L6 8.5v7l6 3.3 6-3.3v-7zM10.8 9h1.3l2.3 6h-1.3l-.5-1.3h-2.3L9.8 15H8.5zm.6 3.6h1.4l-.7-1.9z"/></svg>
+        <span>Node.js</span>
+      </div>
+      <div class="skill-item">
+        <svg viewBox="0 0 24 24" width="40" height="40"><circle cx="12" cy="12" r="10.5" fill="#21759b"/><path fill="#fff" d="M2.6 12a9.4 9.4 0 0 0 5.3 8.5L3.8 8.9a9.3 9.3 0 0 0-1.2 3.1zm16.5-.5c0-1.2-.4-2-.8-2.6-.5-.8-.9-1.4-.9-2.2 0-.9.7-1.7 1.6-1.7h.1a9.4 9.4 0 0 0-14.2 1.8h.6c.9 0 2.3-.1 2.3-.1.5 0 .5.6.1.7 0 0-.5.1-1 .1L9.4 16l2.1-6.3-1.5-4c-.5 0-1-.1-1-.1-.5 0-.4-.7.1-.7 0 0 1.5.1 2.3.1.9 0 2.3-.1 2.3-.1.5 0 .5.6.1.7 0 0-.5.1-1 .1l2.5 7.4.7-2.3c.3-1 .5-1.7.5-2.3zm-6.6 1.4l-2.1 6c1.2.4 2.6.4 3.9 0zm7.7-5c0 .2 0 .5-.1.8L18.2 20a9.4 9.4 0 0 0 2-11.1zM12 2.6A9.4 9.4 0 1 0 21.4 12 9.4 9.4 0 0 0 12 2.6zm0 19.4A10 10 0 1 1 22 12a10 10 0 0 1-10 10z"/></svg>
+        <span>WordPress</span>
+      </div>
+      <div class="skill-item">
+        <svg viewBox="0 0 24 24" width="40" height="40"><path fill="#f34f29" d="M23.5 11.3L12.7.5a1.6 1.6 0 0 0-2.3 0L8.2 2.7l2.8 2.8a2 2 0 0 1 2.5 1.9 2 2 0 0 1-2 2 2 2 0 0 1-2-2 2 2 0 0 1 .1-.6L6.9 4.1.5 10.4a1.6 1.6 0 0 0 0 2.3l10.8 10.8a1.6 1.6 0 0 0 2.3 0l10.8-10.8a1.6 1.6 0 0 0 .1-.4 1.6 1.6 0 0 0 0-1zM9.4 18.6a2 2 0 0 1-2-2 2 2 0 0 1 2-2 2 2 0 0 1 2 2 2 2 0 0 1-2 2zm7-7a2 2 0 0 1-.9-.2v5.4a2 2 0 1 1-1.6 0V11a2 2 0 1 1 2.5-1.9 2 2 0 0 1-2 2z"/></svg>
+        <span>Git</span>
+      </div>
+      <div class="skill-item">
+        <svg viewBox="0 0 24 24" width="40" height="40" fill="#e2e2e6"><path d="M12 .5A11.5 11.5 0 0 0 .5 12c0 5.1 3.3 9.4 7.9 11 .6.1.8-.3.8-.6v-2.2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.7-1.3-1.7-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.7 1.3 3.4 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.8 0-1.3.4-2.3 1.2-3.2-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.6.2 2.8.1 3.1.8.9 1.2 1.9 1.2 3.2 0 4.5-2.7 5.5-5.3 5.8.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5z"/></svg>
+        <span>GitHub</span>
+      </div>
     </div>
   </section>
 

@@ -5,6 +5,7 @@
 const translations = {
   en: {
     "nav.work": "Work",
+    "nav.skills": "Skills",
     "nav.services": "Services",
     "nav.process": "Process",
     "nav.contact": "Contact",
@@ -20,6 +21,7 @@ const translations = {
     "work.p2.desc": "A site for a coach offering online and 1-on-1 sessions, built so a new visitor can understand the offer and book a session without friction.",
     "work.live": "Live site ↗",
     "work.source": "Source code ↗",
+    "skills.title": "Skills & Experience",
     "services.title": "Services",
     "services.sub": "Pricing depends on scope — pages, features, and how sophisticated the build needs to be. This is a starting point, not a fixed menu.",
     "services.from": "+",
@@ -61,6 +63,7 @@ const translations = {
 
   sq: {
     "nav.work": "Punimet",
+    "nav.skills": "Aftësitë",
     "nav.services": "Shërbimet",
     "nav.process": "Procesi",
     "nav.contact": "Kontakt",
@@ -76,6 +79,7 @@ const translations = {
     "work.p2.desc": "Një sajt për një coach që ofron sesione online dhe 1-me-1, ndërtuar në mënyrë që një vizitor i ri të kuptojë ofertën dhe të rezervojë një sesion pa vështirësi.",
     "work.live": "Sajti live ↗",
     "work.source": "Kodi burimor ↗",
+    "skills.title": "Aftësi & Eksperiencë",
     "services.title": "Shërbimet",
     "services.sub": "Çmimi varet nga vëllimi i punës — numri i faqeve, funksionalitetet, dhe sa i sofistikuar duhet të jetë ndërtimi. Ky është një pikënisje, jo një listë fikse.",
     "services.from": "+",
@@ -117,6 +121,7 @@ const translations = {
 
   de: {
     "nav.work": "Projekte",
+    "nav.skills": "Fähigkeiten",
     "nav.services": "Leistungen",
     "nav.process": "Ablauf",
     "nav.contact": "Kontakt",
@@ -132,6 +137,7 @@ const translations = {
     "work.p2.desc": "Eine Seite für einen Coach mit Online- und 1-zu-1-Sitzungen, so gebaut, dass ein neuer Besucher das Angebot versteht und ohne Reibung eine Sitzung bucht.",
     "work.live": "Live-Seite ↗",
     "work.source": "Quellcode ↗",
+    "skills.title": "Skills & Erfahrung",
     "services.title": "Leistungen",
     "services.sub": "Der Preis hängt vom Umfang ab — Seiten, Funktionen, und wie anspruchsvoll das Projekt sein muss. Das hier ist ein Ausgangspunkt, keine feste Preisliste.",
     "services.from": "+",

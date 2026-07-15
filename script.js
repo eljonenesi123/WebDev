@@ -190,6 +190,7 @@ if (!prefersReducedMotion && window.gsap && window.ScrollTrigger) {
   }
 
   revealGroup(".project", { stagger: 0.12 });
+  revealGroup(".skill-item", { stagger: 0.06 });
   revealGroup(".price-card", { stagger: 0.12 });
   revealGroup(".process-step", { stagger: 0.1 });
   revealGroup(".contact-grid");
@@ -219,7 +220,7 @@ if (!prefersReducedMotion && window.gsap && window.ScrollTrigger) {
 // Native CSS scroll-snap (see style.css) handles the section-to-section
 // snapping — this just adds the "text moves opposite way" motion on top.
 if (!prefersReducedMotion && window.gsap && window.ScrollTrigger) {
-  document.querySelectorAll(".hero, .work, .services, .process, .contact").forEach((section) => {
+  document.querySelectorAll(".hero, .work, .skills, .services, .process, .contact").forEach((section) => {
     const inner = section.querySelector(
       ".hero-title, .work-grid, .pricing-grid, .process-list, .contact-grid"
     );
@@ -249,7 +250,7 @@ if (!prefersReducedMotion && window.gsap && window.ScrollTrigger) {
 if (!prefersReducedMotion && !window.matchMedia("(max-width: 760px)").matches && window.gsap) {
   gsap.registerPlugin(ScrollToPlugin);
   const SLIDE_DURATION = 1.6; // seconds — increase to slow down further
-  const sections = Array.from(document.querySelectorAll(".hero, .work, .services, .process, .contact"));
+  const sections = Array.from(document.querySelectorAll(".hero, .work, .skills, .services, .process, .contact"));
   const navButtons = Array.from(document.querySelectorAll(".side-nav button"));
   let isAnimating = false;
 
@@ -557,4 +558,49 @@ document.querySelectorAll(".hero-actions a").forEach((btn) => {
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") close();
   });
+})();
+
+// --- Work section: horizontal mini-carousel (intro -> laptop -> phone).
+// Uses the same transition speed/easing as the main vertical section
+// slides (1.6s, power-style ease) for a consistent feel across the site.
+// Controlled by arrows/dots/keyboard, not wheel — avoids fighting with
+// the page's own vertical wheel-hijacking.
+(function () {
+  const carousel = document.getElementById("work-carousel");
+  const dots = document.querySelectorAll("#work-dots button");
+  const prevBtn = document.getElementById("work-prev");
+  const nextBtn = document.getElementById("work-next");
+  const nextHint = document.querySelector("[data-work-next]");
+  if (!carousel) return;
+
+  const TOTAL = 3;
+  let current = 0;
+
+  function render() {
+    carousel.className = "work-carousel pos-" + current;
+    dots.forEach((d, i) => d.classList.toggle("active", i === current));
+    prevBtn.disabled = current === 0;
+    nextBtn.disabled = current === TOTAL - 1;
+  }
+
+  function goTo(i) {
+    current = Math.max(0, Math.min(TOTAL - 1, i));
+    render();
+  }
+
+  prevBtn.addEventListener("click", () => goTo(current - 1));
+  nextBtn.addEventListener("click", () => goTo(current + 1));
+  if (nextHint) nextHint.addEventListener("click", () => goTo(current + 1));
+  dots.forEach((dot, i) => dot.addEventListener("click", () => goTo(i)));
+
+  // Basic touch swipe support.
+  let touchStartX = 0;
+  carousel.addEventListener("touchstart", (e) => { touchStartX = e.touches[0].clientX; }, { passive: true });
+  carousel.addEventListener("touchend", (e) => {
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(dx) < 40) return;
+    goTo(dx < 0 ? current + 1 : current - 1);
+  }, { passive: true });
+
+  render();
 })();
