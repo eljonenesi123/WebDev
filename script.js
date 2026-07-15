@@ -252,6 +252,7 @@ if (!prefersReducedMotion && !window.matchMedia("(max-width: 760px)").matches &&
   const SLIDE_DURATION = 1.6; // seconds — increase to slow down further
   const sections = Array.from(document.querySelectorAll(".hero, .work, .skills, .services, .process, .contact"));
   const navButtons = Array.from(document.querySelectorAll(".side-nav button"));
+  const scrollArrow = document.getElementById("scroll-arrow");
   let isAnimating = false;
 
   function currentIndex() {
@@ -263,15 +264,28 @@ if (!prefersReducedMotion && !window.matchMedia("(max-width: 760px)").matches &&
     return closest;
   }
 
+  // At the last section the arrow flips to point up (scroll back toward
+  // the top) instead of just disappearing with nowhere left to go.
+  function updateArrowState() {
+    if (!scrollArrow) return;
+    const atEnd = currentIndex() === sections.length - 1;
+    scrollArrow.classList.toggle("at-end", atEnd);
+  }
+
   function goTo(index) {
     if (index < 0 || index >= sections.length || isAnimating) return;
     isAnimating = true;
     navButtons.forEach((b, i) => b.classList.toggle("active", i === index));
+    if (scrollArrow) scrollArrow.classList.add("transitioning"); // vanish while moving
     gsap.to(window, {
       duration: SLIDE_DURATION,
       ease: "power2.inOut",
       scrollTo: { y: sections[index], autoKill: false },
-      onComplete: () => { isAnimating = false; }
+      onComplete: () => {
+        isAnimating = false;
+        updateArrowState();
+        if (scrollArrow) scrollArrow.classList.remove("transitioning");
+      }
     });
   }
 
@@ -290,6 +304,14 @@ if (!prefersReducedMotion && !window.matchMedia("(max-width: 760px)").matches &&
 
   navButtons.forEach((btn, i) => btn.addEventListener("click", () => goTo(i)));
   navButtons.forEach((b, i) => b.classList.toggle("active", i === currentIndex()));
+
+  if (scrollArrow) {
+    scrollArrow.addEventListener("click", () => {
+      const atEnd = currentIndex() === sections.length - 1;
+      goTo(currentIndex() + (atEnd ? -1 : 1));
+    });
+    updateArrowState();
+  }
 }
 
 
