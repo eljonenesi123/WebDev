@@ -9,7 +9,7 @@ const translations = {
     "nav.services": "Services",
     "nav.process": "Process",
     "nav.contact": "Contact",
-    "hero.eyebrow": "Web developer — Tirana, Albania",
+    "hero.eyebrow": "Web developer & freelancer",
     "hero.title": "I build websites that work, load fast, and don't need explaining.",
     "hero.sub": "I design and build sites and web apps for small businesses, coaches, and independent projects — from a blank page to a live URL you can send to anyone.",
     "hero.cta1": "Get in touch",
@@ -57,7 +57,7 @@ const translations = {
     "contact.msg": "What do you need built?",
     "contact.send": "Send message",
     "contact.alt": "Or reach me directly",
-    "footer.loc": "Eljon Enesi — Tirana, Albania"
+    "footer.loc": "Eljon Enesi"
   },
 
   sq: {
@@ -66,7 +66,7 @@ const translations = {
     "nav.services": "Shërbimet",
     "nav.process": "Procesi",
     "nav.contact": "Kontakt",
-    "hero.eyebrow": "Web developer — Tiranë, Shqipëri",
+    "hero.eyebrow": "Web developer & freelancer",
     "hero.title": "Ndërtoj website që funksionojnë, hapen shpejt, dhe nuk kanë nevojë për shpjegime.",
     "hero.sub": "Dizajnoj dhe ndërtoj sajte dhe web app për biznese të vogla, trajnerë, dhe projekte individuale — nga një faqe bosh deri te një URL live që mund t'ia dërgosh kujtdo.",
     "hero.cta1": "Na kontaktoni",
@@ -114,7 +114,7 @@ const translations = {
     "contact.msg": "Çfarë ju duhet të ndërtohet?",
     "contact.send": "Dërgo mesazhin",
     "contact.alt": "Ose më kontaktoni direkt",
-    "footer.loc": "Eljon Enesi — Tiranë, Shqipëri"
+    "footer.loc": "Eljon Enesi"
   },
 
   de: {
@@ -123,7 +123,7 @@ const translations = {
     "nav.services": "Leistungen",
     "nav.process": "Ablauf",
     "nav.contact": "Kontakt",
-    "hero.eyebrow": "Web developer — Tirana, Albanien",
+    "hero.eyebrow": "Web developer & freelancer",
     "hero.title": "Ich baue Websites, die funktionieren, schnell laden und keine Erklärung brauchen.",
     "hero.sub": "Ich entwerfe und baue Websites und Web-Apps für kleine Unternehmen, Coaches und unabhängige Projekte — von der leeren Seite bis zur fertigen URL, die du jedem schicken kannst.",
     "hero.cta1": "Kontakt aufnehmen",
@@ -171,7 +171,7 @@ const translations = {
     "contact.msg": "Was soll gebaut werden?",
     "contact.send": "Nachricht senden",
     "contact.alt": "Oder erreiche mich direkt",
-    "footer.loc": "Eljon Enesi — Tirana, Albanien"
+    "footer.loc": "Eljon Enesi"
   }
 };
 

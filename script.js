@@ -1,22 +1,3 @@
-// --- Theme toggle: light/dark, persisted ---
-(function () {
-  const btn = document.querySelector("[data-theme-toggle]");
-  if (!btn) return;
-  let saved = "dark";
-  try { saved = localStorage.getItem("site-theme") || "dark"; } catch (e) { /* ignore */ }
-  if (saved === "light") document.documentElement.setAttribute("data-theme", "light");
-
-  btn.addEventListener("click", () => {
-    const isLight = document.documentElement.getAttribute("data-theme") === "light";
-    if (isLight) {
-      document.documentElement.removeAttribute("data-theme");
-    } else {
-      document.documentElement.setAttribute("data-theme", "light");
-    }
-    try { localStorage.setItem("site-theme", isLight ? "dark" : "light"); } catch (e) { /* ignore */ }
-  });
-})();
-
 // --- Copy-to-clipboard buttons (email / phone) ---
 (function () {
   document.querySelectorAll(".copy-btn").forEach((btn) => {

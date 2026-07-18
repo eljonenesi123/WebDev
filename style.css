@@ -10,21 +10,6 @@
   --sans: "Inter", sans-serif;
 }
 
-html[data-theme="light"] {
-  --bg: #f5f5f2;
-  --surface: #ffffff;
-  --line: #e0e0dc;
-  --text: #1a1a1c;
-  --text-dim: #6b6b66;
-  --accent: #3d5fd6;
-}
-
-html[data-theme="light"] .bg-icon { opacity: 0.16; }
-html[data-theme="light"] .code-window { background: #ffffff; }
-html[data-theme="light"] .code-window-bar { background: #f0f0ee; }
-html[data-theme="light"] .code-window-gutter { background: #f7f7f5; color: #c4c4bf; }
-html[data-theme="light"] .cursor-spotlight { background: radial-gradient(600px circle at var(--sx, 50%) var(--sy, 50%), rgba(61,95,214,0.06), transparent 55%); }
-
 html { transition: background 0.25s ease; }
 body { transition: background 0.25s ease, color 0.25s ease; }
 
@@ -192,32 +177,6 @@ p { margin: 0; color: var(--text-dim); }
 .lang-btn:hover { color: var(--text); border-color: var(--text-dim); }
 .lang-btn.active { color: var(--accent); border-color: var(--accent); }
 
-.theme-toggle {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 30px;
-  height: 30px;
-  background: none;
-  border: 1px solid var(--line);
-  border-radius: 4px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  transition: border-color 0.15s ease, transform 0.2s ease;
-}
-.theme-toggle:hover { border-color: var(--text-dim); transform: rotate(-8deg); }
-.theme-icon {
-  position: absolute;
-  font-size: 0.85rem;
-  transition: transform 0.35s ease, opacity 0.35s ease;
-}
-.theme-icon-sun { color: #e5b95a; opacity: 0; transform: translateY(-16px) rotate(-90deg); }
-.theme-icon-moon { color: var(--accent); opacity: 1; transform: translateY(0) rotate(0); }
-html[data-theme="light"] .theme-icon-sun { opacity: 1; transform: translateY(0) rotate(0); }
-html[data-theme="light"] .theme-icon-moon { opacity: 0; transform: translateY(16px) rotate(90deg); }
-
-
 /* ---------- SIDE NAV (elevator) ---------- */
 
 .side-nav {
@@ -272,6 +231,7 @@ html[data-theme="light"] .theme-icon-moon { opacity: 0; transform: translateY(16
   gap: 3rem;
   scroll-snap-align: start;
   position: relative;
+  background: radial-gradient(ellipse 90% 60% at 30% 20%, rgba(90,127,240,0.1), transparent 60%), var(--bg);
 }
 
 .hero-middle-deco {
@@ -1236,6 +1196,8 @@ html[data-theme="light"] .theme-icon-moon { opacity: 0; transform: translateY(16
   font-size: 0.85rem;
   color: var(--text-dim);
   border-top: 1px solid var(--line);
+  background: #101018;
+  margin-top: -1px;
 }
 .site-footer a { color: var(--text-dim); transition: color 0.15s ease; }
 .site-footer a:hover { color: var(--accent); }
