@@ -252,7 +252,6 @@ if (!prefersReducedMotion && !window.matchMedia("(max-width: 760px)").matches &&
   const SLIDE_DURATION = 1.6; // seconds — increase to slow down further
   const sections = Array.from(document.querySelectorAll(".hero, .work, .skills, .services, .process, .contact"));
   const navButtons = Array.from(document.querySelectorAll(".side-nav button"));
-  const scrollArrow = document.getElementById("scroll-arrow");
   let isAnimating = false;
 
   function currentIndex() {
@@ -264,28 +263,15 @@ if (!prefersReducedMotion && !window.matchMedia("(max-width: 760px)").matches &&
     return closest;
   }
 
-  // At the last section the arrow flips to point up (scroll back toward
-  // the top) instead of just disappearing with nowhere left to go.
-  function updateArrowState() {
-    if (!scrollArrow) return;
-    const atEnd = currentIndex() === sections.length - 1;
-    scrollArrow.classList.toggle("at-end", atEnd);
-  }
-
   function goTo(index) {
     if (index < 0 || index >= sections.length || isAnimating) return;
     isAnimating = true;
     navButtons.forEach((b, i) => b.classList.toggle("active", i === index));
-    if (scrollArrow) scrollArrow.classList.add("transitioning"); // vanish while moving
     gsap.to(window, {
       duration: SLIDE_DURATION,
       ease: "power2.inOut",
       scrollTo: { y: sections[index], autoKill: false },
-      onComplete: () => {
-        isAnimating = false;
-        updateArrowState();
-        if (scrollArrow) scrollArrow.classList.remove("transitioning");
-      }
+      onComplete: () => { isAnimating = false; }
     });
   }
 
@@ -304,14 +290,6 @@ if (!prefersReducedMotion && !window.matchMedia("(max-width: 760px)").matches &&
 
   navButtons.forEach((btn, i) => btn.addEventListener("click", () => goTo(i)));
   navButtons.forEach((b, i) => b.classList.toggle("active", i === currentIndex()));
-
-  if (scrollArrow) {
-    scrollArrow.addEventListener("click", () => {
-      const atEnd = currentIndex() === sections.length - 1;
-      goTo(currentIndex() + (atEnd ? -1 : 1));
-    });
-    updateArrowState();
-  }
 }
 
 
@@ -392,10 +370,6 @@ document.addEventListener("DOMContentLoaded", () => {
       span.classList.add("pop");
     }, { passive: true });
   }
-});
-// --- Hero stat cards: tap to flip on touch devices (hover handles desktop).
-document.querySelectorAll(".stat-flip").forEach((card) => {
-  card.addEventListener("click", () => card.classList.toggle("flipped"));
 });
 
 // --- Hero buttons: drag them around, they snap back to their exact
@@ -510,42 +484,6 @@ document.querySelectorAll(".hero-actions a").forEach((btn) => {
   bar.addEventListener("pointercancel", release);
 })();
 
-// --- Boot screen: waits for the visitor to actually do something
-// (key press, click, or tap) after the typed lines finish, rather than
-// just auto-hiding — makes it a real interaction, not passive animation.
-(function () {
-  const boot = document.getElementById("boot-screen");
-  if (!boot) return;
-
-  let dismissed = false;
-  function dismiss(e) {
-    if (dismissed) return;
-    dismissed = true;
-    // Stop this same touch/click from also reaching whatever is now
-    // revealed underneath (mobile browsers can fire a synthetic "click"
-    // ~300ms after touchstart at the same coordinates).
-    if (e) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-    boot.classList.add("hidden");
-    document.removeEventListener("keydown", dismiss);
-    document.removeEventListener("click", dismiss);
-    document.removeEventListener("touchstart", dismiss);
-  }
-
-  // Allow dismissal only once the typed lines have had time to appear,
-  // so an accidental early click doesn't skip the sequence instantly.
-  setTimeout(() => {
-    document.addEventListener("keydown", dismiss);
-    document.addEventListener("click", dismiss);
-    document.addEventListener("touchstart", dismiss, { passive: false });
-  }, 1800);
-
-  // Safety net: if someone never interacts, don't trap them forever.
-  setTimeout(dismiss, 8000);
-})();
-
 // --- Top menu (grid-dot button): toggles a popup panel with nav links.
 // Closes on outside click, on Escape, or after picking a link.
 (function () {
@@ -595,7 +533,7 @@ document.querySelectorAll(".hero-actions a").forEach((btn) => {
   const nextHint = document.querySelector("[data-work-next]");
   if (!carousel) return;
 
-  const TOTAL = 3;
+  const TOTAL = 4;
   let current = 0;
 
   function render() {

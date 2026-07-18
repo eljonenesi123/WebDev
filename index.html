@@ -33,17 +33,6 @@
 </head>
 <body>
 
-<div class="boot-screen" id="boot-screen">
-  <img src="assets/LogoEE.png" alt="" class="boot-logo">
-  <div class="boot-terminal">
-    <div class="boot-line" data-line="1">$ npm install eljon-enesi</div>
-    <div class="boot-line" data-line="2">✓ fetched HTML, CSS, JS</div>
-    <div class="boot-line" data-line="3">✓ compiling portfolio.build</div>
-    <div class="boot-line" data-line="4">$ press any key to launch_</div>
-  </div>
-  <p class="boot-hint">click, tap, or press any key</p>
-</div>
-
 <div class="cookie-banner" id="cookie-banner">
   <p>This site uses cookies for basic analytics — to see how many people visit and what they click. No personal data is sold or shared.</p>
   <div class="cookie-banner-actions">
@@ -129,8 +118,8 @@
   <nav class="menu-panel" id="menu-panel">
     <a href="#work" data-i18n="nav.work">Work</a>
     <a href="#skills" data-i18n="nav.skills">Skills</a>
-    <a href="#services" data-i18n="nav.services">Services</a>
     <a href="#process" data-i18n="nav.process">Process</a>
+    <a href="#services" data-i18n="nav.services">Services</a>
     <a href="#contact" data-i18n="nav.contact">Contact</a>
   </nav>
 </header>
@@ -139,18 +128,10 @@
   <button type="button" data-target=".hero">01</button>
   <button type="button" data-target=".work">02</button>
   <button type="button" data-target=".skills">03</button>
-  <button type="button" data-target=".services">04</button>
-  <button type="button" data-target=".process">05</button>
+  <button type="button" data-target=".process">04</button>
+  <button type="button" data-target=".services">05</button>
   <button type="button" data-target=".contact">06</button>
 </nav>
-
-<button type="button" class="scroll-arrow" id="scroll-arrow" aria-label="Scroll to next section">
-  <span class="chevron-stack">
-    <svg viewBox="0 0 24 12" width="16" height="8"><path d="M2 2l10 8 10-8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
-    <svg viewBox="0 0 24 12" width="16" height="8"><path d="M2 2l10 8 10-8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
-    <svg viewBox="0 0 24 12" width="16" height="8"><path d="M2 2l10 8 10-8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
-  </span>
-</button>
 
 <main id="top">
 
@@ -164,21 +145,6 @@
         <a href="#work" class="btn-line" data-i18n="hero.cta2">See my work</a>
       </div>
       <p class="hero-status"><span class="status-dot"></span><span class="typed-line" data-typed></span></p>
-
-      <div class="hero-stats">
-        <div class="stat-flip">
-          <div class="stat-face stat-front"><strong>2+</strong><span>Projects shipped</span></div>
-          <div class="stat-face stat-back">Movie picker + coaching site — more on request</div>
-        </div>
-        <div class="stat-flip">
-          <div class="stat-face stat-front"><strong>3</strong><span>Languages</span></div>
-          <div class="stat-face stat-back">EN · SQ · DE — full site, not just labels</div>
-        </div>
-        <div class="stat-flip">
-          <div class="stat-face stat-front"><strong>&lt;2d</strong><span>Reply time</span></div>
-          <div class="stat-face stat-back">Message me anytime — I check daily</div>
-        </div>
-      </div>
     </div>
     <div class="hero-middle-deco" aria-hidden="true">
       <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 4l-6 8 6 8M16 4l6 8-6 8"/></svg>
@@ -214,7 +180,7 @@
       <div class="work-slide work-slide-intro">
         <h2 class="section-title" data-i18n="work.title">Work</h2>
         <p class="work-intro-text">A couple of projects, shown the way they actually run — not just a screenshot. Live sites you can click through, built end to end: design, code, and deployment.</p>
-        <p class="work-intro-count">2 live projects</p>
+        <p class="work-intro-count">3 live projects</p>
         <button type="button" class="work-nav-hint" data-work-next>Next ↗</button>
       </div>
 
@@ -261,12 +227,37 @@
         </a>
       </div>
 
+      <div class="work-slide">
+        <div class="work-slide-text">
+          <p class="project-tag">About &amp; background</p>
+          <h3>The Long Version</h3>
+          <p class="project-desc">For anyone who wants more than the portfolio shows. Background, timeline, and a way to reach me, all on one page that stays current.</p>
+          <p class="project-stack">HTML · CSS · JavaScript · Responsive layout</p>
+          <div class="project-links">
+            <a href="https://eljonenesi123.github.io/CV/" target="_blank" rel="noopener">Live site ↗</a>
+            <a href="https://github.com/eljonenesi123/CV" target="_blank" rel="noopener">Source code ↗</a>
+          </div>
+        </div>
+        <a class="device-frame device-browser" href="https://eljonenesi123.github.io/CV/" target="_blank" rel="noopener" aria-label="Open The Long Version live site">
+          <div class="device-browser-bar">
+            <span class="device-browser-dots"><i></i><i></i><i></i></span>
+            <span class="device-browser-url">eljonenesi123.github.io/CV</span>
+          </div>
+          <div class="device-browser-screen">
+            <video autoplay muted loop playsinline poster="assets/CV.png">
+              <source src="assets/CV-demo.mp4" type="video/mp4">
+            </video>
+          </div>
+        </a>
+      </div>
+
     </div>
 
     <div class="work-dots" id="work-dots">
       <button type="button" data-slide="0" class="active" aria-label="Intro"></button>
       <button type="button" data-slide="1" aria-label="Top Level Performance"></button>
       <button type="button" data-slide="2" aria-label="Just Pick Something"></button>
+      <button type="button" data-slide="3" aria-label="The Long Version"></button>
     </div>
     <button type="button" class="work-arrow work-arrow-prev" id="work-prev" aria-label="Previous">←</button>
     <button type="button" class="work-arrow work-arrow-next" id="work-next" aria-label="Next">→</button>
@@ -313,42 +304,6 @@
     </div>
   </section>
 
-  <section class="services" id="services">
-    <h2 class="section-title" data-i18n="services.title">Services</h2>
-    <p class="services-sub" data-i18n="services.sub">Pricing depends on scope — pages, features, and how sophisticated the build needs to be. This is a starting point, not a fixed menu.</p>
-
-    <div class="pricing-grid">
-      <div class="price-card">
-        <p class="price-tag" data-i18n="services.p1.tag">Landing page</p>
-        <p class="price-from">Starting at</p>
-        <p class="price-amount">€75<span data-i18n="services.from">+</span></p>
-        <p class="price-desc" data-i18n="services.p1.desc">A single, focused page — for a business, event, or launch. Fast to build, fast to load.</p>
-        <ul class="price-list">
-          <li data-i18n="services.p1.i1">Custom design, no templates</li>
-          <li data-i18n="services.p1.i2">Mobile-first, responsive layout</li>
-          <li data-i18n="services.p1.i3">Basic SEO setup</li>
-        </ul>
-        <p class="price-eta">~3–5 days</p>
-        <a href="#contact" class="btn-line price-cta">Get a quote</a>
-      </div>
-
-      <div class="price-card price-card-featured">
-        <p class="price-tag" data-i18n="services.p2.tag">Multi-page website</p>
-        <p class="price-from">Starting at</p>
-        <p class="price-amount">€100<span data-i18n="services.from">+</span></p>
-        <p class="price-desc" data-i18n="services.p2.desc">Several pages, a contact form, and content structured the way your visitors actually browse.</p>
-        <ul class="price-list">
-          <li data-i18n="services.p2.i1">Everything in Landing page</li>
-          <li data-i18n="services.p2.i2">Contact form &amp; content pages</li>
-          <li data-i18n="services.p2.i3">Multi-language support</li>
-        </ul>
-        <p class="price-eta">~1–2 weeks</p>
-        <a href="#contact" class="btn-primary price-cta">Get a quote</a>
-      </div>
-    </div>
-    <p class="price-note" data-i18n="services.note">Final price depends on number of pages, custom features, and content — I'll give you an exact quote before any work starts.</p>
-    <p class="price-more">Need something more complex — a web app, booking system, or custom tool? <a href="#contact">Let's talk</a>.</p>
-  </section>
 
   <section class="process" id="process">
     <h2 class="section-title" data-i18n="process.title">How it works</h2>
@@ -380,6 +335,42 @@
           <h3 data-i18n="process.s4.h">Launch</h3>
           <p data-i18n="process.s4.p">Your site goes live on your domain. I stay reachable after launch for fixes and small changes.</p>
         </div>
+      </div>
+    </div>
+  </section>
+  <section class="services" id="services">
+    <h2 class="section-title" data-i18n="services.title">Services</h2>
+    <p class="services-sub" data-i18n="services.sub">Prices vary by scope. This is a starting point.</p>
+
+    <div class="pricing-grid">
+      <div class="price-card">
+        <p class="price-tag" data-i18n="services.p1.tag">Landing page</p>
+        <p class="price-from">Starting at</p>
+        <p class="price-amount">€75<span data-i18n="services.from">+</span></p>
+        <p class="price-desc" data-i18n="services.p1.desc">A single, focused page — for a business, event, or launch. Fast to build, fast to load.</p>
+        <ul class="price-list">
+          <li data-i18n="services.p1.i1">Custom design, no templates</li>
+          <li data-i18n="services.p1.i2">Mobile-first, responsive layout</li>
+          <li data-i18n="services.p1.i3">Basic SEO setup</li>
+        </ul>
+        <p class="price-eta">~3–5 days</p>
+        <a href="#contact" class="btn-line price-cta">Get a quote</a>
+        <a href="https://eljonenesi123.github.io/TopLevelPerformance/" target="_blank" rel="noopener" class="price-example-link">See an example ↗</a>
+      </div>
+
+      <div class="price-card price-card-featured">
+        <p class="price-tag" data-i18n="services.p2.tag">Multi-page website</p>
+        <p class="price-from">Starting at</p>
+        <p class="price-amount">€100<span data-i18n="services.from">+</span></p>
+        <p class="price-desc" data-i18n="services.p2.desc">Several pages, a contact form, and content structured the way your visitors actually browse.</p>
+        <ul class="price-list">
+          <li data-i18n="services.p2.i1">Everything in Landing page</li>
+          <li data-i18n="services.p2.i2">Contact form &amp; content pages</li>
+          <li data-i18n="services.p2.i3">Multi-language support</li>
+        </ul>
+        <p class="price-eta">~1–2 weeks</p>
+        <a href="#contact" class="btn-primary price-cta">Get a quote</a>
+        <a href="https://eljonenesi123.github.io/MovieDecider/" target="_blank" rel="noopener" class="price-example-link">See an example ↗</a>
       </div>
     </div>
   </section>
