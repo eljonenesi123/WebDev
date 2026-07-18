@@ -220,7 +220,7 @@ if (!prefersReducedMotion && window.gsap && window.ScrollTrigger) {
 // Native CSS scroll-snap (see style.css) handles the section-to-section
 // snapping — this just adds the "text moves opposite way" motion on top.
 if (!prefersReducedMotion && window.gsap && window.ScrollTrigger) {
-  document.querySelectorAll(".hero, .work, .skills, .services, .process, .contact").forEach((section) => {
+  document.querySelectorAll(".hero, .work, .skills, .services, .process, .faq, .contact").forEach((section) => {
     const inner = section.querySelector(
       ".hero-title, .work-grid, .pricing-grid, .process-list, .contact-grid"
     );
@@ -250,7 +250,7 @@ if (!prefersReducedMotion && window.gsap && window.ScrollTrigger) {
 if (!prefersReducedMotion && !window.matchMedia("(max-width: 760px)").matches && window.gsap) {
   gsap.registerPlugin(ScrollToPlugin);
   const SLIDE_DURATION = 1.6; // seconds — increase to slow down further
-  const sections = Array.from(document.querySelectorAll(".hero, .work, .skills, .services, .process, .contact"));
+  const sections = Array.from(document.querySelectorAll(".hero, .work, .skills, .services, .process, .faq, .contact"));
   const navButtons = Array.from(document.querySelectorAll(".side-nav button"));
   let isAnimating = false;
 
