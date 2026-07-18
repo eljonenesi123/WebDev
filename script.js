@@ -526,7 +526,6 @@ document.querySelectorAll(".hero-actions a").forEach((btn) => {
 // Controlled by arrows/dots/keyboard, not wheel — avoids fighting with
 // the page's own vertical wheel-hijacking.
 (function () {
-  if (window.matchMedia("(max-width: 900px)").matches) return; // mobile: normal stacked scroll instead
   const carousel = document.getElementById("work-carousel");
   const dots = document.querySelectorAll("#work-dots button");
   const prevBtn = document.getElementById("work-prev");
