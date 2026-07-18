@@ -829,15 +829,23 @@ html[data-theme="light"] .theme-icon-moon { opacity: 0; transform: translateY(16
 .project-links a:hover { border-color: var(--accent); color: var(--accent); }
 
 @media (max-width: 900px) {
-  .work-carousel { width: 400%; height: 100vh; }
+  .work-carousel {
+    display: block;
+    width: 100%;
+    height: auto;
+    transform: none !important;
+    transition: none;
+  }
   .work-slide {
+    width: 100%;
     flex-direction: column;
-    padding: 4rem 6vw 2rem;
+    padding: 3.5rem 6vw;
     gap: 1.2rem;
-    height: 100vh;
+    height: auto;
+    min-height: 100vh;
     align-items: center;
     justify-content: center;
-    overflow-y: auto;
+    overflow-y: visible;
   }
   .work-slide-text { max-width: 100%; text-align: center; order: 2; }
   .work-slide-text .project-links { justify-content: center; }
@@ -845,10 +853,7 @@ html[data-theme="light"] .theme-icon-moon { opacity: 0; transform: translateY(16
   .device-laptop { width: 70vw; }
   .device-phone { width: 42vw; }
   .device-browser { width: 60vw; }
-  .work-arrow { width: 30px; height: 30px; font-size: 0.9rem; top: auto; bottom: 1rem; transform: none; }
-  .work-arrow-prev { left: 1rem; }
-  .work-arrow-next { right: 1rem; }
-  .work-dots { bottom: 1.1rem; }
+  .work-arrow, .work-dots, .work-nav-hint { display: none; }
 }
 
 /* ---------- SKILLS ---------- */
