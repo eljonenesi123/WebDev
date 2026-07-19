@@ -201,7 +201,7 @@ if (!prefersReducedMotion && window.gsap && window.ScrollTrigger) {
 // Native CSS scroll-snap (see style.css) handles the section-to-section
 // snapping — this just adds the "text moves opposite way" motion on top.
 if (!prefersReducedMotion && window.gsap && window.ScrollTrigger) {
-  document.querySelectorAll(".hero, .work, .skills, .services, .process, .faq, .contact").forEach((section) => {
+  document.querySelectorAll(".hero, .work, .skills, .services, .process, .estimator-section, .faq, .contact").forEach((section) => {
     const inner = section.querySelector(
       ".hero-title, .work-grid, .pricing-grid, .process-list, .contact-grid"
     );
@@ -231,7 +231,7 @@ if (!prefersReducedMotion && window.gsap && window.ScrollTrigger) {
 if (!prefersReducedMotion && !window.matchMedia("(max-width: 760px)").matches && window.gsap) {
   gsap.registerPlugin(ScrollToPlugin);
   const SLIDE_DURATION = 1.6; // seconds — increase to slow down further
-  const sections = Array.from(document.querySelectorAll(".hero, .work, .skills, .services, .process, .faq, .contact"));
+  const sections = Array.from(document.querySelectorAll(".hero, .work, .skills, .services, .process, .estimator-section, .faq, .contact"));
   const navButtons = Array.from(document.querySelectorAll(".side-nav button"));
   let isAnimating = false;
 
@@ -551,7 +551,10 @@ document.querySelectorAll(".hero-actions a").forEach((btn) => {
 // page views — clicking a contact channel, requesting a quote, viewing CV.
 const GA_MEASUREMENT_ID = "G-99LLMQ1D8E"; // <-- replace with your real ID if different
 
+let gaLoaded = false;
 function loadGoogleAnalytics() {
+  if (gaLoaded) return;
+  gaLoaded = true;
   const script = document.createElement("script");
   script.async = true;
   script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;
@@ -569,6 +572,7 @@ function trackEvent(name, params = {}) {
   const banner = document.getElementById("cookie-banner");
   const acceptBtn = document.getElementById("cookie-accept");
   const declineBtn = document.getElementById("cookie-decline");
+  const settingsBtn = document.getElementById("cookie-settings-link");
   if (!banner) return;
 
   let consent = null;
@@ -577,8 +581,7 @@ function trackEvent(name, params = {}) {
   if (consent === "granted") {
     loadGoogleAnalytics();
   } else if (consent === null) {
-    // Show banner after the boot screen dismisses, not immediately.
-    setTimeout(() => banner.classList.add("visible"), 3500);
+    setTimeout(() => banner.classList.add("visible"), 1200);
   }
 
   acceptBtn.addEventListener("click", () => {
@@ -589,13 +592,20 @@ function trackEvent(name, params = {}) {
 
   declineBtn.addEventListener("click", () => {
     try { localStorage.setItem("cookie-consent", "denied"); } catch (e) { /* ignore */ }
+    if (typeof gtag === "function") gtag('consent', 'update', { analytics_storage: 'denied' });
     banner.classList.remove("visible");
   });
 
+  // Lets a visitor change their mind anytime, not just on first visit —
+  // this is what makes the consent genuinely revisitable, not a one-shot.
+  if (settingsBtn) {
+    settingsBtn.addEventListener("click", () => banner.classList.add("visible"));
+  }
+
   // Track key conversion actions — what actually tells you if this site
   // is working, not just that someone loaded a page.
-  document.querySelectorAll(".channel-card").forEach((el) => {
-    el.addEventListener("click", () => trackEvent("contact_click", { channel: el.className.split(" ")[1] }));
+  document.querySelectorAll(".social-link").forEach((el) => {
+    el.addEventListener("click", () => trackEvent("contact_click", { channel: el.getAttribute("aria-label") }));
   });
   document.querySelectorAll(".price-cta").forEach((el) => {
     el.addEventListener("click", () => trackEvent("quote_click", { tier: el.closest(".price-card")?.querySelector(".price-tag")?.textContent }));
@@ -605,5 +615,103 @@ function trackEvent(name, params = {}) {
   });
   document.querySelectorAll('.device-frame').forEach((el) => {
     el.addEventListener("click", () => trackEvent("project_click", { project: el.getAttribute("aria-label") }));
+  });
+})();
+
+// --- Cost estimator: rough, honest ballpark based on the same pricing
+// logic as the cards above. Never claims to be a final price.
+(function () {
+  const el = document.getElementById("estimator");
+  if (!el) return;
+
+  const pagesRow = document.getElementById("estimator-pages-row");
+  const priceOut = document.getElementById("estimator-price");
+
+  const state = { type: "landing", typeBase: 75, pages: 0, extras: 0 };
+
+  function recalc() {
+    const low = state.typeBase + state.pages + state.extras;
+    const high = Math.round(low * 1.2);
+    priceOut.textContent = `€${low}–${high}`;
+  }
+
+  // Single-select groups (type, pages)
+  el.querySelectorAll('.estimator-options:not(.estimator-options-multi)').forEach((group) => {
+    const groupName = group.dataset.group;
+    group.querySelectorAll(".estimator-option").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        group.querySelectorAll(".estimator-option").forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        const price = parseInt(btn.dataset.price, 10) || 0;
+
+        if (groupName === "type") {
+          state.type = btn.dataset.value;
+          state.typeBase = price;
+          pagesRow.style.display = state.type === "multi" ? "flex" : "none";
+          if (state.type === "landing") state.pages = 0;
+        } else if (groupName === "pages") {
+          state.pages = price;
+        }
+        recalc();
+      });
+    });
+  });
+
+  // Multi-select group (extras) — toggle on/off
+  el.querySelectorAll(".estimator-options-multi .estimator-option").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      btn.classList.toggle("active");
+      let sum = 0;
+      el.querySelectorAll(".estimator-options-multi .estimator-option.active").forEach((b) => {
+        sum += parseInt(b.dataset.price, 10) || 0;
+      });
+      state.extras = sum;
+      recalc();
+    });
+  });
+
+  recalc();
+})();
+
+// --- Contact form: submit via fetch instead of a real page navigation,
+// so the visitor never leaves the site or lands on Formspree's own
+// generic "Thanks!" page. Shows an inline success/error message instead.
+(function () {
+  const form = document.getElementById("contact-form");
+  const status = document.getElementById("form-status");
+  if (!form || !status) return;
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const originalText = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Sending...";
+    status.className = "form-status";
+    status.textContent = "";
+
+    try {
+      const response = await fetch(form.action, {
+        method: "POST",
+        body: new FormData(form),
+        headers: { Accept: "application/json" }
+      });
+
+      if (response.ok) {
+        form.reset();
+        status.textContent = "Thanks — your message is on its way. I'll reply within a day or two.";
+        status.classList.add("success");
+        if (typeof trackEvent === "function") trackEvent("form_submit_success");
+      } else {
+        status.textContent = "Something went wrong sending that. Try again, or message me directly on WhatsApp.";
+        status.classList.add("error");
+      }
+    } catch (err) {
+      status.textContent = "Couldn't send that — check your connection, or message me directly on WhatsApp.";
+      status.classList.add("error");
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalText;
+    }
   });
 })();
