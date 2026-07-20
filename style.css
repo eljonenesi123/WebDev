@@ -240,7 +240,7 @@ p { margin: 0; color: var(--text-dim); }
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   text-align: left;
   gap: 3rem;
   scroll-snap-align: start;
@@ -285,7 +285,7 @@ p { margin: 0; color: var(--text-dim); }
   .hero-middle-deco { display: none; }
 }
 
-.hero-text { max-width: 560px; flex-shrink: 0; }
+.hero-text { max-width: 720px; flex-shrink: 0; }
 
 .hero-visual {
   flex: 1;
