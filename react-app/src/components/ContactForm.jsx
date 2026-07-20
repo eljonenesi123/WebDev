@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { trackEvent } from "../analytics";
 import { useTranslation } from "../i18n";
+import { asset } from "../asset";
 
 // Contact form: submits via fetch instead of a real page navigation, so the
 // visitor never leaves the site or lands on Formspree's own generic "Thanks!"
@@ -72,11 +73,11 @@ export default function ContactForm() {
         <input type="checkbox" id="cf-terms" name="Agreed" required />
         <span>
           I agree to the{" "}
-          <a href="/terms.html" target="_blank" rel="noopener">
+          <a href={asset("/terms.html")} target="_blank" rel="noopener">
             Terms &amp; Conditions
           </a>{" "}
           and{" "}
-          <a href="/privacy.html" target="_blank" rel="noopener">
+          <a href={asset("/privacy.html")} target="_blank" rel="noopener">
             Privacy Policy
           </a>{" "}
           *

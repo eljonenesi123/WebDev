@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "../i18n";
+import { asset } from "../asset";
 import HeroTitle from "./HeroTitle";
 
 const POINTS = [
@@ -22,7 +23,7 @@ export default function PhoneMock() {
 
   return (
     <div className="phone-mock">
-      <img className="phone-img" src="/assets/intro.png" alt="" loading="eager" />
+      <img className="phone-img" src={asset("/assets/intro.png")} alt="" loading="eager" />
 
       <div className="phone-topzone">
         <p className="eyebrow phone-eyebrow">{t("hero.eyebrow", "WEB DEVELOPMENT")}</p>

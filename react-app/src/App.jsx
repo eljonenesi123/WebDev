@@ -6,6 +6,7 @@ import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 import { useTranslation } from "./i18n";
 import { useCookieConsent } from "./useCookieConsent";
 import { trackEvent } from "./analytics";
+import { asset } from "./asset";
 
 import CookieBanner from "./components/CookieBanner";
 import PhoneMock from "./components/PhoneMock";
@@ -99,7 +100,7 @@ function Header({ lang, setLang, menuOpen, setMenuOpen }) {
     <header className="topbar">
       <a href="#top" className="brand">
         <span className="brand-logo">
-          <img src="/assets/LogoEE.png" alt="" />
+          <img src={asset("/assets/LogoEE.png")} alt="" />
         </span>
         Eljon Enesi
       </a>
@@ -408,7 +409,7 @@ function Footer({ onOpenCookieSettings }) {
         <div className="footer-col footer-brand-col">
           <span className="footer-brand">
             <span className="brand-logo footer-logo">
-              <img src="/assets/LogoEE.png" alt="" />
+              <img src={asset("/assets/LogoEE.png")} alt="" />
             </span>
             Eljon Enesi
           </span>
@@ -449,8 +450,8 @@ function Footer({ onOpenCookieSettings }) {
       <div className="footer-bottom">
         <span>{t("footer.loc", "Eljon Enesi")}</span>
         <div className="footer-legal-links">
-          <a href="/terms.html" target="_blank" rel="noopener">Terms</a>
-          <a href="/privacy.html" target="_blank" rel="noopener">Privacy</a>
+          <a href={asset("/terms.html")} target="_blank" rel="noopener">Terms</a>
+          <a href={asset("/privacy.html")} target="_blank" rel="noopener">Privacy</a>
           <button type="button" onClick={onOpenCookieSettings}>Cookie settings</button>
         </div>
         <a href="#top" className="back-to-top" aria-label="Back to top">↑</a>

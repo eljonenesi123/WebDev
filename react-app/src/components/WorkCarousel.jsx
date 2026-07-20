@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { trackEvent } from "../analytics";
 import { useTranslation } from "../i18n";
+import { asset } from "../asset";
 
 // Work section: horizontal mini-carousel (intro -> laptop -> phone -> browser).
 // Ported 1:1 from script.js's work-carousel IIFE: same transform-based
@@ -84,8 +85,8 @@ export default function WorkCarousel() {
             onClick={() => trackEvent("project_click", { project: "Open Top Level Performance live site" })}
           >
             <div className="device-laptop-screen">
-              <video autoPlay muted loop playsInline poster="/assets/TOP.png">
-                <source src="/assets/TOP-demo.mp4" type="video/mp4" />
+              <video autoPlay muted loop playsInline poster={asset("/assets/TOP.png")}>
+                <source src={asset("/assets/TOP-demo.mp4")} type="video/mp4" />
               </video>
             </div>
             <div className="device-laptop-hinge"></div>
@@ -123,8 +124,8 @@ export default function WorkCarousel() {
           >
             <div className="device-phone-notch"></div>
             <div className="device-phone-screen">
-              <video autoPlay muted loop playsInline poster="/assets/phone.png">
-                <source src="/assets/phone-demo.mp4" type="video/mp4" />
+              <video autoPlay muted loop playsInline poster={asset("/assets/phone.png")}>
+                <source src={asset("/assets/phone-demo.mp4")} type="video/mp4" />
               </video>
             </div>
           </a>
@@ -165,8 +166,8 @@ export default function WorkCarousel() {
               <span className="device-browser-url">eljonenesi123.github.io/CV</span>
             </div>
             <div className="device-browser-screen">
-              <video autoPlay muted loop playsInline poster="/assets/CV.png">
-                <source src="/assets/cv-demo.mp4" type="video/mp4" />
+              <video autoPlay muted loop playsInline poster={asset("/assets/CV.png")}>
+                <source src={asset("/assets/cv-demo.mp4")} type="video/mp4" />
               </video>
             </div>
           </a>

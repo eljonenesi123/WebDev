@@ -1,10 +1,12 @@
+import { asset } from "../asset";
+
 export default function CookieBanner({ visible, onAccept, onDecline }) {
   return (
     <div className={"cookie-banner" + (visible ? " visible" : "")} id="cookie-banner">
       <p>
         This site uses cookies for basic analytics — to see how many people visit and what
         they click. No personal data is sold or shared.{" "}
-        <a href="/privacy.html" target="_blank" rel="noopener">
+        <a href={asset("/privacy.html")} target="_blank" rel="noopener">
           Read the full policy ↗
         </a>
       </p>
