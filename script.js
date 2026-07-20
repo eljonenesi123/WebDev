@@ -251,7 +251,11 @@ if (!prefersReducedMotion && !window.matchMedia("(max-width: 760px)").matches &&
     gsap.to(window, {
       duration: SLIDE_DURATION,
       ease: "power2.inOut",
-      scrollTo: { y: sections[index], autoKill: false },
+      // index 0 goes to true page top (y:0), not the hero element's own
+      // offset — the header sits above hero in the document and isn't
+      // fixed, so scrolling to hero's own position hides the header
+      // above the viewport. This is the fix for that.
+      scrollTo: { y: index === 0 ? 0 : sections[index], autoKill: false },
       onComplete: () => { isAnimating = false; }
     });
   }

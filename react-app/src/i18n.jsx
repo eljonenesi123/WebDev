@@ -1,8 +1,17 @@
 // Simple i18n: EN / SQ (Albanian) / DE (German).
 // Technical terms (frontend, backend, API, CMS, SEO, PWA, i18n, etc.) are
 // intentionally left untranslated in every language.
+//
+// Ported from the original static site's i18n.js into a React context +
+// hook. Behavior preserved: translations keyed the same way, language
+// persisted to localStorage under "site-lang", <html lang="..."> kept in
+// sync, and unknown keys simply fall back to whatever JSX children/fallback
+// text was passed in (mirrors the original's "leave existing text alone if
+// key not found" behavior).
 
-const translations = {
+import { createContext, useContext, useState, useEffect, useCallback } from "react";
+
+export const translations = {
   en: {
     "nav.work": "Work",
     "nav.skills": "Skills",
@@ -19,7 +28,7 @@ const translations = {
     "hero.cta2": "See my work",
     "work.title": "Work",
     "work.p1.tag": "Movie & TV picker",
-    "work.p1.desc": "A tool for groups who can't agree on what to watch. Spin a wheel, describe a mood, or swipe through picks together. Includes four built-in games, works offline as an installable PWA, and is available in three languages.",
+    "work.p1.desc": "A tool for groups who can't agree on what to watch. Spin a wheel, describe a mood, or swipe through picks together. Includes four built-in games, works offline as an installable app, and is available in three languages.",
     "work.p2.tag": "Coaching platform",
     "work.p2.desc": "A site for a coach offering online and 1-on-1 sessions, built so a new visitor can understand the offer and book a session without friction.",
     "work.live": "Live site ↗",
@@ -184,37 +193,61 @@ const translations = {
   }
 };
 
-function applyLanguage(lang) {
-  if (!translations[lang]) lang = "en";
-  document.documentElement.lang = lang;
+const LanguageContext = createContext(null);
 
-  document.querySelectorAll("[data-i18n]").forEach((el) => {
-    const key = el.getAttribute("data-i18n");
-    const value = translations[lang][key];
-    if (value !== undefined) el.innerHTML = value;
-  });
+export function LanguageProvider({ children }) {
+  const [lang, setLangState] = useState("en");
 
-  document.querySelectorAll(".lang-btn").forEach((btn) => {
-    btn.classList.toggle("active", btn.dataset.lang === lang);
-  });
+  // On mount, restore saved language (mirrors original DOMContentLoaded logic).
+  useEffect(() => {
+    let saved = "en";
+    try {
+      saved = localStorage.getItem("site-lang") || "en";
+    } catch {
+      /* ignore */
+    }
+    if (!translations[saved]) saved = "en";
+    setLangState(saved);
+  }, []);
 
-  try {
-    localStorage.setItem("site-lang", lang);
-  } catch (e) {
-    /* localStorage unavailable — language just won't persist */
-  }
+  // Keep <html lang="..."> in sync, same as the original applyLanguage().
+  useEffect(() => {
+    document.documentElement.lang = lang;
+  }, [lang]);
+
+  const setLang = useCallback((next) => {
+    const safe = translations[next] ? next : "en";
+    setLangState(safe);
+    try {
+      localStorage.setItem("site-lang", safe);
+    } catch {
+      /* localStorage unavailable — language just won't persist */
+    }
+  }, []);
+
+  return (
+    <LanguageContext.Provider value={{ lang, setLang }}>
+      {children}
+    </LanguageContext.Provider>
+  );
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  let savedLang = "en";
-  try {
-    savedLang = localStorage.getItem("site-lang") || "en";
-  } catch (e) {
-    /* ignore */
-  }
-  applyLanguage(savedLang);
+// useTranslation: t(key, fallback) looks up the current language's string;
+// if the key isn't found (same as the original's "value !== undefined"
+// guard) it returns the fallback (usually the original hardcoded English
+// JSX text) instead, so nothing ever renders blank.
+export function useTranslation() {
+  const ctx = useContext(LanguageContext);
+  if (!ctx) throw new Error("useTranslation must be used within a LanguageProvider");
+  const { lang, setLang } = ctx;
 
-  document.querySelectorAll(".lang-btn").forEach((btn) => {
-    btn.addEventListener("click", () => applyLanguage(btn.dataset.lang));
-  });
-});
+  const t = useCallback(
+    (key, fallback) => {
+      const value = translations[lang]?.[key];
+      return value !== undefined ? value : fallback;
+    },
+    [lang]
+  );
+
+  return { t, lang, setLang };
+}
