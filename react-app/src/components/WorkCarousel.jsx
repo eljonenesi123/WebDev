@@ -89,14 +89,16 @@ export default function WorkCarousel() {
       >
         <div className="work-slide work-slide-intro">
           <h2 className="section-title">{t("work.title", "Work")}</h2>
-          <p className="work-intro-text">
-            A couple of projects, shown the way they actually run — not just a screenshot. Live
-            sites you can click through, built end to end: design, code, and deployment.
-          </p>
-          <p className="work-intro-count">3 live projects</p>
-          <button type="button" className="work-nav-hint" onClick={() => goTo(current + 1)}>
-            Next ↗
-          </button>
+          <div className="work-intro-panel">
+            <p className="work-intro-text">
+              A couple of projects, shown the way they actually run — not just a screenshot. Live
+              sites you can click through, built end to end: design, code, and deployment.
+            </p>
+            <p className="work-intro-count">3 live projects</p>
+            <button type="button" className="work-nav-hint" onClick={() => goTo(current + 1)}>
+              Next ↗
+            </button>
+          </div>
         </div>
 
         <div className={"work-slide" + (current === 1 ? " is-active" : "")}>
