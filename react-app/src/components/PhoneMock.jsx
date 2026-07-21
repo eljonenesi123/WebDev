@@ -9,6 +9,13 @@ const POINTS = [
   { key: "hero.point3", fallback: "A site you'll actually be proud to share", icon: "♥" },
 ];
 
+const ANNOTATIONS = [
+  { pos: "tl", title: "Custom Web Development", sub: "Blazing-fast, secure builds" },
+  { pos: "bl", title: "UI/UX Design", sub: "Interfaces that elevate your brand" },
+  { pos: "tr", title: "E-Commerce", sub: "Storefronts built to convert" },
+  { pos: "br", title: "Brand Identity & Strategy", sub: "Visual systems, built to last" },
+];
+
 // The hero's whole payload — headline, selling points, CTAs — lives inside
 // the screen area of the phone photo (assets/intro.png), positioned as %
 // zones matching that photo's baked-in status bar / dot row / card shapes.
@@ -72,14 +79,15 @@ export default function PhoneMock() {
         </div>
       </div>
 
-      <div className="phone-anno phone-anno-1" aria-hidden="true">
-        <span className="phone-anno-line"></span>
-        <span>Content adapts per client</span>
-      </div>
-      <div className="phone-anno phone-anno-2" aria-hidden="true">
-        <span>Real, working buttons</span>
-        <span className="phone-anno-line"></span>
-      </div>
+      {ANNOTATIONS.map((a) => (
+        <div className={`phone-anno phone-anno-${a.pos}`} key={a.pos} aria-hidden="true">
+          <span className="phone-anno-line"></span>
+          <span className="phone-anno-text">
+            <strong>{a.title}</strong>
+            <span className="phone-anno-sub">{a.sub}</span>
+          </span>
+        </div>
+      ))}
     </>
   );
 }

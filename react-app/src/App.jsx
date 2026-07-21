@@ -16,62 +16,6 @@ import ContactForm from "./components/ContactForm";
 
 gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
-// --- Background floating tech icons (decorative, whole-site backdrop). ---
-function BgIcons() {
-  return (
-    <div className="bg-icons" aria-hidden="true">
-      <svg className="bg-icon bg-icon-1" viewBox="0 0 64 56" xmlns="http://www.w3.org/2000/svg">
-        <rect x="4" y="4" width="56" height="36" rx="3" fill="none" stroke="#5a7ff0" strokeWidth="2.4" />
-        <path d="M30 15 L20 22 L30 29" stroke="#5a7ff0" strokeWidth="2.2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-        <path d="M38 15 L48 22 L38 29" stroke="#5a7ff0" strokeWidth="2.2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-        <rect x="26" y="40" width="12" height="6" fill="none" stroke="#5a7ff0" strokeWidth="2.4" />
-        <rect x="14" y="46" width="36" height="4" rx="2" fill="none" stroke="#5a7ff0" strokeWidth="2.4" />
-      </svg>
-
-      <svg className="bg-icon bg-icon-2" viewBox="0 0 48 32" xmlns="http://www.w3.org/2000/svg">
-        <text x="24" y="24" textAnchor="middle" fontFamily="JetBrains Mono, monospace" fontSize="24" fontWeight="700" fill="#5a7ff0">&lt;/&gt;</text>
-      </svg>
-
-      <svg className="bg-icon bg-icon-3" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
-        <rect x="2" y="2" width="36" height="36" rx="6" fill="none" stroke="#e5b95a" strokeWidth="2.4" />
-        <text x="20" y="26" textAnchor="middle" fontFamily="JetBrains Mono, monospace" fontSize="12" fontWeight="700" fill="#e5b95a">JS</text>
-      </svg>
-
-      <svg className="bg-icon bg-icon-4" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
-        <rect x="2" y="2" width="36" height="36" rx="6" fill="none" stroke="#7ec98f" strokeWidth="2.4" />
-        <text x="20" y="26" textAnchor="middle" fontFamily="JetBrains Mono, monospace" fontSize="11" fontWeight="700" fill="#7ec98f">CSS</text>
-      </svg>
-
-      <svg className="bg-icon bg-icon-5" viewBox="0 0 64 56" xmlns="http://www.w3.org/2000/svg">
-        <rect x="4" y="4" width="56" height="36" rx="3" fill="none" stroke="#5a7ff0" strokeWidth="2.4" />
-        <path d="M30 15 L20 22 L30 29" stroke="#5a7ff0" strokeWidth="2.2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-        <path d="M38 15 L48 22 L38 29" stroke="#5a7ff0" strokeWidth="2.2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-        <rect x="26" y="40" width="12" height="6" fill="none" stroke="#5a7ff0" strokeWidth="2.4" />
-        <rect x="14" y="46" width="36" height="4" rx="2" fill="none" stroke="#5a7ff0" strokeWidth="2.4" />
-      </svg>
-
-      <svg className="bg-icon bg-icon-6" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
-        <rect x="2" y="2" width="36" height="36" rx="6" fill="none" stroke="#e5605a" strokeWidth="2.4" />
-        <text x="20" y="26" textAnchor="middle" fontFamily="JetBrains Mono, monospace" fontSize="11" fontWeight="700" fill="#e5605a">API</text>
-      </svg>
-
-      <svg className="bg-icon bg-icon-7" viewBox="0 0 48 32" xmlns="http://www.w3.org/2000/svg">
-        <text x="24" y="24" textAnchor="middle" fontFamily="JetBrains Mono, monospace" fontSize="24" fontWeight="700" fill="#5a7ff0">{"{ }"}</text>
-      </svg>
-
-      <svg className="bg-icon bg-icon-8" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
-        <rect x="2" y="2" width="36" height="36" rx="6" fill="none" stroke="#e5825a" strokeWidth="2.4" />
-        <text x="20" y="26" textAnchor="middle" fontFamily="JetBrains Mono, monospace" fontSize="10" fontWeight="700" fill="#e5825a">HTML</text>
-      </svg>
-
-      <svg className="bg-icon bg-icon-9" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
-        <rect x="2" y="2" width="36" height="36" rx="6" fill="none" stroke="#7ec98f" strokeWidth="2.4" />
-        <text x="20" y="26" textAnchor="middle" fontFamily="JetBrains Mono, monospace" fontSize="9" fontWeight="700" fill="#7ec98f">NODE</text>
-      </svg>
-    </div>
-  );
-}
-
 // --- Topbar: brand, desktop nav, language switch, mobile menu toggle+panel. ---
 function Header({ lang, setLang, menuOpen, setMenuOpen }) {
   const { t } = useTranslation();
@@ -176,6 +120,11 @@ function SideNav() {
 function Hero() {
   return (
     <section className="hero hero-phone-only">
+      <div className="hero-hook">
+        <span className="hero-hook-top">This isn't</span>
+        <span className="hero-hook-script">"just a website"</span>
+        <p className="hero-hook-sub">It's a tool built to bring you real clients.</p>
+      </div>
       <div className="hero-visual">
         <PhoneMock />
       </div>
@@ -231,7 +180,7 @@ function Skills() {
           <span>Git</span>
         </div>
         <div className="skill-item">
-          <svg viewBox="0 0 24 24" width="40" height="40" fill="#e2e2e6"><path d="M12 .5A11.5 11.5 0 0 0 .5 12c0 5.1 3.3 9.4 7.9 11 .6.1.8-.3.8-.6v-2.2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.7-1.3-1.7-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.7 1.3 3.4 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.8 0-1.3.4-2.3 1.2-3.2-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.6.2 2.8.1 3.1.8.9 1.2 1.9 1.2 3.2 0 4.5-2.7 5.5-5.3 5.8.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5z" /></svg>
+          <svg viewBox="0 0 24 24" width="40" height="40" fill="currentColor"><path d="M12 .5A11.5 11.5 0 0 0 .5 12c0 5.1 3.3 9.4 7.9 11 .6.1.8-.3.8-.6v-2.2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.7-1.3-1.7-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.7 1.3 3.4 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.8 0-1.3.4-2.3 1.2-3.2-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.6.2 2.8.1 3.1.8.9 1.2 1.9 1.2 3.2 0 4.5-2.7 5.5-5.3 5.8.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5z" /></svg>
           <span>GitHub</span>
         </div>
       </div>
@@ -647,8 +596,6 @@ export default function App() {
 
       <div className="scroll-progress" aria-hidden="true" ref={progressRef}></div>
       <div className="cursor-spotlight" aria-hidden="true" ref={spotlightRef}></div>
-
-      <BgIcons />
 
       <Header lang={lang} setLang={setLang} menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <SideNav />
