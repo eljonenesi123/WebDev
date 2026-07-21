@@ -832,6 +832,104 @@ p { margin: 0; color: var(--text-dim); }
   background: var(--bg);
 }
 
+/* ---------- HERO SKETCH BADGES ---------- */
+/* Hand-drawn-style callouts flanking the phone: a wobbly SVG oval (a hand-
+   adjusted bezier path, not a perfect ellipse) behind a handwriting-font
+   claim, plus small sparkle marks — like a pencil-annotated screenshot. */
+
+.sketch-badges {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.sketch-badge {
+  position: absolute;
+  width: 190px;
+  padding: 1.1rem 0.7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  opacity: 0;
+  animation: sketchIn 0.6s ease both;
+}
+.sketch-badge-1 { top: 8%; right: calc(50% + 250px); transform: rotate(-4deg); animation-delay: 1.7s; }
+.sketch-badge-2 { top: 8%; left: calc(50% + 250px); transform: rotate(3deg); animation-delay: 1.9s; }
+.sketch-badge-3 { top: 46%; right: calc(50% + 260px); transform: rotate(3deg); animation-delay: 2.1s; }
+.sketch-badge-4 { top: 46%; left: calc(50% + 260px); transform: rotate(-3deg); animation-delay: 2.3s; }
+
+.sketch-oval {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: var(--text);
+  stroke-width: 2.5px;
+  stroke-linecap: round;
+  opacity: 0.8;
+}
+.sketch-text {
+  position: relative;
+  font-family: "Architects Daughter", cursive;
+  font-size: 0.98rem;
+  line-height: 1.4;
+  color: var(--text);
+}
+.sketch-text strong { font-weight: 400; }
+
+.sketch-sparkle {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  fill: var(--text);
+  opacity: 0;
+  animation: sketchSparkle 3s ease-in-out infinite;
+}
+.sketch-sparkle-1 { top: 2%; left: calc(50% - 60px); animation-delay: 2.3s; }
+.sketch-sparkle-2 { top: 3%; left: calc(50% + 40px); animation-delay: 2.5s; }
+.sketch-sparkle-3 { top: 40%; left: calc(50% - 190px); animation-delay: 2.7s; }
+.sketch-sparkle-4 { top: 40%; left: calc(50% + 170px); animation-delay: 2.9s; }
+
+@keyframes sketchIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes sketchSparkle {
+  0% { opacity: 0; transform: scale(0.5) rotate(0deg); }
+  15% { opacity: 1; transform: scale(1) rotate(0deg); }
+  50% { transform: scale(1.15) rotate(10deg); }
+  100% { opacity: 1; transform: scale(1) rotate(0deg); }
+}
+
+/* Below the width where flanking the phone has room, stack the badges in a
+   simple centered column underneath it instead. Badge stays position:relative
+   (not static) so .sketch-oval's position:absolute+inset:0 still anchors to
+   its own badge box instead of expanding to the nearest positioned ancestor. */
+@media (max-width: 1500px) {
+  .hero-visual { flex-direction: column; gap: 1.6rem; }
+  .sketch-badges {
+    position: static;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    padding-bottom: 1rem;
+  }
+  .sketch-badge {
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+    width: 160px;
+    transform: none !important;
+  }
+  .sketch-sparkle { display: none; }
+}
+
 /* ---------- WORK (horizontal mini-carousel) ---------- */
 
 .work { padding-left: 0; padding-right: 0; position: relative; overflow: hidden; }

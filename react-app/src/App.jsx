@@ -10,6 +10,7 @@ import { asset } from "./asset";
 
 import CookieBanner from "./components/CookieBanner";
 import PhoneMock from "./components/PhoneMock";
+import SketchBadges from "./components/SketchBadges";
 import WorkCarousel from "./components/WorkCarousel";
 import Estimator from "./components/Estimator";
 import ContactForm from "./components/ContactForm";
@@ -130,6 +131,7 @@ function Hero() {
       </div>
       <div className="hero-visual">
         <PhoneMock />
+        <SketchBadges />
       </div>
     </section>
   );
