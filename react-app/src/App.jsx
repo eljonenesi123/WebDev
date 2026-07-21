@@ -12,6 +12,7 @@ import CookieBanner from "./components/CookieBanner";
 import PhoneMock from "./components/PhoneMock";
 import SketchBadges from "./components/SketchBadges";
 import WorkCarousel from "./components/WorkCarousel";
+import ProcessPath from "./components/ProcessPath";
 import Estimator from "./components/Estimator";
 import ContactForm from "./components/ContactForm";
 
@@ -188,32 +189,6 @@ function Skills() {
           <svg viewBox="0 0 24 24" width="40" height="40" fill="currentColor"><path d="M12 .5A11.5 11.5 0 0 0 .5 12c0 5.1 3.3 9.4 7.9 11 .6.1.8-.3.8-.6v-2.2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.7-1.3-1.7-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.7 1.3 3.4 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.8 0-1.3.4-2.3 1.2-3.2-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.6.2 2.8.1 3.1.8.9 1.2 1.9 1.2 3.2 0 4.5-2.7 5.5-5.3 5.8.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5z" /></svg>
           <span>GitHub</span>
         </div>
-      </div>
-    </section>
-  );
-}
-
-function Process() {
-  const { t } = useTranslation();
-  const steps = [
-    { h: "process.s1.h", hd: "Brief", p: "process.s1.p", pd: "You tell me what you need and who it's for. I ask questions until the scope, pages, and features are clear, then send you a fixed quote before anything starts." },
-    { h: "process.s2.h", hd: "Domain & hosting", p: "process.s2.p", pd: "You purchase your own domain name (I'll point you to a registrar and help pick one if needed) — this keeps it fully in your name and under your control. I handle connecting it to the finished site." },
-    { h: "process.s3.h", hd: "Build", p: "process.s3.p", pd: "I build it, and you see progress along the way — not just a reveal at the end." },
-    { h: "process.s4.h", hd: "Launch", p: "process.s4.p", pd: "Your site goes live on your domain. I stay reachable after launch for fixes and small changes." },
-  ];
-  return (
-    <section className="process" id="process">
-      <h2 className="section-title">{t("process.title", "How it works")}</h2>
-      <div className="process-list">
-        {steps.map((s, i) => (
-          <div className="process-step" key={s.h}>
-            <span className="step-num">{String(i + 1).padStart(2, "0")}</span>
-            <div>
-              <h3>{t(s.h, s.hd)}</h3>
-              <p>{t(s.p, s.pd)}</p>
-            </div>
-          </div>
-        ))}
       </div>
     </section>
   );
@@ -607,7 +582,7 @@ export default function App() {
         <Hero />
         <WorkCarousel />
         <Skills />
-        <Process />
+        <ProcessPath />
         <Services />
         <Estimator />
         <Faq />
