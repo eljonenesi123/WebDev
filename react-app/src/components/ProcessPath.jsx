@@ -23,12 +23,26 @@ export default function ProcessPath() {
   const touchStartY = useRef(0);
   const pathRef = useRef(null);
   const [pathLen, setPathLen] = useState(0);
+  const mobilePathRef = useRef(null);
+  const [mobilePathLen, setMobilePathLen] = useState(0);
+  const pointRefs = useRef([]);
+  const isMobileRef = useRef(false);
 
   useEffect(() => {
-    if (pathRef.current) setPathLen(pathRef.current.getTotalLength());
+    isMobileRef.current = window.matchMedia("(max-width: 700px)").matches;
   }, []);
 
   useEffect(() => {
+    if (pathRef.current) setPathLen(pathRef.current.getTotalLength());
+    if (mobilePathRef.current) setMobilePathLen(mobilePathRef.current.getTotalLength());
+  }, []);
+
+  // Desktop: the section fills the screen and wheel/swipe steps through it
+  // like a slide deck. Mobile instead flows normally down the page (see the
+  // other effect below) — cramming the S-curve into a small screen made the
+  // step text overlap, so mobile trades the hijack for a plain scroll reveal.
+  useEffect(() => {
+    if (isMobileRef.current) return;
     const el = sectionRef.current;
     if (!el) return;
     const observer = new IntersectionObserver(
@@ -39,7 +53,28 @@ export default function ProcessPath() {
     return () => observer.disconnect();
   }, []);
 
+  // Mobile: each step (and its slice of the spine) reveals as it naturally
+  // scrolls into view — no hijacking, the page just keeps scrolling.
   useEffect(() => {
+    if (!isMobileRef.current) return;
+    const els = pointRefs.current.filter(Boolean);
+    if (!els.length) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          const i = Number(entry.target.dataset.index);
+          setStep((s) => Math.max(s, i + 1));
+        });
+      },
+      { threshold: 0.4 }
+    );
+    els.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (isMobileRef.current) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     function tryStep(forward) {
@@ -98,7 +133,7 @@ export default function ProcessPath() {
       <h2 className="section-title">{t("process.title", "How it works")}</h2>
       <div className="process-path">
         <svg className="process-path-svg" viewBox="0 0 300 900" preserveAspectRatio="none" aria-hidden="true">
-          <filter id="pencilRough">
+          <filter id="pencilRough" x="-50%" y="-5%" width="200%" height="110%">
             <feTurbulence type="fractalNoise" baseFrequency="0.014 0.03" numOctaves="2" seed="7" result="n" />
             <feDisplacementMap in="SourceGraphic" in2="n" scale="7" />
           </filter>
@@ -114,9 +149,23 @@ export default function ProcessPath() {
             style={{ opacity: step >= TOTAL ? 1 : 0 }}
           />
         </svg>
+        <svg className="process-path-svg-mobile" viewBox="0 0 40 1000" preserveAspectRatio="none" aria-hidden="true">
+          <filter id="pencilRoughV" filterUnits="userSpaceOnUse" x="-20" y="-10" width="80" height="1020">
+            <feTurbulence type="fractalNoise" baseFrequency="0.014 0.03" numOctaves="2" seed="7" result="n" />
+            <feDisplacementMap in="SourceGraphic" in2="n" scale="7" />
+          </filter>
+          <path
+            ref={mobilePathRef}
+            className="process-path-line"
+            d="M20,10 L20,990"
+            style={{ filter: "url(#pencilRoughV)", strokeDasharray: mobilePathLen, strokeDashoffset: mobilePathLen - (mobilePathLen * step) / TOTAL }}
+          />
+        </svg>
         {STEPS.map((s, i) => (
           <div
             key={s.h}
+            ref={(el) => (pointRefs.current[i] = el)}
+            data-index={i}
             className={`process-point process-point-${i + 1} process-point-${s.side}` + (step > i ? " is-revealed" : "")}
           >
             <span className="step-num">{String(i + 1).padStart(2, "0")}</span>

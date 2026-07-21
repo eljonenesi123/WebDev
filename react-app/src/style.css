@@ -1653,10 +1653,37 @@ p { margin: 0; color: var(--text-dim); }
   margin-bottom: 0.35rem;
 }
 
+.process-path-svg-mobile { display: none; }
+
 @media (max-width: 700px) {
-  .process-point { width: min(84px, 21vw); }
-  .process-point-left { right: 74%; }
-  .process-point-right { left: 74%; }
+  .process-path {
+    height: auto;
+    max-width: 480px;
+    padding-left: 2.2rem;
+    text-align: left;
+  }
+  .process-path-svg { display: none; }
+  .process-path-svg-mobile {
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0.2rem;
+    bottom: 0.2rem;
+    width: 1.4rem;
+    height: calc(100% - 0.4rem);
+    overflow: visible;
+  }
+  .process-point {
+    position: static;
+    width: 100%;
+    right: auto;
+    left: auto;
+    top: auto;
+    margin: 0 0 2.5rem;
+    transform: translateY(16px);
+  }
+  .process-point.is-revealed { transform: translateY(0); }
+  .process-point:last-child { margin-bottom: 0; }
 }
 
 /* ---------- CONTACT (form-first) ---------- */
