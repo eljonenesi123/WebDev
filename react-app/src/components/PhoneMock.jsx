@@ -9,13 +9,6 @@ const POINTS = [
   { key: "hero.point3", fallback: "A site you'll actually be proud to share", icon: "♥" },
 ];
 
-const ANNOTATIONS = [
-  { pos: "tl", title: "Custom Web Development", sub: "Blazing-fast, secure builds" },
-  { pos: "bl", title: "UI/UX Design", sub: "Interfaces that elevate your brand" },
-  { pos: "tr", title: "E-Commerce", sub: "Storefronts built to convert" },
-  { pos: "br", title: "Brand Identity & Strategy", sub: "Visual systems, built to last" },
-];
-
 // The hero's whole payload — headline, selling points, CTAs — lives inside
 // the screen area of the phone photo (assets/intro.png), positioned as %
 // zones matching that photo's baked-in status bar / dot row / card shapes.
@@ -54,40 +47,28 @@ export default function PhoneMock() {
   }, []);
 
   return (
-    <>
-      <div className="phone-tilt" ref={tiltRef}>
-        <div className="phone-mock">
-          <img className="phone-img" src={asset("/assets/intro.png")} alt="" loading="eager" />
+    <div className="phone-tilt" ref={tiltRef}>
+      <div className="phone-mock">
+        <img className="phone-img" src={asset("/assets/intro.png")} alt="" loading="eager" />
 
-          <div className="phone-topzone">
-            <p className="eyebrow phone-eyebrow">{t("hero.eyebrow", "WEB DEVELOPMENT")}</p>
-            <HeroTitle text={t("hero.title", "A website that makes clients trust your brand.")} />
-          </div>
+        <div className="phone-topzone">
+          <p className="eyebrow phone-eyebrow">{t("hero.eyebrow", "WEB DEVELOPMENT")}</p>
+          <HeroTitle text={t("hero.title", "A website that makes clients trust your brand.")} />
+        </div>
 
-          <p className="phone-caption" key={active}>
-            {t(POINTS[active].key, POINTS[active].fallback)}
-          </p>
+        <p className="phone-caption" key={active}>
+          {t(POINTS[active].key, POINTS[active].fallback)}
+        </p>
 
-          <div className="phone-card-zone">
-            <a href="#contact" className="phone-btn phone-btn-primary">
-              {t("hero.cta1", "Get in touch")}
-            </a>
-            <a href="#work" className="phone-btn phone-btn-line">
-              {t("hero.cta2", "See my work")}
-            </a>
-          </div>
+        <div className="phone-card-zone">
+          <a href="#contact" className="phone-btn phone-btn-primary">
+            {t("hero.cta1", "Get in touch")}
+          </a>
+          <a href="#work" className="phone-btn phone-btn-line">
+            {t("hero.cta2", "See my work")}
+          </a>
         </div>
       </div>
-
-      {ANNOTATIONS.map((a) => (
-        <div className={`phone-anno phone-anno-${a.pos}`} key={a.pos} aria-hidden="true">
-          <span className="phone-anno-line"></span>
-          <span className="phone-anno-text">
-            <strong>{a.title}</strong>
-            <span className="phone-anno-sub">{a.sub}</span>
-          </span>
-        </div>
-      ))}
-    </>
+    </div>
   );
 }

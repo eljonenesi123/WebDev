@@ -43,9 +43,7 @@ function Header({ lang, setLang, menuOpen, setMenuOpen }) {
   return (
     <header className="topbar">
       <a href="#top" className="brand">
-        <span className="brand-logo">
-          <img src={asset("/assets/LogoEE.png")} alt="" />
-        </span>
+        <span className="brand-mark" aria-hidden="true">EE</span>
         Eljon Enesi
       </a>
 
@@ -121,9 +119,14 @@ function Hero() {
   return (
     <section className="hero hero-phone-only">
       <div className="hero-hook">
-        <span className="hero-hook-top">This isn't</span>
-        <span className="hero-hook-script">"just a website"</span>
-        <p className="hero-hook-sub">It's a tool built to bring you real clients.</p>
+        <p className="hero-hook-line">Your brand deserves</p>
+        <p className="hero-hook-mark-wrap">
+          <span className="hero-hook-mark" aria-hidden="true"></span>
+          <span className="hero-hook-mark-text">a better website</span>
+          <span className="hero-hook-dot hero-hook-dot-tl" aria-hidden="true"></span>
+          <span className="hero-hook-dot hero-hook-dot-br" aria-hidden="true"></span>
+        </p>
+        <p className="hero-hook-sub">And this is where that begins.</p>
       </div>
       <div className="hero-visual">
         <PhoneMock />
@@ -357,9 +360,7 @@ function Footer({ onOpenCookieSettings }) {
       <div className="footer-top">
         <div className="footer-col footer-brand-col">
           <span className="footer-brand">
-            <span className="brand-logo footer-logo">
-              <img src={asset("/assets/LogoEE.png")} alt="" />
-            </span>
+            <span className="brand-mark footer-mark" aria-hidden="true">EE</span>
             Eljon Enesi
           </span>
           <p>Web developer building sites and small web apps for businesses, coaches, and independent projects.</p>

@@ -17,6 +17,7 @@ export default function WorkCarousel() {
   const sectionRef = useRef(null);
   const isActiveRef = useRef(false);
   const isSlidingRef = useRef(false);
+  const laptopTiltRef = useRef(null);
 
   const goTo = (i) => setCurrent(Math.max(0, Math.min(TOTAL - 1, i)));
 
@@ -79,6 +80,28 @@ export default function WorkCarousel() {
     return () => window.removeEventListener("wheel", onWheel, { capture: true });
   }, [current]);
 
+  // Cursor-follow tilt on the laptop, same technique as the hero phone's tilt.
+  useEffect(() => {
+    if (window.matchMedia("(max-width: 1000px), (prefers-reduced-motion: reduce)").matches) return;
+    const el = laptopTiltRef.current;
+    if (!el) return;
+    function onMove(e) {
+      const rect = el.getBoundingClientRect();
+      const px = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
+      const py = Math.min(1, Math.max(0, (e.clientY - rect.top) / rect.height));
+      el.style.transform = `rotateX(${(0.5 - py) * 10}deg) rotateY(${(px - 0.5) * 10}deg)`;
+    }
+    function onLeave() {
+      el.style.transform = "rotateX(0deg) rotateY(0deg)";
+    }
+    window.addEventListener("pointermove", onMove);
+    el.addEventListener("pointerleave", onLeave);
+    return () => {
+      window.removeEventListener("pointermove", onMove);
+      el.removeEventListener("pointerleave", onLeave);
+    };
+  }, []);
+
   return (
     <section className="work" id="work" ref={sectionRef}>
       <div
@@ -132,22 +155,24 @@ export default function WorkCarousel() {
               <cite>Jeart Kumi, Top Level Performance</cite>
             </blockquote>
           </div>
-          <a
-            className="device-frame device-laptop"
-            href="https://eljonenesi123.github.io/TopLevelPerformance/"
-            target="_blank"
-            rel="noopener"
-            aria-label="Open Top Level Performance live site"
-            onClick={() => trackEvent("project_click", { project: "Open Top Level Performance live site" })}
-          >
-            <div className="device-laptop-screen">
-              <video autoPlay muted loop playsInline poster={asset("/assets/TOP.png")}>
-                <source src={asset("/assets/TOP-demo.mp4")} type="video/mp4" />
-              </video>
-            </div>
-            <div className="device-laptop-hinge"></div>
-            <div className="device-laptop-keyboard"></div>
-          </a>
+          <div className="device-laptop-tilt" ref={laptopTiltRef}>
+            <a
+              className="device-frame device-laptop"
+              href="https://eljonenesi123.github.io/TopLevelPerformance/"
+              target="_blank"
+              rel="noopener"
+              aria-label="Open Top Level Performance live site"
+              onClick={() => trackEvent("project_click", { project: "Open Top Level Performance live site" })}
+            >
+              <img className="device-laptop-photo" src={asset("/assets/laptop.png")} alt="" />
+              <div className="device-laptop-screen-clip">
+                <video autoPlay muted loop playsInline poster={asset("/assets/TOP.png")}>
+                  <source src={asset("/assets/TOP-demo.mp4")} type="video/mp4" />
+                </video>
+                <div className="device-laptop-sheen" aria-hidden="true"></div>
+              </div>
+            </a>
+          </div>
         </div>
 
         <div className={"work-slide" + (current === 2 ? " is-active" : "")}>

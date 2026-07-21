@@ -76,31 +76,35 @@ p { margin: 0; color: var(--text-dim); }
 }
 
 .brand {
-  font-family: var(--mono);
-  font-weight: 600;
-  font-size: 0.95rem;
+  font-family: var(--sans);
+  font-weight: 800;
+  font-size: 1.05rem;
   display: flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: 0.65rem;
+  letter-spacing: -0.01em;
 }
-.brand-logo {
-  width: 30px;
-  height: 30px;
-  display: block;
-  overflow: hidden;
-  border-radius: 6px;
-}
-.brand-logo img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transform: scale(1.35);
+.brand-mark {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--text);
+  color: var(--bg);
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 700;
+  font-size: 0.92rem;
+  border-radius: 8px;
 }
 
 .topnav { display: flex; gap: 1.8rem; }
 .topnav a {
   font-family: var(--mono);
   font-size: 0.82rem;
+  font-weight: 700;
   color: var(--text-dim);
   transition: color 0.15s ease;
 }
@@ -294,38 +298,72 @@ p { margin: 0; color: var(--text-dim); }
   align-items: center;
   text-align: center;
   flex-shrink: 0;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.8rem;
   opacity: 0;
   animation: heroHookIn 0.8s ease 0.1s both;
 }
-.hero-hook-top {
+.hero-hook-line {
   font-family: var(--sans);
   font-weight: 800;
-  font-size: clamp(0.95rem, 2vw, 1.3rem);
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--text-dim);
-}
-.hero-hook-script {
-  font-family: "Caveat", cursive;
-  font-weight: 700;
-  font-size: clamp(2.6rem, 7vw, 4.6rem);
-  line-height: 1;
+  font-size: clamp(1.9rem, 4.4vw, 3rem);
+  line-height: 1.15;
   color: var(--text);
-  margin-top: -0.3rem;
 }
+.hero-hook-mark-wrap {
+  position: relative;
+  display: inline-block;
+  margin: 0.3rem 0 0;
+  padding: 0 0.1em;
+}
+.hero-hook-mark {
+  position: absolute;
+  inset: 6% 0;
+  background: var(--text);
+  transform-origin: left center;
+  transform: scaleX(0);
+  animation: hookMarkIn 0.65s cubic-bezier(0.65, 0, 0.35, 1) 0.7s forwards;
+}
+.hero-hook-mark-text {
+  position: relative;
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 700;
+  font-size: clamp(1.9rem, 4.4vw, 3rem);
+  line-height: 1.15;
+  color: var(--bg);
+  padding: 0 0.15em;
+}
+.hero-hook-dot {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--text);
+  opacity: 0;
+  animation: hookDotIn 0.4s ease 1.25s forwards;
+}
+.hero-hook-dot-tl { top: -6px; left: -6px; }
+.hero-hook-dot-br { bottom: -6px; right: -6px; }
 .hero-hook-sub {
   font-family: var(--mono);
   font-size: 0.92rem;
   color: var(--text-dim);
-  margin-top: 0.8rem;
+  margin-top: 1rem;
 }
 @keyframes heroHookIn {
   from { opacity: 0; transform: translateY(-12px); }
   to { opacity: 1; transform: translateY(0); }
 }
+@keyframes hookMarkIn {
+  to { transform: scaleX(1); }
+}
+@keyframes hookDotIn {
+  from { opacity: 0; transform: scale(0); }
+  to { opacity: 1; transform: scale(1); }
+}
 @media (max-width: 700px) {
-  .hero-hook-script { font-size: clamp(2.2rem, 11vw, 3.2rem); }
+  .hero-hook-line, .hero-hook-mark-text { font-size: clamp(1.5rem, 8vw, 2.1rem); }
+  .hero-hook-dot { width: 9px; height: 9px; }
 }
 
 .hero-visual {
@@ -480,86 +518,6 @@ p { margin: 0; color: var(--text-dim); }
 }
 @media (max-width: 700px) {
   .phone-mock { height: min(78vh, 620px); }
-}
-
-/* ---------- HERO PHONE ANNOTATIONS ---------- */
-
-.phone-anno {
-  position: absolute;
-  display: flex;
-  align-items: flex-start;
-  gap: 0.65rem;
-  max-width: 250px;
-  opacity: 0;
-  animation: phoneAnnoIn 0.7s ease both;
-  pointer-events: none;
-}
-.phone-anno-line {
-  height: 1px;
-  width: 26px;
-  flex-shrink: 0;
-  margin-top: 0.6rem;
-  background: var(--accent);
-  opacity: 0.45;
-}
-.phone-anno-text { display: flex; flex-direction: column; gap: 0.32rem; }
-.phone-anno-text strong {
-  font-family: var(--sans);
-  font-weight: 800;
-  font-size: 0.86rem;
-  line-height: 1.3;
-  letter-spacing: 0.01em;
-  color: var(--text);
-  white-space: nowrap;
-}
-.phone-anno-sub {
-  font-family: var(--mono);
-  font-size: 0.7rem;
-  line-height: 1.5;
-  color: var(--text-dim);
-  text-wrap: balance;
-}
-
-.phone-anno-tl, .phone-anno-bl {
-  right: calc(50% + 300px);
-  text-align: right;
-  flex-direction: row-reverse;
-}
-.phone-anno-tl .phone-anno-text, .phone-anno-bl .phone-anno-text { align-items: flex-end; }
-.phone-anno-tr, .phone-anno-br { left: calc(50% + 300px); }
-
-.phone-anno-tl { top: 14%; animation-delay: 1.7s; }
-.phone-anno-bl { bottom: 22%; animation-delay: 2.1s; }
-.phone-anno-tr { top: 14%; animation-delay: 1.9s; }
-.phone-anno-br { bottom: 22%; animation-delay: 2.3s; }
-
-@keyframes phoneAnnoIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-/* Below the width where the flanking layout has room, stack the four
-   annotations in a simple centered list under the phone instead of hiding
-   them — position:static neutralizes the top/left/right/bottom offsets
-   from the flanking rules above, so no need to reset those individually. */
-@media (max-width: 1500px) {
-  .hero-visual { flex-direction: column; gap: 1.8rem; }
-  .phone-anno {
-    position: static;
-    width: 100%;
-    max-width: 380px;
-    animation: none;
-    opacity: 1;
-  }
-  .phone-anno-tl, .phone-anno-bl, .phone-anno-tr, .phone-anno-br {
-    text-align: left;
-    flex-direction: row;
-  }
-  .phone-anno-tl .phone-anno-text, .phone-anno-bl .phone-anno-text, .phone-anno-text {
-    align-items: flex-start;
-  }
-}
-@media (max-width: 420px) {
-  .phone-anno-text strong { white-space: normal; }
 }
 
 .float-shape {
@@ -897,6 +855,7 @@ p { margin: 0; color: var(--text-dim); }
   gap: 4.5rem;
   padding: 0 6vw;
   min-height: 60vh;
+  perspective: 1400px;
 }
 
 .work-slide-intro {
@@ -982,53 +941,58 @@ p { margin: 0; color: var(--text-dim); }
 .device-frame:hover { transform: translateY(-8px) scale(1.015); }
 .device-frame:hover::after { opacity: 1; }
 
-.device-laptop { flex-shrink: 0; width: min(42vw, 520px); display: block; cursor: pointer; }
-.device-laptop-screen {
-  border: 8px solid #1c1c1f;
-  border-bottom: 3px solid #131316;
-  border-radius: 14px 14px 4px 4px;
-  background: #0d0d10;
+.device-laptop-tilt {
+  flex-shrink: 0;
+  width: min(42vw, 520px);
+  transform-style: preserve-3d;
+  transition: transform 0.15s ease-out;
+  will-change: transform;
+}
+.device-laptop {
+  position: relative;
+  display: block;
+  cursor: pointer;
+}
+.device-laptop-photo {
+  display: block;
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+  -webkit-user-drag: none;
+  /* Separate element from .device-frame/.device-laptop so this drop-shadow
+     doesn't collide with the blur()/saturate() filter those apply for the
+     is-active dim/focus transition — filter doesn't merge across rules on
+     the same element, so the two would otherwise fight for the property. */
+  filter: drop-shadow(0 30px 40px rgba(0, 0, 0, 0.3));
+}
+/* The real photo's screen isn't a perfect rectangle (shot at a slight
+   upward angle, so it's a shallow trapezoid) — bounds and clip-path below
+   were measured directly off assets/laptop.png's alpha channel + a couple
+   of cropped zoom-ins, not eyeballed, so the video sits exactly on the
+   glass instead of overhanging the bezel. */
+.device-laptop-screen-clip {
+  position: absolute;
+  left: 22.7%;
+  top: 22.1%;
+  width: 55.2%;
+  height: 34.6%;
+  clip-path: polygon(3.7% 1%, 97.5% 1%, 100% 100%, 0% 100%);
   overflow: hidden;
-  aspect-ratio: 16 / 10;
-  position: relative;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
 }
-.device-laptop-screen::before {
-  content: "";
+.device-laptop-screen-clip video { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top; }
+.device-laptop-sheen {
   position: absolute;
-  top: 2px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: #050506;
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08);
-  z-index: 3;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(115deg, transparent 32%, rgba(255, 255, 255, 0.12) 46%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.12) 54%, transparent 68%);
+  background-size: 260% 260%;
+  background-position: 130% 0%;
+  animation: laptopSheen 7s ease-in-out infinite;
 }
-.device-laptop-screen img, .device-laptop-screen video { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top; }
-.device-laptop-hinge {
-  height: 4px;
-  background: linear-gradient(90deg, #2a2a2e, #3d3d42, #2a2a2e);
-}
-.device-laptop-keyboard {
-  height: 20px;
-  background: linear-gradient(#2b2b2f, #17171a);
-  clip-path: polygon(3% 0, 97% 0, 100% 100%, 0% 100%);
-  border-radius: 0 0 10px 10px;
-  position: relative;
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.55);
-}
-.device-laptop-keyboard::before {
-  content: "";
-  position: absolute;
-  bottom: 4px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 70px;
-  height: 4px;
-  border-radius: 3px;
-  background: #3d3d42;
+@keyframes laptopSheen {
+  0%, 18% { background-position: 130% 0%; }
+  55%, 70% { background-position: -30% 0%; }
+  100% { background-position: -30% 0%; }
 }
 
 .device-phone {
@@ -1223,8 +1187,8 @@ p { margin: 0; color: var(--text-dim); }
   }
   .work-slide-text { max-width: 100%; text-align: center; order: 2; }
   .work-slide-text .project-links { justify-content: center; }
-  .device-frame { order: 1; }
-  .device-laptop { width: 70vw; }
+  .device-frame, .device-laptop-tilt { order: 1; }
+  .device-laptop-tilt { width: 70vw; }
   .device-phone { width: 42vw; }
   .device-browser { width: 60vw; }
   .work-arrow { width: 30px; height: 30px; font-size: 0.9rem; top: auto; bottom: 1rem; transform: none; }
@@ -1685,8 +1649,8 @@ p { margin: 0; color: var(--text-dim); }
 .footer-col { display: flex; flex-direction: column; gap: 0.75rem; }
 .footer-brand-col p { font-size: 0.82rem; line-height: 1.6; margin: 0.3rem 0 0.2rem; }
 
-.footer-brand { display: flex; align-items: center; gap: 0.55rem; color: var(--text); font-weight: 600; }
-.footer-logo { width: 22px; height: 22px; }
+.footer-brand { display: flex; align-items: center; gap: 0.6rem; color: var(--text); font-weight: 800; font-family: var(--sans); }
+.footer-mark { width: 26px; height: 26px; font-size: 0.78rem; border-radius: 6px; }
 
 .footer-socials { display: flex; gap: 0.7rem; margin-top: 0.3rem; }
 .footer-socials a {
@@ -1786,7 +1750,6 @@ p { margin: 0; color: var(--text-dim); }
   .work-intro-text { font-size: 0.92rem; }
   .testimonial { padding-left: 0.8rem; margin-top: 1rem; }
   .testimonial p { font-size: 0.85rem; }
-  .hero-hook-top { font-size: 0.8rem; }
 }
 /* ---------- COOKIE BANNER ---------- */
 
