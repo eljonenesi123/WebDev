@@ -18,6 +18,7 @@ export default function WorkCarousel() {
   const isActiveRef = useRef(false);
   const isSlidingRef = useRef(false);
   const laptopTiltRef = useRef(null);
+  const ipadTiltRef = useRef(null);
 
   const goTo = (i) => setCurrent(Math.max(0, Math.min(TOTAL - 1, i)));
 
@@ -102,6 +103,28 @@ export default function WorkCarousel() {
     };
   }, []);
 
+  // Same cursor-follow tilt, applied to the iPad photo.
+  useEffect(() => {
+    if (window.matchMedia("(max-width: 1000px), (prefers-reduced-motion: reduce)").matches) return;
+    const el = ipadTiltRef.current;
+    if (!el) return;
+    function onMove(e) {
+      const rect = el.getBoundingClientRect();
+      const px = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
+      const py = Math.min(1, Math.max(0, (e.clientY - rect.top) / rect.height));
+      el.style.transform = `rotateX(${(0.5 - py) * 10}deg) rotateY(${(px - 0.5) * 10}deg)`;
+    }
+    function onLeave() {
+      el.style.transform = "rotateX(0deg) rotateY(0deg)";
+    }
+    window.addEventListener("pointermove", onMove);
+    el.addEventListener("pointerleave", onLeave);
+    return () => {
+      window.removeEventListener("pointermove", onMove);
+      el.removeEventListener("pointerleave", onLeave);
+    };
+  }, []);
+
   return (
     <section className="work" id="work" ref={sectionRef}>
       <div
@@ -111,16 +134,30 @@ export default function WorkCarousel() {
         onTouchEnd={onTouchEnd}
       >
         <div className="work-slide work-slide-intro">
-          <h2 className="section-title">{t("work.title", "Work")}</h2>
-          <div className="work-intro-panel">
+          <div className="work-intro-col">
+            <p className="work-intro-count">3 live projects</p>
+            <h2 className="section-title">{t("work.title", "Work")}</h2>
             <p className="work-intro-text">
               A couple of projects, shown the way they actually run — not just a screenshot. Live
               sites you can click through, built end to end: design, code, and deployment.
             </p>
-            <p className="work-intro-count">3 live projects</p>
             <button type="button" className="work-nav-hint" onClick={() => goTo(current + 1)}>
-              Next ↗
+              See them <span aria-hidden="true">→</span>
             </button>
+          </div>
+          <div className="work-intro-stack" aria-hidden="true">
+            <div className="work-intro-card work-intro-card-1">
+              <div className="work-intro-card-bar"><i></i><i></i><i></i></div>
+              <img src={asset("/assets/work-preview-1.png")} alt="" />
+            </div>
+            <div className="work-intro-card work-intro-card-2">
+              <div className="work-intro-card-bar"><i></i><i></i><i></i></div>
+              <img src={asset("/assets/work-preview-2.png")} alt="" />
+            </div>
+            <div className="work-intro-card work-intro-card-3">
+              <div className="work-intro-card-bar"><i></i><i></i><i></i></div>
+              <img src={asset("/assets/work-preview-3.png")} alt="" />
+            </div>
           </div>
         </div>
 
@@ -195,21 +232,23 @@ export default function WorkCarousel() {
               </a>
             </div>
           </div>
-          <a
-            className="device-frame device-phone"
-            href="https://eljonenesi123.github.io/MovieDecider/"
-            target="_blank"
-            rel="noopener"
-            aria-label="Open Just Pick Something live site"
-            onClick={() => trackEvent("project_click", { project: "Open Just Pick Something live site" })}
-          >
-            <div className="device-phone-notch"></div>
-            <div className="device-phone-screen">
-              <video autoPlay muted loop playsInline poster={asset("/assets/phone.png")}>
-                <source src={asset("/assets/phone-demo.mp4")} type="video/mp4" />
-              </video>
-            </div>
-          </a>
+          <div className="device-ipad-tilt" ref={ipadTiltRef}>
+            <a
+              className="device-frame device-ipad"
+              href="https://eljonenesi123.github.io/MovieDecider/"
+              target="_blank"
+              rel="noopener"
+              aria-label="Open Just Pick Something live site"
+              onClick={() => trackEvent("project_click", { project: "Open Just Pick Something live site" })}
+            >
+              <img className="device-ipad-photo" src={asset("/assets/ipad.png")} alt="" />
+              <div className="device-ipad-screen-clip">
+                <video autoPlay muted loop playsInline poster={asset("/assets/phone.png")}>
+                  <source src={asset("/assets/phone-demo.mp4")} type="video/mp4" />
+                </video>
+              </div>
+            </a>
+          </div>
         </div>
 
         <div className={"work-slide" + (current === 3 ? " is-active" : "")}>

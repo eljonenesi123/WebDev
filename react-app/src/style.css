@@ -957,53 +957,84 @@ p { margin: 0; color: var(--text-dim); }
 }
 
 .work-slide-intro {
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
-  text-align: center;
+  text-align: left;
+  gap: 5vw;
 }
-.work-intro-panel {
-  position: relative;
-  max-width: 560px;
-  margin-top: 2rem;
-  padding: 2.6rem 2rem;
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  background: var(--surface);
-  overflow: hidden;
-}
-.work-intro-panel::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 8%;
-  right: 8%;
-  height: 2px;
-  background: var(--accent);
-  opacity: 0.5;
-}
-.work-intro-text { max-width: 480px; margin: 0 auto; font-size: 1rem; }
+.work-intro-col { max-width: 420px; flex-shrink: 0; }
+.work-intro-text { font-size: 1.02rem; margin-top: 1.1rem; }
 .work-intro-count {
-  margin-top: 1rem;
+  display: inline-block;
   font-family: var(--mono);
-  font-size: 0.78rem;
-  color: var(--accent);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #fff;
+  background: var(--accent);
   letter-spacing: 0.04em;
   text-transform: uppercase;
+  padding: 0.4rem 0.9rem;
+  border-radius: 20px;
+  opacity: 0;
+  animation: sketchIn 0.6s ease 0.1s both;
 }
 .work-nav-hint {
-  margin-top: 2rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1.8rem;
   font-family: var(--mono);
-  font-size: 0.85rem;
-  color: var(--accent);
-  background: none;
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: #fff;
+  background: var(--accent);
   border: 1px solid var(--accent);
-  border-radius: 4px;
-  padding: 0.7rem 1.3rem;
+  border-radius: 30px;
+  padding: 0.8rem 1.5rem;
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
-.work-nav-hint:hover { background: rgba(0,0,0,0.06); }
+.work-nav-hint span { transition: transform 0.2s ease; }
+.work-nav-hint:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(255, 106, 57, 0.35); }
+.work-nav-hint:hover span { transform: translateX(3px); }
+
+/* Stair-step cascade of real project screenshots, each framed like a tiny
+   browser window — the "something to look at" the intro slide was missing.
+   Kept monochrome (grey traffic-light dots, not red/yellow/green) and with
+   just a calm offset/depth instead of the fanned-out playing-card tilt. */
+.work-intro-stack {
+  position: relative;
+  width: min(32vw, 320px);
+  height: 260px;
+  flex-shrink: 0;
+}
+.work-intro-card {
+  position: absolute;
+  width: 82%;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+  opacity: 0;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  animation: introCardIn 0.6s ease both;
+}
+.work-intro-card-bar { display: flex; gap: 4px; padding: 7px 9px; background: #1c1c1c; }
+.work-intro-card-bar i { width: 6px; height: 6px; border-radius: 50%; background: #55555a; display: block; }
+.work-intro-card img { display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; object-position: top; }
+
+.work-intro-card-1 { top: 0; left: 0; z-index: 1; animation-delay: 0.1s; }
+.work-intro-card-2 { top: 14%; left: 11%; z-index: 2; animation-delay: 0.22s; }
+.work-intro-card-3 { top: 28%; left: 22%; z-index: 3; animation-delay: 0.34s; }
+.work-intro-stack:hover .work-intro-card-1 { transform: translate(-6px, -4px); box-shadow: 0 24px 44px rgba(0, 0, 0, 0.3); }
+.work-intro-stack:hover .work-intro-card-2 { transform: translate(0, -6px); box-shadow: 0 24px 44px rgba(0, 0, 0, 0.3); }
+.work-intro-stack:hover .work-intro-card-3 { transform: translate(6px, -8px); box-shadow: 0 24px 44px rgba(0, 0, 0, 0.3); }
+@keyframes introCardIn {
+  from { opacity: 0; transform: translateY(16px) scale(0.94); }
+  to { opacity: 1; }
+}
 
 .work-slide-text {
   max-width: 420px;
@@ -1093,45 +1124,37 @@ p { margin: 0; color: var(--text-dim); }
   100% { background-position: -30% 0%; }
 }
 
-.device-phone {
+.device-ipad-tilt {
   flex-shrink: 0;
-  width: min(24vw, 260px);
-  aspect-ratio: 9 / 18.5;
-  border: 10px solid #2a2a2e;
-  border-radius: 32px;
-  background: #0d0d10;
-  overflow: hidden;
+  width: min(22vw, 230px);
+  transform-style: preserve-3d;
+  transition: transform 0.15s ease-out;
+  will-change: transform;
+}
+.device-ipad {
   position: relative;
   display: block;
   cursor: pointer;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.4);
 }
-.device-phone::after {
-  content: "";
+.device-ipad-photo {
+  display: block;
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+  -webkit-user-drag: none;
+  filter: drop-shadow(0 25px 35px rgba(0, 0, 0, 0.3));
+}
+/* Bounds measured off assets/ipad.png directly (screen isn't a full-bleed
+   rectangle — there's a bezel margin), same approach as the laptop photo. */
+.device-ipad-screen-clip {
   position: absolute;
-  bottom: 7px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 32%;
-  height: 4px;
-  border-radius: 3px;
-  background: rgba(255, 255, 255, 0.55);
-  z-index: 3;
+  left: 28%;
+  top: 27.9%;
+  width: 46.5%;
+  height: 42%;
+  overflow: hidden;
 }
-.device-phone-notch {
-  position: absolute;
-  top: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 40%;
-  height: 18px;
-  background: #2a2a2e;
-  border-radius: 0 0 10px 10px;
-  z-index: 2;
-}
-.device-phone-screen { width: 100%; height: 100%; overflow: hidden; }
-.device-phone-screen img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: left top; }
-.device-phone-screen video { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center top; }
+.device-ipad-screen-clip video { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center top; }
 
 .device-browser {
   flex-shrink: 0;
@@ -1285,9 +1308,11 @@ p { margin: 0; color: var(--text-dim); }
   }
   .work-slide-text { max-width: 100%; text-align: center; order: 2; }
   .work-slide-text .project-links { justify-content: center; }
-  .device-frame, .device-laptop-tilt { order: 1; }
+  .device-frame, .device-laptop-tilt, .device-ipad-tilt { order: 1; }
+  .work-intro-col { max-width: 100%; text-align: center; }
+  .work-intro-stack { width: 68vw; height: 46vw; max-height: 220px; margin: 0 auto; }
   .device-laptop-tilt { width: 70vw; }
-  .device-phone { width: 42vw; }
+  .device-ipad-tilt { width: 44vw; }
   .device-browser { width: 60vw; }
   .work-arrow { width: 30px; height: 30px; font-size: 0.9rem; top: auto; bottom: 1rem; transform: none; }
   .work-arrow-prev { left: 1rem; }
