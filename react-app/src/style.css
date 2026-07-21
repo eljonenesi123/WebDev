@@ -537,8 +537,29 @@ p { margin: 0; color: var(--text-dim); }
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
 }
+/* Below the width where the flanking layout has room, stack the four
+   annotations in a simple centered list under the phone instead of hiding
+   them — position:static neutralizes the top/left/right/bottom offsets
+   from the flanking rules above, so no need to reset those individually. */
 @media (max-width: 1500px) {
-  .phone-anno { display: none; }
+  .hero-visual { flex-direction: column; gap: 1.8rem; }
+  .phone-anno {
+    position: static;
+    width: 100%;
+    max-width: 380px;
+    animation: none;
+    opacity: 1;
+  }
+  .phone-anno-tl, .phone-anno-bl, .phone-anno-tr, .phone-anno-br {
+    text-align: left;
+    flex-direction: row;
+  }
+  .phone-anno-tl .phone-anno-text, .phone-anno-bl .phone-anno-text, .phone-anno-text {
+    align-items: flex-start;
+  }
+}
+@media (max-width: 420px) {
+  .phone-anno-text strong { white-space: normal; }
 }
 
 .float-shape {
