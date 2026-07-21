@@ -71,11 +71,14 @@ export default function ProcessPath() {
     function onTouchMove(e) {
       if (!isActiveRef.current) return;
       const dy = touchStartY.current - e.touches[0].clientY;
+      const forward = dy > 0;
+      if (forward && step >= TOTAL) return;
+      if (!forward && step <= 0) return;
+      // Must preventDefault from the first sample of the gesture — once a
+      // mobile browser commits to a native scroll it can't be stopped mid-way.
+      e.preventDefault();
       if (Math.abs(dy) < 40) return;
-      if (tryStep(dy > 0)) {
-        e.preventDefault();
-        touchStartY.current = e.touches[0].clientY;
-      }
+      if (tryStep(forward)) touchStartY.current = e.touches[0].clientY;
     }
 
     window.addEventListener("wheel", onWheel, { passive: false, capture: true });
