@@ -1,11 +1,21 @@
 import { useState } from "react";
-import { asset } from "../asset";
 
 // Cost estimator: rough, honest ballpark based on the same pricing logic as
 // the pricing cards above. Never claims to be a final price. Presented as an
 // itemized receipt — each choice becomes a line item with a running total,
 // instead of a flat form with a number at the bottom.
 const PAGES_LABELS = { "3": "2–3 pages", "6": "4–6 pages", "10": "7+ pages" };
+
+// Every option button shows its own price impact (not just the receipt),
+// so the cost of a choice is visible right where you make it.
+function OptionButton({ active, onClick, label, price }) {
+  return (
+    <button type="button" className={"estimator-option" + (active ? " active" : "")} onClick={onClick}>
+      <span className="option-label">{label}</span>
+      <span className="option-price">{price}</span>
+    </button>
+  );
+}
 
 export default function Estimator() {
   const [type, setType] = useState("landing");
@@ -57,80 +67,47 @@ export default function Estimator() {
           <div className="estimator-row">
             <span className="estimator-question">What are you building?</span>
             <div className="estimator-options" data-group="type">
-              <button
-                type="button"
-                className={"estimator-option" + (type === "landing" ? " active" : "")}
-                onClick={() => handleType("landing", 75)}
-              >
-                Landing page
-              </button>
-              <button
-                type="button"
-                className={"estimator-option" + (type === "multi" ? " active" : "")}
-                onClick={() => handleType("multi", 100)}
-              >
-                Multi-page site
-              </button>
+              <OptionButton active={type === "landing"} onClick={() => handleType("landing", 75)} label="Landing page" price="€75" />
+              <OptionButton active={type === "multi"} onClick={() => handleType("multi", 100)} label="Multi-page site" price="€100" />
             </div>
           </div>
 
           <div className="estimator-row" style={{ display: type === "multi" ? "flex" : "none" }}>
             <span className="estimator-question">How many pages, roughly?</span>
             <div className="estimator-options" data-group="pages">
-              <button
-                type="button"
-                className={"estimator-option" + (pagesValue === "3" ? " active" : "")}
-                onClick={() => handlePages("3", 0)}
-              >
-                2–3
-              </button>
-              <button
-                type="button"
-                className={"estimator-option" + (pagesValue === "6" ? " active" : "")}
-                onClick={() => handlePages("6", 45)}
-              >
-                4–6
-              </button>
-              <button
-                type="button"
-                className={"estimator-option" + (pagesValue === "10" ? " active" : "")}
-                onClick={() => handlePages("10", 90)}
-              >
-                7+
-              </button>
+              <OptionButton active={pagesValue === "3"} onClick={() => handlePages("3", 0)} label="2–3" price="Included" />
+              <OptionButton active={pagesValue === "6"} onClick={() => handlePages("6", 45)} label="4–6" price="+€45" />
+              <OptionButton active={pagesValue === "10"} onClick={() => handlePages("10", 90)} label="7+" price="+€90" />
             </div>
           </div>
 
           <div className="estimator-row">
             <span className="estimator-question">Anything extra?</span>
             <div className="estimator-options estimator-options-multi" data-group="extras">
-              <button
-                type="button"
-                className={"estimator-option" + (extras.lang !== undefined ? " active" : "")}
+              <OptionButton
+                active={extras.lang !== undefined}
                 onClick={() => toggleExtra("lang", 40)}
-              >
-                Multiple languages
-              </button>
-              <button
-                type="button"
-                className={"estimator-option" + (extras.form !== undefined ? " active" : "")}
+                label="Multiple languages"
+                price="+€40"
+              />
+              <OptionButton
+                active={extras.form !== undefined}
                 onClick={() => toggleExtra("form", 25)}
-              >
-                Contact / booking form
-              </button>
-              <button
-                type="button"
-                className={"estimator-option" + (extras.updates !== undefined ? " active" : "")}
+                label="Contact / booking form"
+                price="+€25"
+              />
+              <OptionButton
+                active={extras.updates !== undefined}
                 onClick={() => toggleExtra("updates", 30)}
-              >
-                Ongoing content updates
-              </button>
+                label="Ongoing content updates"
+                price="+€30"
+              />
             </div>
           </div>
         </div>
 
         <div className="receipt">
-          <img className="receipt-header-img" src={asset("/assets/receipt-header.webp")} alt="" aria-hidden="true" />
+          <p className="receipt-title">RECEIPT</p>
           <div className="receipt-items">
             {items.map((it) => (
               <div className="receipt-item" key={it.label}>
@@ -154,7 +131,6 @@ export default function Estimator() {
           <a href="#contact" className="btn-line receipt-cta">
             Get my exact quote
           </a>
-          <div className="receipt-barcode" aria-hidden="true" />
         </div>
       </div>
     </section>

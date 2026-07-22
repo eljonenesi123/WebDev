@@ -18,6 +18,37 @@ import ContactForm from "./components/ContactForm";
 
 gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
+// Full-screen intro shown once on load: logo, name, a quote already used
+// elsewhere on the site (og:description) — slides away upward after a beat
+// to reveal the real page, instead of just appearing.
+function LoadingSplash() {
+  const [hiding, setHiding] = useState(false);
+  const [removed, setRemoved] = useState(false);
+
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setRemoved(true);
+      return;
+    }
+    const t1 = setTimeout(() => setHiding(true), 1450);
+    const t2 = setTimeout(() => setRemoved(true), 2250);
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+    };
+  }, []);
+
+  if (removed) return null;
+
+  return (
+    <div className={"loading-splash" + (hiding ? " is-hiding" : "")} aria-hidden="true">
+      <div className="loading-splash-mark">EE</div>
+      <p className="loading-splash-name">Eljon Enesi</p>
+      <p className="loading-splash-quote">Websites that work, load fast, and don't need explaining.</p>
+    </div>
+  );
+}
+
 // --- Topbar: brand, desktop nav, language switch, mobile menu toggle+panel. ---
 function Header({ lang, setLang, menuOpen, setMenuOpen }) {
   const { t } = useTranslation();
@@ -131,8 +162,8 @@ function ScrollCue() {
     const last = document.querySelector(".contact");
     if (!last) return;
     const observer = new IntersectionObserver(
-      ([entry]) => setHidden(entry.intersectionRatio > 0.3),
-      { threshold: [0, 0.3, 1] }
+      ([entry]) => setHidden(entry.isIntersecting),
+      { threshold: 0 }
     );
     observer.observe(last);
     return () => observer.disconnect();
@@ -488,6 +519,20 @@ function Footer({ onOpenCookieSettings }) {
             Eljon Enesi
           </span>
           <p>Web developer building sites and small web apps for businesses, coaches, and independent projects.</p>
+          <div className="footer-stats">
+            <div className="footer-stat">
+              <span className="footer-stat-num">3+</span>
+              <span className="footer-stat-label">Years experience</span>
+            </div>
+            <div className="footer-stat">
+              <span className="footer-stat-num">10+</span>
+              <span className="footer-stat-label">Certifications</span>
+            </div>
+            <div className="footer-stat">
+              <span className="footer-stat-num">3</span>
+              <span className="footer-stat-label">Live projects</span>
+            </div>
+          </div>
           <div className="footer-socials">
             <a href="https://github.com/eljonenesi123" target="_blank" rel="noopener" aria-label="GitHub"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 .5A11.5 11.5 0 0 0 .5 12c0 5.1 3.3 9.4 7.9 11 .6.1.8-.3.8-.6v-2.2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.7-1.3-1.7-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.7 1.3 3.4 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.8 0-1.3.4-2.3 1.2-3.2-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.6.2 2.8.1 3.1.8.9 1.2 1.9 1.2 3.2 0 4.5-2.7 5.5-5.3 5.8.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5z" /></svg></a>
             <a href="https://instagram.com/eljonenesi" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8"><rect x="2.5" y="2.5" width="19" height="19" rx="5" /><circle cx="12" cy="12" r="4.2" /><circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none" /></svg></a>
@@ -518,6 +563,19 @@ function Footer({ onOpenCookieSettings }) {
           <p className="footer-heading">Contact</p>
           <a href="tel:+355688944708">+355 68 894 4708</a>
           <a href="mailto:eljonenesi9@gmail.com">eljonenesi9@gmail.com</a>
+        </div>
+      </div>
+
+      <div className="footer-marquee" aria-hidden="true">
+        <div className="footer-marquee-track">
+          <span>ELJON ENESI&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;</span>
+          <span>ELJON ENESI&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;</span>
+          <span>ELJON ENESI&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;</span>
+          <span>ELJON ENESI&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;</span>
+          <span>ELJON ENESI&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;</span>
+          <span>ELJON ENESI&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;</span>
+          <span>ELJON ENESI&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;</span>
+          <span>ELJON ENESI&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;</span>
         </div>
       </div>
 
@@ -717,6 +775,7 @@ export default function App() {
 
   return (
     <>
+      <LoadingSplash />
       <CookieBanner visible={cookieVisible} onAccept={accept} onDecline={decline} />
 
       <div className="scroll-progress" aria-hidden="true" ref={progressRef}></div>
