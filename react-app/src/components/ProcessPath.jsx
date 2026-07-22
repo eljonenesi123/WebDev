@@ -138,6 +138,10 @@ export default function ProcessPath() {
             <feDisplacementMap in="SourceGraphic" in2="n" scale="7" />
           </filter>
           <path
+            className="process-path-ghost"
+            d="M90,90 C90,180 210,180 210,320 C210,410 90,410 90,550 C90,640 210,640 210,780"
+          />
+          <path
             ref={pathRef}
             className="process-path-line"
             d="M90,90 C90,180 210,180 210,320 C210,410 90,410 90,550 C90,640 210,640 210,780"
@@ -148,12 +152,19 @@ export default function ProcessPath() {
             d="M198,772 L210,798 L222,772 Z"
             style={{ opacity: step >= TOTAL ? 1 : 0 }}
           />
+          {step === 0 && (
+            // An rx/ry ellipse, not a circle: the SVG stretches non-uniformly
+            // (preserveAspectRatio="none") to fill the tall container, so a
+            // true circle here would render as a squashed oval on screen.
+            <ellipse className="process-path-start-dot" cx="90" cy="90" rx="1.8" ry="7" />
+          )}
         </svg>
         <svg className="process-path-svg-mobile" viewBox="0 0 40 1000" preserveAspectRatio="none" aria-hidden="true">
           <filter id="pencilRoughV" filterUnits="userSpaceOnUse" x="-20" y="-10" width="80" height="1020">
             <feTurbulence type="fractalNoise" baseFrequency="0.014 0.03" numOctaves="2" seed="7" result="n" />
             <feDisplacementMap in="SourceGraphic" in2="n" scale="7" />
           </filter>
+          <path className="process-path-ghost" d="M20,10 L20,990" />
           <path
             ref={mobilePathRef}
             className="process-path-line"
@@ -161,6 +172,13 @@ export default function ProcessPath() {
             style={{ filter: "url(#pencilRoughV)", strokeDasharray: mobilePathLen, strokeDashoffset: mobilePathLen - (mobilePathLen * step) / TOTAL }}
           />
         </svg>
+        {step === 0 && (
+          <p className="process-hint sketch-text">
+            Scroll to begin
+            <br />
+            <strong>↓</strong>
+          </p>
+        )}
         {STEPS.map((s, i) => (
           <div
             key={s.h}

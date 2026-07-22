@@ -117,6 +117,85 @@ function SideNav() {
   );
 }
 
+// Fixed hand-drawn "keep scrolling" cue, bottom-right on every section,
+// labeled with whichever section comes next. Hides once the last section
+// (Contact) is reached since there's nothing further down to point at.
+const SCROLL_CUE_SECTIONS = [".hero", ".work", ".skills", ".process", ".services", ".estimator-section", ".faq", ".contact"];
+const SCROLL_CUE_LABELS = ["Work", "Skills", "Process", "Services", "Estimator", "FAQ", "Contact"];
+
+function ScrollCue() {
+  const [hidden, setHidden] = useState(false);
+  const [nextLabel, setNextLabel] = useState(SCROLL_CUE_LABELS[0]);
+
+  useEffect(() => {
+    const last = document.querySelector(".contact");
+    if (!last) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setHidden(entry.intersectionRatio > 0.3),
+      { threshold: [0, 0.3, 1] }
+    );
+    observer.observe(last);
+    return () => observer.disconnect();
+  }, []);
+
+  // Track which section is currently closest to the top of the viewport so
+  // the label always names the one right after it.
+  useEffect(() => {
+    const els = SCROLL_CUE_SECTIONS.map((s) => document.querySelector(s)).filter(Boolean);
+    if (!els.length) return;
+    let raf = null;
+    function update() {
+      raf = null;
+      let closest = 0;
+      let closestDist = Infinity;
+      els.forEach((el, i) => {
+        const dist = Math.abs(el.getBoundingClientRect().top);
+        if (dist < closestDist) {
+          closestDist = dist;
+          closest = i;
+        }
+      });
+      setNextLabel(SCROLL_CUE_LABELS[closest] || "");
+    }
+    function onScroll() {
+      if (raf) return;
+      raf = requestAnimationFrame(update);
+    }
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
+
+  return (
+    <div className={"scroll-cue" + (hidden ? " is-hidden" : "")}>
+      <span className="scroll-cue-label">{nextLabel}</span>
+      <button
+        type="button"
+        className="scroll-cue-btn"
+        aria-label={`Scroll to ${nextLabel}`}
+        onClick={() => window.scrollBy({ top: window.innerHeight * 0.9, behavior: "smooth" })}
+      >
+        <svg className="scroll-cue-arrow" viewBox="0 0 40 60" aria-hidden="true">
+          <filter id="pencilRoughCue" x="-60%" y="-20%" width="220%" height="140%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.05 0.09" numOctaves="2" seed="9" result="n" />
+            <feDisplacementMap in="SourceGraphic" in2="n" scale="3" />
+          </filter>
+          <g fill="none" stroke="#000" strokeLinecap="round" filter="url(#pencilRoughCue)">
+            <path d="M20,3 L20,36" strokeWidth="3.6" />
+            <path d="M21.5,3 L21.5,36" strokeWidth="1.5" opacity="0.5" />
+          </g>
+          <path d="M7,29 L20,52 L33,29 C27,33.5 20,36 20,36 C20,36 13,33.5 7,29 Z" fill="#000" filter="url(#pencilRoughCue)" />
+        </svg>
+      </button>
+    </div>
+  );
+}
+
 function Hero() {
   return (
     <section className="hero hero-phone-only">
@@ -196,64 +275,132 @@ function Skills() {
 
 function Services() {
   const { t } = useTranslation();
+  const [tier, setTier] = useState(0);
+  const [displayAmount, setDisplayAmount] = useState(75);
+
+  const TIERS = [
+    {
+      tag: t("services.p1.tag", "Landing page"),
+      amount: 75,
+      desc: t("services.p1.desc", "A single, focused page — for a business, event, or launch. Fast to build, fast to load."),
+      items: [
+        t("services.p1.i1", "Custom design, no templates"),
+        t("services.p1.i2", "Mobile-first, responsive layout"),
+        t("services.p1.i3", "Basic SEO setup"),
+      ],
+      eta: "~3–5 days",
+      example: "https://eljonenesi123.github.io/CV/",
+    },
+    {
+      tag: t("services.p2.tag", "Multi-page website"),
+      amount: 100,
+      desc: t("services.p2.desc", "Several pages, a contact form, and content structured the way your visitors actually browse."),
+      items: [
+        t("services.p2.i1", "Everything in Landing page"),
+        t("services.p2.i2", "Contact form & content pages"),
+        t("services.p2.i3", "Multi-language support"),
+      ],
+      eta: "~1–2 weeks",
+      example: "https://eljonenesi123.github.io/TopLevelPerformance/",
+      popular: true,
+    },
+  ];
+  const current = TIERS[tier];
+
+  // Count the price up/down between tiers instead of just snapping to the
+  // new number, so switching tiers reads as a single continuous motion
+  // rather than a hard cut.
+  useEffect(() => {
+    const from = displayAmount;
+    const to = current.amount;
+    if (from === to) return;
+    const start = performance.now();
+    const duration = 400;
+    let raf;
+    function step(now) {
+      const p = Math.min(1, (now - start) / duration);
+      const eased = 1 - Math.pow(1 - p, 3);
+      setDisplayAmount(Math.round(from + (to - from) * eased));
+      if (p < 1) raf = requestAnimationFrame(step);
+    }
+    raf = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(raf);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tier]);
+
   return (
     <section className="services" id="services">
       <h2 className="section-title">{t("services.title", "Services")}</h2>
       <p className="services-sub">{t("services.sub", "Prices vary by scope. This is a starting point.")}</p>
 
-      <div className="pricing-grid">
-        <div className="price-card">
-          <p className="price-tag">{t("services.p1.tag", "Landing page")}</p>
-          <p className="price-from">Starting at</p>
-          <p className="price-amount">
-            €75<span>{t("services.from", "+")}</span>
-          </p>
-          <p className="price-desc">
-            {t("services.p1.desc", "A single, focused page — for a business, event, or launch. Fast to build, fast to load.")}
-          </p>
-          <ul className="price-list">
-            <li>{t("services.p1.i1", "Custom design, no templates")}</li>
-            <li>{t("services.p1.i2", "Mobile-first, responsive layout")}</li>
-            <li>{t("services.p1.i3", "Basic SEO setup")}</li>
-          </ul>
-          <p className="price-eta">~3–5 days</p>
-          <a
-            href="#contact"
-            className="btn-line price-cta"
-            onClick={() => trackEvent("quote_click", { tier: t("services.p1.tag", "Landing page") })}
-          >
-            Get a quote
-          </a>
-          <a href="https://eljonenesi123.github.io/CV/" target="_blank" rel="noopener" className="price-example-link">
-            See an example ↗
-          </a>
-        </div>
+      <div className="services-layout">
+        <div className="services-pricing">
+          <div className="tier-toggle" role="tablist">
+            <div className="tier-toggle-thumb" style={{ transform: `translateX(${tier * 100}%)` }} aria-hidden="true" />
+            {TIERS.map((tr, i) => (
+              <button
+                key={tr.tag}
+                type="button"
+                role="tab"
+                aria-selected={tier === i}
+                className={"tier-toggle-btn" + (tier === i ? " is-active" : "")}
+                onClick={() => setTier(i)}
+              >
+                {tr.tag}
+              </button>
+            ))}
+          </div>
 
-        <div className="price-card price-card-featured">
-          <p className="price-tag">{t("services.p2.tag", "Multi-page website")}</p>
-          <p className="price-from">Starting at</p>
-          <p className="price-amount">
-            €100<span>{t("services.from", "+")}</span>
-          </p>
-          <p className="price-desc">
-            {t("services.p2.desc", "Several pages, a contact form, and content structured the way your visitors actually browse.")}
-          </p>
-          <ul className="price-list">
-            <li>{t("services.p2.i1", "Everything in Landing page")}</li>
-            <li>{t("services.p2.i2", "Contact form & content pages")}</li>
-            <li>{t("services.p2.i3", "Multi-language support")}</li>
-          </ul>
-          <p className="price-eta">~1–2 weeks</p>
-          <a
-            href="#contact"
-            className="btn-primary price-cta"
-            onClick={() => trackEvent("quote_click", { tier: t("services.p2.tag", "Multi-page website") })}
-          >
-            Get a quote
-          </a>
-          <a href="https://eljonenesi123.github.io/TopLevelPerformance/" target="_blank" rel="noopener" className="price-example-link">
-            See an example ↗
-          </a>
+          <div className={"price-card-single" + (current.popular ? " price-card-featured" : "")}>
+            {current.popular && <span className="price-badge">Popular</span>}
+            <p className="price-from">{t("services.startingAt", "Starting at")}</p>
+            <p className="price-amount">
+              €{displayAmount}
+              <span>{t("services.from", "+")}</span>
+            </p>
+            <div key={tier} className="price-fade">
+              <p className="price-desc">{current.desc}</p>
+              <ul className="price-list">
+                {current.items.map((it) => (
+                  <li key={it}>{it}</li>
+                ))}
+              </ul>
+              <p className="price-eta">{current.eta}</p>
+            </div>
+            <a
+              href="#contact"
+              className="btn-primary price-cta"
+              onClick={() => trackEvent("quote_click", { tier: current.tag })}
+            >
+              {t("services.cta", "Get a quote")}
+            </a>
+            <a href={current.example} target="_blank" rel="noopener" className="price-example-link">
+              {t("services.example", "See an example ↗")}
+            </a>
+          </div>
+
+          <div className="services-annotation" aria-hidden="true">
+            <svg className="services-annotation-arrow" viewBox="0 0 200 130">
+              <filter id="pencilRoughSvc" x="-30%" y="-30%" width="160%" height="160%">
+                <feTurbulence type="fractalNoise" baseFrequency="0.025 0.06" numOctaves="2" seed="4" result="n" />
+                <feDisplacementMap in="SourceGraphic" in2="n" scale="6" />
+              </filter>
+              <g fill="none" stroke="#000" strokeLinecap="round" filter="url(#pencilRoughSvc)">
+                <path d="M182,12 C144,4 76,18 33,66 C19,81 13,92 10,105" strokeWidth="3.4" />
+                <path d="M180,18 C142,12 78,26 36,70 C23,84 17,94 13,106" strokeWidth="1.6" opacity="0.55" />
+              </g>
+              <path
+                d="M0,84 C7,93 12,104 15,118 C21,109 30,100 40,95 C27,93 12,89 0,84 Z"
+                fill="#000"
+                filter="url(#pencilRoughSvc)"
+              />
+            </svg>
+            <p className="sketch-text services-annotation-text">
+              Try switching
+              <br />
+              <strong>the tiers →</strong>
+            </p>
+          </div>
         </div>
       </div>
     </section>
@@ -453,7 +600,7 @@ export default function App() {
       }
 
       revealGroup(".skill-item", { stagger: 0.06 });
-      revealGroup(".price-card", { stagger: 0.12 });
+      revealGroup(".tier-toggle, .price-card-single", { stagger: 0.12 });
       revealGroup(".process-step", { stagger: 0.1 });
 
       gsap.utils.toArray(".section-title").forEach((el) => {
@@ -473,7 +620,7 @@ export default function App() {
       document
         .querySelectorAll(".hero, .work, .skills, .services, .process, .estimator-section, .faq, .contact")
         .forEach((section) => {
-          const inner = section.querySelector(".hero-title, .work-grid, .pricing-grid, .process-list, .contact-grid");
+          const inner = section.querySelector(".hero-title, .work-grid, .price-card-single, .process-list, .contact-grid");
           if (!inner) return;
           gsap.fromTo(
             inner,
@@ -577,6 +724,7 @@ export default function App() {
 
       <Header lang={lang} setLang={setLang} menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <SideNav />
+      <ScrollCue />
 
       <main id="top">
         <Hero />

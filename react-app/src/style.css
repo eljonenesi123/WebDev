@@ -236,6 +236,42 @@ p { margin: 0; color: var(--text-dim); }
   .side-nav { display: none; }
 }
 
+/* ---------- SCROLL CUE (fixed, bottom-right) ---------- */
+
+.scroll-cue {
+  position: fixed;
+  right: 1.6rem;
+  bottom: 1.6rem;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.scroll-cue.is-hidden { opacity: 0; transform: translateY(8px); pointer-events: none; }
+.scroll-cue-label {
+  font-family: "Architects Daughter", cursive;
+  font-size: 0.95rem;
+  color: var(--text);
+  white-space: nowrap;
+}
+.scroll-cue-btn { width: 44px; height: 60px; padding: 0; border: none; background: none; cursor: pointer; }
+.scroll-cue-arrow { width: 100%; height: 100%; animation: scrollCueBounce 1.8s ease-in-out infinite; }
+
+@keyframes scrollCueBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(6px); }
+}
+
+@media (max-width: 760px) {
+  .scroll-cue { right: 1.1rem; bottom: 1.1rem; }
+  .scroll-cue-btn { width: 36px; height: 50px; }
+  .scroll-cue-label { font-size: 0.85rem; }
+}
+
 /* ---------- HERO ---------- */
 
 .hero {
@@ -1400,62 +1436,110 @@ p { margin: 0; color: var(--text-dim); }
 
 .services-sub { max-width: 560px; margin-bottom: 2.5rem; }
 
-.pricing-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.5rem;
+.services-layout { width: 100%; }
+.services-pricing { position: relative; width: 100%; max-width: 600px; margin: 0 auto; }
+
+.services-annotation {
+  position: absolute;
+  left: 100%;
+  top: 3.4rem;
+  margin-left: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 180px;
+  color: var(--text);
+}
+.services-annotation-arrow { width: 110px; height: 70px; margin-bottom: 0.3rem; }
+.services-annotation-text { color: inherit; font-size: 1.15rem; line-height: 1.35; }
+.services-annotation-text strong { color: var(--text); font-weight: 400; }
+
+@media (max-width: 900px) {
+  .services-annotation { display: none; }
 }
 
-.price-card {
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  padding: 1.6rem;
-  background: var(--surface);
-  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
-}
-.price-card:hover {
-  transform: translateY(-6px);
-  border-color: var(--accent);
-  box-shadow: 0 18px 40px rgba(0,0,0,0.2), 0 0 30px rgba(0,0,0,0.1);
-}
-.price-card-featured {
-  border-color: var(--accent);
+/* Segmented toggle switching which tier the single card below shows. */
+.tier-toggle {
   position: relative;
+  display: flex;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.35rem;
+  margin-bottom: 1.8rem;
+  width: 100%;
 }
-.price-card-featured::before {
-  content: "Popular";
+.tier-toggle-thumb {
+  position: absolute;
+  top: 0.3rem;
+  left: 0.3rem;
+  width: calc(50% - 0.3rem);
+  height: calc(100% - 0.6rem);
+  background: var(--accent);
+  border-radius: 999px;
+  transition: transform 0.4s cubic-bezier(0.65, 0, 0.35, 1);
+}
+.tier-toggle-btn {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: none;
+  background: transparent;
+  font-family: var(--mono);
+  font-size: 0.88rem;
+  color: var(--text-dim);
+  cursor: pointer;
+  border-radius: 999px;
+  transition: color 0.3s ease;
+  white-space: nowrap;
+}
+.tier-toggle-btn.is-active { color: var(--bg); }
+
+.price-card-single {
+  position: relative;
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 2.6rem 2.4rem;
+  background: var(--surface);
+  transition: border-color 0.3s ease;
+}
+.price-card-single.price-card-featured { border-color: var(--accent); }
+
+.price-badge {
   position: absolute;
   top: -0.65rem;
-  right: 1.2rem;
+  right: 1.4rem;
   font-family: var(--mono);
   font-size: 0.65rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #0d0d10;
+  color: var(--bg);
   background: var(--accent);
   padding: 0.25rem 0.55rem;
   border-radius: 3px;
 }
 
-.price-tag {
-  font-family: var(--mono);
-  font-size: 0.8rem;
-  color: var(--accent);
-  margin-bottom: 0.8rem;
+@keyframes tierFadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
 }
+.price-fade { animation: tierFadeIn 0.35s ease both; }
+
 .price-amount {
   font-family: var(--mono);
-  font-size: 1.8rem;
+  font-size: 3.4rem;
   font-weight: 700;
   color: var(--text);
-  margin-bottom: 0.8rem;
+  margin-bottom: 1rem;
 }
 .price-amount span {
-  font-size: 1rem;
+  font-size: 1.2rem;
   color: var(--text-dim);
   font-weight: 400;
 }
-.price-desc { margin-bottom: 1.1rem; font-size: 0.92rem; }
+.price-desc { margin-bottom: 1.3rem; font-size: 1.02rem; }
 
 .price-list {
   list-style: none;
@@ -1463,11 +1547,11 @@ p { margin: 0; color: var(--text-dim); }
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.55rem;
+  gap: 0.65rem;
 }
 .price-list li {
   font-family: var(--mono);
-  font-size: 0.78rem;
+  font-size: 0.85rem;
   color: var(--text-dim);
   padding-left: 1.1rem;
   position: relative;
@@ -1517,20 +1601,30 @@ p { margin: 0; color: var(--text-dim); }
 .estimator-section { text-align: center; }
 .estimator-section .section-title { text-align: center; }
 
-.estimator {
-  max-width: 620px;
-  margin: 2rem auto 0;
-  padding: 1.8rem;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  background: var(--surface);
-  text-align: left;
-}
 .estimator-label {
   font-family: var(--mono);
   font-size: 0.85rem;
   color: var(--text);
   margin-bottom: 1.4rem;
+  text-align: center;
+}
+
+.estimator-layout {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 3rem;
+  max-width: 900px;
+  margin: 2rem auto 0;
+  flex-wrap: wrap;
+}
+
+.estimator-controls {
+  flex: 1;
+  min-width: 260px;
+  max-width: 360px;
+  text-align: left;
+  padding-top: 0.4rem;
 }
 .estimator-row {
   display: flex;
@@ -1566,33 +1660,93 @@ p { margin: 0; color: var(--text-dim); }
   background: rgba(0,0,0,0.05);
 }
 
-.estimator-result {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  padding: 1rem 0;
-  border-top: 1px solid var(--line);
-  margin-top: 0.4rem;
+/* Itemized "receipt" — the estimate is built up as line items with a
+   running total, like a real printed ticket, instead of a flat number. */
+.receipt {
+  flex-shrink: 0;
+  width: 320px;
+  background: #faf5ed;
+  border: 1px solid var(--line);
+  padding: 0 1.6rem 1.5rem;
+  box-shadow: 0 22px 45px rgba(0, 0, 0, 0.16);
+  transform: rotate(-1.4deg);
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+  text-align: left;
+  overflow: hidden;
 }
-.estimator-result-label {
-  font-family: var(--mono);
-  font-size: 0.78rem;
-  color: var(--text-dim);
-}
-.estimator-result-price {
-  font-family: var(--mono);
-  font-size: 1.6rem;
-  font-weight: 700;
-  color: var(--text);
-}
-.estimator-disclaimer {
-  font-size: 0.75rem;
-  color: var(--text-dim);
-  margin-bottom: 1.2rem;
+.receipt:hover { transform: rotate(0deg) translateY(-3px); box-shadow: 0 26px 50px rgba(0, 0, 0, 0.2); }
+
+.receipt-header-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0 0 0.6rem;
 }
 
-@media (max-width: 480px) {
-  .estimator-result { flex-direction: column; gap: 0.3rem; align-items: flex-start; }
+.receipt-items { display: flex; flex-direction: column; }
+.receipt-item {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  color: var(--text);
+  padding: 0.32rem 0;
+  animation: receiptRowIn 0.3s ease both;
+}
+@keyframes receiptRowIn {
+  from { opacity: 0; transform: translateX(-6px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+.receipt-item-label { white-space: nowrap; }
+.receipt-item-dots { flex: 1; border-bottom: 1px dotted var(--text-dim); margin-bottom: 0.28rem; }
+.receipt-item-price { white-space: nowrap; font-weight: 600; }
+
+.receipt-total-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  font-family: var(--mono);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text);
+  padding-top: 0.7rem;
+  margin-top: 0.5rem;
+  border-top: 3px double var(--text-dim);
+}
+.receipt-total-row .receipt-item-dots { border-bottom-color: var(--text); }
+
+.receipt-note {
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  margin: 0.9rem 0 1.1rem;
+  border-top: 1px dashed var(--line);
+  padding-top: 0.8rem;
+}
+
+.receipt-cta { display: block; text-align: center; }
+
+.receipt-barcode {
+  height: 22px;
+  margin-top: 1.2rem;
+  opacity: 0.75;
+  background: repeating-linear-gradient(
+    90deg,
+    #000 0 2px,
+    transparent 2px 5px,
+    #000 5px 6px,
+    transparent 6px 11px,
+    #000 11px 13px,
+    transparent 13px 18px,
+    #000 18px 20px,
+    transparent 20px 24px
+  );
+}
+
+@media (max-width: 760px) {
+  .estimator-layout { flex-direction: column; align-items: center; }
+  .estimator-controls { max-width: 100%; width: 100%; }
+  .receipt { width: 100%; max-width: 360px; transform: rotate(0deg); }
 }
 
 /* ---------- PROCESS (scroll-driven S-curve) ---------- */
@@ -1617,6 +1771,43 @@ p { margin: 0; color: var(--text-dim); }
   transition: stroke-dashoffset 0.6s ease;
 }
 .process-path-arrowhead { fill: #000; transition: opacity 0.3s ease 0.3s; }
+.process-path-ghost {
+  fill: none;
+  stroke: var(--text-dim);
+  stroke-width: 2;
+  stroke-dasharray: 3 8;
+  stroke-linecap: round;
+  opacity: 0.5;
+}
+.process-path-start-dot {
+  fill: #000;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: processDotPulse 1.8s ease-in-out infinite;
+}
+
+@keyframes processDotPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.3); }
+}
+
+.process-hint {
+  position: absolute;
+  top: 42%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  font-family: "Architects Daughter", cursive;
+  font-size: 1.3rem;
+  line-height: 1.5;
+  color: var(--text-dim);
+  pointer-events: none;
+}
+.process-hint strong { font-weight: 400; color: var(--text); }
+
+@media (max-width: 700px) {
+  .process-hint { display: none; }
+}
 
 .step-num {
   font-family: var(--mono);
@@ -1910,7 +2101,7 @@ p { margin: 0; color: var(--text-dim); }
     padding-left: 0;
     padding-top: 1.8rem;
   }
-  .pricing-grid { grid-template-columns: 1fr; }
+  .tier-toggle, .price-card-single { max-width: 100%; }
   .topbar { padding: 1.2rem 6vw; }
   .lang-switch { gap: 0.4rem; }
 
