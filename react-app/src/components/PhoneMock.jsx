@@ -49,7 +49,7 @@ export default function PhoneMock() {
   return (
     <div className="phone-tilt" ref={tiltRef}>
       <div className="phone-mock">
-        <img className="phone-img" src={asset("/assets/intro.png")} alt="" loading="eager" />
+        <img className="phone-img" src={asset("/assets/intro.webp")} alt="" loading="eager" />
 
         <div className="phone-topzone">
           <p className="eyebrow phone-eyebrow">{t("hero.eyebrow", "WEB DEVELOPMENT")}</p>

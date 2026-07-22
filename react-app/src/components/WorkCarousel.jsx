@@ -19,8 +19,25 @@ export default function WorkCarousel() {
   const isSlidingRef = useRef(false);
   const laptopTiltRef = useRef(null);
   const ipadTiltRef = useRef(null);
+  const topVideoRef = useRef(null);
+  const ipadVideoRef = useRef(null);
+  const cvVideoRef = useRef(null);
 
   const goTo = (i) => setCurrent(Math.max(0, Math.min(TOTAL - 1, i)));
+
+  // Only the visible slide's video should ever load/play — with preload="none"
+  // and no autoPlay, each one stays untouched (no network request at all)
+  // until its slide is actually reached, instead of all three loading and
+  // playing at once in the background.
+  useEffect(() => {
+    const bySlide = { 1: topVideoRef, 2: ipadVideoRef, 3: cvVideoRef };
+    Object.entries(bySlide).forEach(([slide, ref]) => {
+      const v = ref.current;
+      if (!v) return;
+      if (Number(slide) === current) v.play().catch(() => {});
+      else v.pause();
+    });
+  }, [current]);
 
   const onTouchStart = (e) => {
     touchStartX.current = e.touches[0].clientX;
@@ -148,15 +165,15 @@ export default function WorkCarousel() {
           <div className="work-intro-stack" aria-hidden="true">
             <div className="work-intro-card work-intro-card-1">
               <div className="work-intro-card-bar"><i></i><i></i><i></i></div>
-              <img src={asset("/assets/work-preview-1.png")} alt="" />
+              <img src={asset("/assets/work-preview-1.webp")} alt="" loading="lazy" />
             </div>
             <div className="work-intro-card work-intro-card-2">
               <div className="work-intro-card-bar"><i></i><i></i><i></i></div>
-              <img src={asset("/assets/work-preview-2.png")} alt="" />
+              <img src={asset("/assets/work-preview-2.webp")} alt="" loading="lazy" />
             </div>
             <div className="work-intro-card work-intro-card-3">
               <div className="work-intro-card-bar"><i></i><i></i><i></i></div>
-              <img src={asset("/assets/work-preview-3.png")} alt="" />
+              <img src={asset("/assets/work-preview-3.webp")} alt="" loading="lazy" />
             </div>
           </div>
         </div>
@@ -201,9 +218,9 @@ export default function WorkCarousel() {
               aria-label="Open Top Level Performance live site"
               onClick={() => trackEvent("project_click", { project: "Open Top Level Performance live site" })}
             >
-              <img className="device-laptop-photo" src={asset("/assets/laptop.png")} alt="" />
+              <img className="device-laptop-photo" src={asset("/assets/laptop.webp")} alt="" loading="lazy" />
               <div className="device-laptop-screen-clip">
-                <video autoPlay muted loop playsInline poster={asset("/assets/TOP.png")}>
+                <video ref={topVideoRef} muted loop playsInline preload="none" poster={asset("/assets/TOP.webp")}>
                   <source src={asset("/assets/TOP-demo.mp4")} type="video/mp4" />
                 </video>
                 <div className="device-laptop-sheen" aria-hidden="true"></div>
@@ -241,9 +258,9 @@ export default function WorkCarousel() {
               aria-label="Open Just Pick Something live site"
               onClick={() => trackEvent("project_click", { project: "Open Just Pick Something live site" })}
             >
-              <img className="device-ipad-photo" src={asset("/assets/ipad.png")} alt="" />
+              <img className="device-ipad-photo" src={asset("/assets/ipad.webp")} alt="" loading="lazy" />
               <div className="device-ipad-screen-clip">
-                <video autoPlay muted loop playsInline poster={asset("/assets/phone.png")}>
+                <video ref={ipadVideoRef} muted loop playsInline preload="none" poster={asset("/assets/phone.webp")}>
                   <source src={asset("/assets/phone-demo.mp4")} type="video/mp4" />
                 </video>
               </div>
@@ -286,7 +303,7 @@ export default function WorkCarousel() {
               <span className="device-browser-url">eljonenesi123.github.io/CV</span>
             </div>
             <div className="device-browser-screen">
-              <video autoPlay muted loop playsInline poster={asset("/assets/CV.png")}>
+              <video ref={cvVideoRef} muted loop playsInline preload="none" poster={asset("/assets/CV.png")}>
                 <source src={asset("/assets/cv-demo.mp4")} type="video/mp4" />
               </video>
             </div>
