@@ -550,7 +550,7 @@ p { margin: 0; color: var(--text-dim); }
   from { opacity: 0; transform: translateY(14px); }
   to { opacity: 1; transform: translateY(0); }
 }
-.phone-topzone .phone-eyebrow { font-size: 0.55rem; margin-bottom: 0.4rem; }
+.phone-topzone .phone-eyebrow { font-size: 0.55rem; margin-bottom: 0.4rem; color: #fff; }
 .phone-topzone .hero-title {
   font-size: clamp(0.68rem, 1.5vw, 1rem);
   line-height: 1.25;
