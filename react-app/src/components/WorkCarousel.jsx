@@ -1,7 +1,12 @@
-import { useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { trackEvent } from "../analytics";
 import { useTranslation } from "../i18n";
 import { asset } from "../asset";
+
+// Heavy (three.js) — only fetched once the Work section is actually near
+// the viewport, via the IntersectionObserver-gated `want3D` below, so it
+// never adds to the initial page load.
+const WorkLaptop3D = lazy(() => import("./WorkLaptop3D"));
 
 // Work section: horizontal mini-carousel (intro -> laptop -> phone -> browser).
 // Ported 1:1 from script.js's work-carousel IIFE: same transform-based
@@ -22,8 +27,30 @@ export default function WorkCarousel() {
   const topVideoRef = useRef(null);
   const ipadVideoRef = useRef(null);
   const cvVideoRef = useRef(null);
+  const [want3D, setWant3D] = useState(false);
+  const [isNear3D, setIsNear3D] = useState(false);
 
   const goTo = (i) => setCurrent(Math.max(0, Math.min(TOTAL - 1, i)));
+
+  // Fetch the 3D laptop chunk once (want3D, never unset — the browser keeps
+  // the module cached) once Work is within ~600px of the viewport. But only
+  // keep the actual <Canvas> mounted while still that near (isNear3D, which
+  // toggles both ways) — otherwise its render loop and texture-redraw
+  // interval kept running forever in the background even scrolled far away,
+  // which is what was making the rest of the page feel laggy.
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsNear3D(entry.isIntersecting);
+        if (entry.isIntersecting) setWant3D(true);
+      },
+      { rootMargin: "600px 0px" }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   // Only the visible slide's video should ever load/play — with preload="none"
   // and no autoPlay, each one stays untouched (no network request at all)
@@ -162,19 +189,12 @@ export default function WorkCarousel() {
               See them <span aria-hidden="true">→</span>
             </button>
           </div>
-          <div className="work-intro-stack" aria-hidden="true">
-            <div className="work-intro-card work-intro-card-1">
-              <div className="work-intro-card-bar"><i></i><i></i><i></i></div>
-              <img src={asset("/assets/work-preview-1.webp")} alt="" loading="lazy" />
-            </div>
-            <div className="work-intro-card work-intro-card-2">
-              <div className="work-intro-card-bar"><i></i><i></i><i></i></div>
-              <img src={asset("/assets/work-preview-2.webp")} alt="" loading="lazy" />
-            </div>
-            <div className="work-intro-card work-intro-card-3">
-              <div className="work-intro-card-bar"><i></i><i></i><i></i></div>
-              <img src={asset("/assets/work-preview-3.webp")} alt="" loading="lazy" />
-            </div>
+          <div className="work-laptop-3d-wrap" aria-hidden="true">
+            {want3D && isNear3D && (
+              <Suspense fallback={<div className="work-laptop-3d-fallback" />}>
+                <WorkLaptop3D />
+              </Suspense>
+            )}
           </div>
         </div>
 
@@ -202,6 +222,7 @@ export default function WorkCarousel() {
               </a>
             </div>
             <blockquote className="testimonial">
+              <span className="testimonial-label" aria-hidden="true">Client says</span>
               <p>
                 Since the site went live, more people book sessions without me having to explain
                 everything myself first. Clients take me more seriously now.

@@ -585,6 +585,14 @@ function Footer({ onOpenCookieSettings }) {
           <a href={asset("/terms.html")} target="_blank" rel="noopener">Terms</a>
           <a href={asset("/privacy.html")} target="_blank" rel="noopener">Privacy</a>
           <button type="button" onClick={onOpenCookieSettings}>Cookie settings</button>
+          <a
+            href="https://sketchfab.com/3d-models/laptop-7d870e900889481395b4a575b9fa8c3e"
+            target="_blank"
+            rel="noopener"
+            title="Laptop 3D model by Aullwen, CC BY 4.0"
+          >
+            3D model: Aullwen ↗
+          </a>
         </div>
         <a href="#top" className="back-to-top" aria-label="Back to top">↑</a>
       </div>

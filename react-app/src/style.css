@@ -938,12 +938,14 @@ p { margin: 0; color: var(--text-dim); }
   justify-content: center;
   text-align: center;
   opacity: 0;
-  animation: sketchIn 0.6s ease both;
+  animation: sketchIn 0.6s ease both, sketchDrift 7s ease-in-out infinite;
 }
-.sketch-badge-1 { top: 8%; right: calc(50% + 250px); transform: rotate(-4deg); animation-delay: 1.7s; }
-.sketch-badge-2 { top: 8%; left: calc(50% + 250px); transform: rotate(3deg); animation-delay: 1.9s; }
-.sketch-badge-3 { top: 46%; right: calc(50% + 260px); transform: rotate(3deg); animation-delay: 2.1s; }
-.sketch-badge-4 { top: 46%; left: calc(50% + 260px); transform: rotate(-3deg); animation-delay: 2.3s; }
+/* Ambient drift once settled — small continuous float/rotate instead of
+   sitting perfectly still after the entrance, like the sparkles already do. */
+.sketch-badge-1 { top: 8%; right: calc(50% + 250px); --base-rot: -4deg; animation-delay: 1.7s, 1.7s; }
+.sketch-badge-2 { top: 8%; left: calc(50% + 250px); --base-rot: 3deg; animation-delay: 1.9s, 1.9s; }
+.sketch-badge-3 { top: 46%; right: calc(50% + 260px); --base-rot: 3deg; animation-delay: 2.1s, 2.1s; }
+.sketch-badge-4 { top: 46%; left: calc(50% + 260px); --base-rot: -3deg; animation-delay: 2.3s, 2.3s; }
 
 .sketch-oval {
   position: absolute;
@@ -982,6 +984,10 @@ p { margin: 0; color: var(--text-dim); }
   from { opacity: 0; }
   to { opacity: 1; }
 }
+@keyframes sketchDrift {
+  0%, 100% { transform: translateY(0) rotate(var(--base-rot)); }
+  50% { transform: translateY(-8px) rotate(calc(var(--base-rot) + 2deg)); }
+}
 @keyframes sketchSparkle {
   0% { opacity: 0; transform: scale(0.5) rotate(0deg); }
   15% { opacity: 1; transform: scale(1) rotate(0deg); }
@@ -1010,7 +1016,7 @@ p { margin: 0; color: var(--text-dim); }
     right: auto;
     bottom: auto;
     width: 160px;
-    transform: none !important;
+    --base-rot: 0deg;
   }
   .sketch-sparkle { display: none; }
 }
@@ -1084,41 +1090,27 @@ p { margin: 0; color: var(--text-dim); }
 .work-nav-hint:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(255, 106, 57, 0.35); }
 .work-nav-hint:hover span { transform: translateX(3px); }
 
-/* Stair-step cascade of real project screenshots, each framed like a tiny
-   browser window — the "something to look at" the intro slide was missing.
-   Kept monochrome (grey traffic-light dots, not red/yellow/green) and with
-   just a calm offset/depth instead of the fanned-out playing-card tilt. */
-.work-intro-stack {
+/* Real, interactive 3D laptop (drag to orbit within a limited range, gentle
+   idle sway) with a live "typing code" animation on its screen — the
+   "something to look at" the intro slide was missing. Replaces the old flat
+   screenshot cascade. */
+.work-laptop-3d-wrap {
   position: relative;
-  width: min(46vw, 460px);
-  height: 375px;
+  width: min(62vw, 640px);
+  height: 520px;
   flex-shrink: 0;
-}
-.work-intro-card {
-  position: absolute;
-  width: 82%;
-  border-radius: 8px;
-  overflow: hidden;
-  border: 1px solid var(--line);
-  background: var(--surface);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
   opacity: 0;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  animation: introCardIn 0.6s ease both;
+  animation: introCardIn 0.6s ease 0.1s both;
 }
-.work-intro-card-bar { display: flex; gap: 4px; padding: 7px 9px; background: #1c1c1c; }
-.work-intro-card-bar i { width: 6px; height: 6px; border-radius: 50%; background: #55555a; display: block; }
-.work-intro-card img { display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; object-position: top; }
-
-.work-intro-card-1 { top: 0; left: 0; z-index: 1; animation-delay: 0.1s; }
-.work-intro-card-2 { top: 14%; left: 11%; z-index: 2; animation-delay: 0.22s; }
-.work-intro-card-3 { top: 28%; left: 22%; z-index: 3; animation-delay: 0.34s; }
-.work-intro-stack:hover .work-intro-card-1 { transform: translate(-6px, -4px); box-shadow: 0 24px 44px rgba(0, 0, 0, 0.3); }
-.work-intro-stack:hover .work-intro-card-2 { transform: translate(0, -6px); box-shadow: 0 24px 44px rgba(0, 0, 0, 0.3); }
-.work-intro-stack:hover .work-intro-card-3 { transform: translate(6px, -8px); box-shadow: 0 24px 44px rgba(0, 0, 0, 0.3); }
+.work-laptop-3d-fallback {
+  position: absolute;
+  inset: 0;
+  border-radius: 8px;
+  background: var(--surface);
+}
 @keyframes introCardIn {
   from { opacity: 0; transform: translateY(16px) scale(0.94); }
-  to { opacity: 1; }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 .work-slide-text {
@@ -1356,9 +1348,27 @@ p { margin: 0; color: var(--text-dim); }
 .project-links a:hover { border-color: var(--accent); color: var(--accent); }
 
 .testimonial {
+  position: relative;
   margin: 1.4rem 0 0;
-  padding-left: 1rem;
+  padding-left: 2.4rem;
   border-left: 2px solid var(--accent);
+}
+.testimonial-label {
+  position: absolute;
+  left: 0.5rem;
+  top: 0.1rem;
+  bottom: 0.1rem;
+  display: flex;
+  align-items: flex-end;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  white-space: nowrap;
 }
 .testimonial p {
   font-family: var(--serif);
@@ -1395,7 +1405,7 @@ p { margin: 0; color: var(--text-dim); }
   .work-slide-text .project-links { justify-content: center; }
   .device-frame, .device-laptop-tilt, .device-ipad-tilt { order: 1; }
   .work-intro-col { max-width: 100%; text-align: center; }
-  .work-intro-stack { width: 68vw; height: 46vw; max-height: 220px; margin: 0 auto; }
+  .work-laptop-3d-wrap { width: 76vw; height: 62vw; max-height: 320px; margin: 0 auto; }
   .device-laptop-tilt { width: 70vw; }
   .device-ipad-tilt { width: 58vw; }
   .device-browser { width: 60vw; }
@@ -2224,6 +2234,7 @@ p { margin: 0; color: var(--text-dim); }
   .work-intro-text { font-size: 0.92rem; }
   .testimonial { padding-left: 0.8rem; margin-top: 1rem; }
   .testimonial p { font-size: 0.85rem; }
+  .testimonial-label { display: none; }
 }
 /* ---------- COOKIE BANNER ---------- */
 
