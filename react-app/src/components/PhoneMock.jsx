@@ -46,6 +46,56 @@ export default function PhoneMock() {
     };
   }, []);
 
+  // Mobile: tilt via device orientation (gyroscope) instead of the cursor —
+  // gives phones/tablets their own ambient 3D interaction (tilt your actual
+  // phone to tilt the mockup) rather than no tilt effect at all.
+  useEffect(() => {
+    if (!window.matchMedia("(max-width: 1000px)").matches) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const el = tiltRef.current;
+    if (!el) return;
+
+    let baseline = null;
+    function onOrientation(e) {
+      if (e.beta == null || e.gamma == null) return;
+      if (!baseline) baseline = { beta: e.beta, gamma: e.gamma };
+      const dBeta = Math.max(-16, Math.min(16, e.beta - baseline.beta));
+      const dGamma = Math.max(-16, Math.min(16, e.gamma - baseline.gamma));
+      el.style.transform = `rotateX(${(-dBeta / 16) * 8}deg) rotateY(${(dGamma / 16) * 8}deg)`;
+    }
+    function startListening() {
+      window.addEventListener("deviceorientation", onOrientation);
+    }
+    function requestAndStart() {
+      const DOE = window.DeviceOrientationEvent;
+      if (DOE && typeof DOE.requestPermission === "function") {
+        DOE.requestPermission()
+          .then((state) => {
+            if (state === "granted") startListening();
+          })
+          .catch(() => {});
+      } else {
+        startListening();
+      }
+    }
+    // iOS requires a user gesture to grant motion permission — piggyback on
+    // the visitor's first tap/scroll anywhere on the page instead of adding
+    // a dedicated "enable motion" button to the hero.
+    function onFirstGesture() {
+      requestAndStart();
+      window.removeEventListener("touchend", onFirstGesture);
+      window.removeEventListener("click", onFirstGesture);
+    }
+    window.addEventListener("touchend", onFirstGesture, { once: true });
+    window.addEventListener("click", onFirstGesture, { once: true });
+
+    return () => {
+      window.removeEventListener("deviceorientation", onOrientation);
+      window.removeEventListener("touchend", onFirstGesture);
+      window.removeEventListener("click", onFirstGesture);
+    };
+  }, []);
+
   return (
     <div className="phone-tilt" ref={tiltRef}>
       <div className="phone-mock">
