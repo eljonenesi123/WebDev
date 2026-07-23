@@ -25,11 +25,12 @@ function useCodeScreenTexture() {
 
   if (!canvasRef.current) {
     const canvas = document.createElement("canvas");
-    canvas.width = 896;
-    canvas.height = 560;
+    canvas.width = 1280;
+    canvas.height = 800;
     canvasRef.current = canvas;
     const tex = new THREE.CanvasTexture(canvas);
     tex.colorSpace = THREE.SRGBColorSpace;
+    tex.anisotropy = 8;
     textureRef.current = tex;
   }
 
@@ -37,13 +38,13 @@ function useCodeScreenTexture() {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
     const { width, height } = canvas;
-    const lineHeight = 43;
+    const lineHeight = 61;
 
-    const sidebarW = 44;
-    const gutterW = 54;
-    const titleBarH = 40;
+    const sidebarW = 64;
+    const gutterW = 76;
+    const titleBarH = 56;
     const contentX = sidebarW + gutterW;
-    const startX = contentX + 16;
+    const startX = contentX + 24;
 
     function draw() {
       // editor body
@@ -57,21 +58,21 @@ function useCodeScreenTexture() {
       dotColors.forEach((c, i) => {
         ctx.beginPath();
         ctx.fillStyle = c;
-        ctx.arc(20 + i * 22, titleBarH / 2, 6, 0, Math.PI * 2);
+        ctx.arc(28 + i * 32, titleBarH / 2, 9, 0, Math.PI * 2);
         ctx.fill();
       });
-      ctx.font = "500 15px 'JetBrains Mono', monospace";
+      ctx.font = "500 21px 'JetBrains Mono', monospace";
       ctx.fillStyle = "#a9a6ad";
       ctx.textBaseline = "middle";
-      ctx.fillText("developer.js", contentX + 4, titleBarH / 2 + 1);
+      ctx.fillText("developer.js", contentX + 6, titleBarH / 2 + 1);
 
       // sidebar (activity bar)
       ctx.fillStyle = "#1c1a20";
       ctx.fillRect(0, titleBarH, sidebarW, height - titleBarH);
-      const iconY = [titleBarH + 34, titleBarH + 74, titleBarH + 114];
+      const iconY = [titleBarH + 49, titleBarH + 106, titleBarH + 163];
       iconY.forEach((y, i) => {
         ctx.fillStyle = i === 0 ? "#e8e6e1" : "#55525a";
-        ctx.fillRect(sidebarW / 2 - 9, y - 9, 18, 18);
+        ctx.fillRect(sidebarW / 2 - 13, y - 13, 26, 26);
       });
 
       // gutter
@@ -85,13 +86,13 @@ function useCodeScreenTexture() {
 
       const shown = FULL_TEXT.slice(0, stateRef.current.charIndex);
       const lines = shown.split("\n");
-      ctx.font = "600 28px 'JetBrains Mono', monospace";
+      ctx.font = "600 40px 'JetBrains Mono', monospace";
       ctx.textBaseline = "top";
-      let y = 63;
+      let y = 90;
       lines.forEach((line, i) => {
         ctx.fillStyle = "#5a5760";
         ctx.textAlign = "right";
-        ctx.fillText(String(i + 1), sidebarW + gutterW - 16, y + 2);
+        ctx.fillText(String(i + 1), sidebarW + gutterW - 24, y + 3);
         ctx.textAlign = "left";
 
         let x = startX;
@@ -115,9 +116,9 @@ function useCodeScreenTexture() {
       if (stateRef.current.cursorOn) {
         const lastLine = lines[lines.length - 1] || "";
         const cursorX = startX + ctx.measureText(lastLine).width;
-        const cursorY = 63 + Math.max(0, lines.length - 1) * lineHeight;
+        const cursorY = 90 + Math.max(0, lines.length - 1) * lineHeight;
         ctx.fillStyle = "#b5502a";
-        ctx.fillRect(cursorX + 3, cursorY, 14, 31);
+        ctx.fillRect(cursorX + 4, cursorY, 20, 44);
       }
 
       textureRef.current.needsUpdate = true;
@@ -224,7 +225,7 @@ function LaptopModel() {
 
 export default function WorkLaptop3D() {
   return (
-    <Canvas dpr={1} camera={{ fov: 32, position: [0, 0, 5] }} gl={{ antialias: false, alpha: true, powerPreference: "low-power" }}>
+    <Canvas dpr={[1, 2]} camera={{ fov: 32, position: [0, 0, 5] }} gl={{ antialias: true, alpha: true }}>
       <ambientLight intensity={1.1} />
       <directionalLight position={[3, 4, 3]} intensity={1.3} />
       <directionalLight position={[-3, -1, -2]} intensity={0.35} />

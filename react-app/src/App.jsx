@@ -209,7 +209,25 @@ function ScrollCue() {
         type="button"
         className="scroll-cue-btn"
         aria-label={`Scroll to ${nextLabel}`}
-        onClick={() => window.scrollBy({ top: window.innerHeight * 0.9, behavior: "smooth" })}
+        onClick={() => {
+          // Snap to the next section's actual top — a fixed 0.9-viewport
+          // scroll used to strand the view between two sections (mobile has
+          // no scroll-snap to correct it).
+          const els = SCROLL_CUE_SECTIONS.map((s) => document.querySelector(s)).filter(Boolean);
+          let closest = 0;
+          let closestDist = Infinity;
+          els.forEach((el, i) => {
+            const dist = Math.abs(el.getBoundingClientRect().top);
+            if (dist < closestDist) {
+              closestDist = dist;
+              closest = i;
+            }
+          });
+          const next = els[closest + 1];
+          // scrollTo with a computed Y rather than scrollIntoView — the
+          // latter consistently landed ~26px short here.
+          if (next) window.scrollTo({ top: next.getBoundingClientRect().top + window.scrollY, behavior: "smooth" });
+        }}
       >
         <svg className="scroll-cue-arrow" viewBox="0 0 40 60" aria-hidden="true">
           <filter id="pencilRoughCue" x="-60%" y="-20%" width="220%" height="140%">
