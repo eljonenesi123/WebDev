@@ -217,6 +217,9 @@ export default function WorkCarousel() {
         onTouchEnd={onTouchEnd}
       >
         <div className="work-slide work-slide-intro">
+          <svg className="work-intro-blob" viewBox="0 0 500 500" aria-hidden="true">
+            <path d="M250,60 C340,50 430,110 440,210 C450,320 400,420 290,440 C180,460 70,400 55,290 C40,180 100,75 250,60 Z" />
+          </svg>
           <div className="work-intro-col">
             <p className="work-intro-count">3 live projects</p>
             <h2 className="section-title">{t("work.title", "Work")}</h2>
