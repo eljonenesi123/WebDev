@@ -156,6 +156,7 @@ const SCROLL_CUE_LABELS = ["Work", "Skills", "Process", "Services", "Estimator",
 
 function ScrollCue() {
   const [hidden, setHidden] = useState(false);
+  const [suppressForWork, setSuppressForWork] = useState(false);
   const [nextLabel, setNextLabel] = useState(SCROLL_CUE_LABELS[0]);
 
   useEffect(() => {
@@ -169,10 +170,34 @@ function ScrollCue() {
     return () => observer.disconnect();
   }, []);
 
+  // The carousel can advance by tap alone, with no page scroll at all — react
+  // to that immediately instead of waiting for the next scroll/resize tick.
+  useEffect(() => {
+    const carousel = document.getElementById("work-carousel");
+    const workSection = document.querySelector(".work");
+    if (!carousel || !workSection) return;
+    function check() {
+      const r = workSection.getBoundingClientRect();
+      const workFillsScreen = r.top <= window.innerHeight * 0.1 && r.bottom >= window.innerHeight * 0.9;
+      const onLastSlide = carousel.getAttribute("data-on-last-slide") === "true";
+      setSuppressForWork(workFillsScreen && !onLastSlide);
+    }
+    const observer = new MutationObserver(check);
+    observer.observe(carousel, { attributes: true, attributeFilter: ["data-on-last-slide"] });
+    check();
+    return () => observer.disconnect();
+  }, []);
+
   // Track which section is currently closest to the top of the viewport so
-  // the label always names the one right after it.
+  // the label always names the one right after it. Also, while the Work
+  // carousel fills the screen and isn't on its last slide yet, suppress this
+  // cue entirely — it's fixed bottom-right on every section, the same corner
+  // as the carousel's own next-slide arrow, and a "scroll to Skills" hint is
+  // both visually colliding with and semantically premature over "next
+  // project" until the carousel is actually done.
   useEffect(() => {
     const els = SCROLL_CUE_SECTIONS.map((s) => document.querySelector(s)).filter(Boolean);
+    const workSection = document.querySelector(".work");
     if (!els.length) return;
     let raf = null;
     function update() {
@@ -187,6 +212,14 @@ function ScrollCue() {
         }
       });
       setNextLabel(SCROLL_CUE_LABELS[closest] || "");
+
+      if (workSection) {
+        const r = workSection.getBoundingClientRect();
+        const workFillsScreen = r.top <= window.innerHeight * 0.1 && r.bottom >= window.innerHeight * 0.9;
+        const carousel = document.getElementById("work-carousel");
+        const onLastSlide = carousel ? carousel.getAttribute("data-on-last-slide") === "true" : true;
+        setSuppressForWork(workFillsScreen && !onLastSlide);
+      }
     }
     function onScroll() {
       if (raf) return;
@@ -203,7 +236,7 @@ function ScrollCue() {
   }, []);
 
   return (
-    <div className={"scroll-cue" + (hidden ? " is-hidden" : "")}>
+    <div className={"scroll-cue" + (hidden || suppressForWork ? " is-hidden" : "")}>
       <span className="scroll-cue-label">{nextLabel}</span>
       <button
         type="button"

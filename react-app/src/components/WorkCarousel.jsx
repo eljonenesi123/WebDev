@@ -30,7 +30,19 @@ export default function WorkCarousel() {
   const [want3D, setWant3D] = useState(false);
   const [isNear3D, setIsNear3D] = useState(false);
 
-  const goTo = (i) => setCurrent(Math.max(0, Math.min(TOTAL - 1, i)));
+  // Guarded here (not just in the wheel handler below) so a mis-tapped or
+  // double-tapped arrow/dot on mobile can't queue a second jump mid-transition
+  // — that's what was leaving the carousel visually stuck between two slides.
+  const goTo = (i) => {
+    if (isSlidingRef.current) return;
+    const next = Math.max(0, Math.min(TOTAL - 1, i));
+    setCurrent((cur) => {
+      if (next === cur) return cur;
+      isSlidingRef.current = true;
+      setTimeout(() => { isSlidingRef.current = false; }, SLIDE_MS);
+      return next;
+    });
+  };
 
   // Fetch the 3D laptop chunk once (want3D, never unset — the browser keeps
   // the module cached) once Work is within ~600px of the viewport. But only
@@ -108,14 +120,10 @@ export default function WorkCarousel() {
       if (forward && current < TOTAL - 1) {
         e.preventDefault();
         e.stopImmediatePropagation();
-        isSlidingRef.current = true;
-        setTimeout(() => { isSlidingRef.current = false; }, SLIDE_MS);
         goTo(current + 1);
       } else if (!forward && current > 0) {
         e.preventDefault();
         e.stopImmediatePropagation();
-        isSlidingRef.current = true;
-        setTimeout(() => { isSlidingRef.current = false; }, SLIDE_MS);
         goTo(current - 1);
       }
       // else: already at the first/last slide in that direction — let the
@@ -174,6 +182,7 @@ export default function WorkCarousel() {
       <div
         className={"work-carousel pos-" + current}
         id="work-carousel"
+        data-on-last-slide={current === TOTAL - 1}
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
       >
