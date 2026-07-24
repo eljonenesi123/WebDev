@@ -15,7 +15,6 @@ import WorkCarousel from "./components/WorkCarousel";
 import ProcessPath from "./components/ProcessPath";
 import Estimator from "./components/Estimator";
 import ContactForm from "./components/ContactForm";
-import MinimalistHeroDemo from "./components/ui/minimalist-hero-demo";
 
 gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
@@ -846,7 +845,7 @@ export default function App() {
       <ScrollCue />
 
       <main id="top">
-        <MinimalistHeroDemo />
+        <Hero />
         <WorkCarousel />
         <Skills />
         <ProcessPath />
