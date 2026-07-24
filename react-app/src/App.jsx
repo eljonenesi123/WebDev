@@ -321,8 +321,57 @@ function Hero() {
   );
 }
 
+const SKILLS = [
+  {
+    name: "JavaScript", rot: -7,
+    icon: <><rect width="24" height="24" rx="4" fill="#f0db4f" /><path d="M6.5 17.3c.4.7 1 1.2 2 1.2 1 0 1.7-.5 1.7-1.6v-5.4h-1.6v5.4c0 .5-.2.7-.6.7-.4 0-.6-.3-.8-.6l-1.7.3zm5.7-.2c.5.9 1.5 1.5 2.9 1.5 1.5 0 2.6-.8 2.6-2.2 0-1.3-.8-1.9-2.1-2.4l-.4-.2c-.7-.3-1-.5-1-1 0-.4.3-.7.8-.7.5 0 .8.2 1.1.7l1.3-.8c-.5-.9-1.2-1.3-2.4-1.3-1.4 0-2.4.9-2.4 2.1 0 1.2.7 1.8 1.9 2.3l.4.2c.8.3 1.2.6 1.2 1.1 0 .4-.4.8-1.1.8-.8 0-1.2-.4-1.6-1l-1.4.7z" /></>,
+  },
+  {
+    name: "CSS3", rot: 5,
+    icon: <><path fill="#264de4" d="M3.5 2h17l-1.5 17L12 22 5 19z" /><path fill="#2965f1" d="M12 4v16.4l5.7-1.9L19 4z" /><path fill="#ebebeb" d="M12 12.8H8.9L8.7 10H12V7H5.6l.1 1.2L6.4 15h5.6zM12 17.5l-3-.8-.2-2.2H6l.4 4.4 5.6 1.6z" /><path fill="#fff" d="M12 12.8h2.8l-.3 3-2.5.7v2.9l5.1-1.4.8-8.9H12zM12 7v3h6.3l.3-3z" /></>,
+  },
+  {
+    name: "HTML5", rot: -4,
+    icon: <><path fill="#e34f26" d="M3.5 2h17l-1.5 17L12 22 5 19z" /><path fill="#ef652a" d="M12 4v16.4l5.7-1.9L19 4z" /><path fill="#ebebeb" d="M12 12.5H9l-.2-2.4H12V7.7H6.2l.5 6.2H12zM12 17.8l-3-.8-.2-2.3H6.4l.4 4.3L12 20.4z" /><path fill="#fff" d="M12 12.5h2.7l-.3 3-2.4.7v2.5l4.6-1.3.7-7.5H12zM12 7.7v2.4h5.4l.2-2.4z" /></>,
+  },
+  {
+    name: "Visual Studio", rot: 8,
+    icon: <g fill="none" stroke="#5c9ee7" strokeWidth="1.6"><path d="M17.5 3.5l-11 5v7l11 5 3-1.5v-14z" /><path d="M6.5 8.5l8 3.5-8 3.5" /></g>,
+  },
+  {
+    name: "Node.js", rot: -6,
+    icon: <><path fill="#83cd29" d="M12 1.5L2 7v10l10 5.5 10-5.5V7z" /><path fill="#fff" d="M12 5.2L6 8.5v7l6 3.3 6-3.3v-7zM10.8 9h1.3l2.3 6h-1.3l-.5-1.3h-2.3L9.8 15H8.5zm.6 3.6h1.4l-.7-1.9z" /></>,
+  },
+  {
+    name: "WordPress", rot: 4,
+    icon: <><circle cx="12" cy="12" r="10.5" fill="#21759b" /><path fill="#fff" d="M2.6 12a9.4 9.4 0 0 0 5.3 8.5L3.8 8.9a9.3 9.3 0 0 0-1.2 3.1zm16.5-.5c0-1.2-.4-2-.8-2.6-.5-.8-.9-1.4-.9-2.2 0-.9.7-1.7 1.6-1.7h.1a9.4 9.4 0 0 0-14.2 1.8h.6c.9 0 2.3-.1 2.3-.1.5 0 .5.6.1.7 0 0-.5.1-1 .1L9.4 16l2.1-6.3-1.5-4c-.5 0-1-.1-1-.1-.5 0-.4-.7.1-.7 0 0 1.5.1 2.3.1.9 0 2.3-.1 2.3-.1.5 0 .5.6.1.7 0 0-.5.1-1 .1l2.5 7.4.7-2.3c.3-1 .5-1.7.5-2.3zm-6.6 1.4l-2.1 6c1.2.4 2.6.4 3.9 0zm7.7-5c0 .2 0 .5-.1.8L18.2 20a9.4 9.4 0 0 0 2-11.1zM12 2.6A9.4 9.4 0 1 0 21.4 12 9.4 9.4 0 0 0 12 2.6zm0 19.4A10 10 0 1 1 22 12a10 10 0 0 1-10 10z" /></>,
+  },
+  {
+    name: "Git", rot: -8,
+    icon: <path fill="#f34f29" d="M23.5 11.3L12.7.5a1.6 1.6 0 0 0-2.3 0L8.2 2.7l2.8 2.8a2 2 0 0 1 2.5 1.9 2 2 0 0 1-2 2 2 2 0 0 1-2-2 2 2 0 0 1 .1-.6L6.9 4.1.5 10.4a1.6 1.6 0 0 0 0 2.3l10.8 10.8a1.6 1.6 0 0 0 2.3 0l10.8-10.8a1.6 1.6 0 0 0 .1-.4 1.6 1.6 0 0 0 0-1zM9.4 18.6a2 2 0 0 1-2-2 2 2 0 0 1 2-2 2 2 0 0 1 2 2 2 2 0 0 1-2 2zm7-7a2 2 0 0 1-.9-.2v5.4a2 2 0 1 1-1.6 0V11a2 2 0 1 1 2.5-1.9 2 2 0 0 1-2 2z" />,
+  },
+  {
+    name: "GitHub", rot: 6,
+    icon: <path fill="currentColor" d="M12 .5A11.5 11.5 0 0 0 .5 12c0 5.1 3.3 9.4 7.9 11 .6.1.8-.3.8-.6v-2.2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.7-1.3-1.7-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.7 1.3 3.4 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.8 0-1.3.4-2.3 1.2-3.2-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.6.2 2.8.1 3.1.8.9 1.2 1.9 1.2 3.2 0 4.5-2.7 5.5-5.3 5.8.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5z" />,
+  },
+];
+
 function Skills() {
   const { t } = useTranslation();
+  const gridRef = useRef(null);
+  const [revealed, setRevealed] = useState(false);
+
+  useEffect(() => {
+    const el = gridRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) setRevealed(true); },
+      { threshold: 0.2 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <section className="skills" id="skills">
       <h2 className="section-title">{t("skills.title", "Skills & Experience")}</h2>
@@ -339,39 +388,24 @@ function Skills() {
         .
       </p>
 
-      <div className="skills-grid">
-        <div className="skill-item">
-          <svg viewBox="0 0 24 24" width="40" height="40"><rect width="24" height="24" rx="4" fill="#f0db4f" /><path d="M6.5 17.3c.4.7 1 1.2 2 1.2 1 0 1.7-.5 1.7-1.6v-5.4h-1.6v5.4c0 .5-.2.7-.6.7-.4 0-.6-.3-.8-.6l-1.7.3zm5.7-.2c.5.9 1.5 1.5 2.9 1.5 1.5 0 2.6-.8 2.6-2.2 0-1.3-.8-1.9-2.1-2.4l-.4-.2c-.7-.3-1-.5-1-1 0-.4.3-.7.8-.7.5 0 .8.2 1.1.7l1.3-.8c-.5-.9-1.2-1.3-2.4-1.3-1.4 0-2.4.9-2.4 2.1 0 1.2.7 1.8 1.9 2.3l.4.2c.8.3 1.2.6 1.2 1.1 0 .4-.4.8-1.1.8-.8 0-1.2-.4-1.6-1l-1.4.7z" /></svg>
-          <span>JavaScript</span>
-        </div>
-        <div className="skill-item">
-          <svg viewBox="0 0 24 24" width="40" height="40"><path fill="#264de4" d="M3.5 2h17l-1.5 17L12 22 5 19z" /><path fill="#2965f1" d="M12 4v16.4l5.7-1.9L19 4z" /><path fill="#ebebeb" d="M12 12.8H8.9L8.7 10H12V7H5.6l.1 1.2L6.4 15h5.6zM12 17.5l-3-.8-.2-2.2H6l.4 4.4 5.6 1.6z" /><path fill="#fff" d="M12 12.8h2.8l-.3 3-2.5.7v2.9l5.1-1.4.8-8.9H12zM12 7v3h6.3l.3-3z" /></svg>
-          <span>CSS3</span>
-        </div>
-        <div className="skill-item">
-          <svg viewBox="0 0 24 24" width="40" height="40"><path fill="#e34f26" d="M3.5 2h17l-1.5 17L12 22 5 19z" /><path fill="#ef652a" d="M12 4v16.4l5.7-1.9L19 4z" /><path fill="#ebebeb" d="M12 12.5H9l-.2-2.4H12V7.7H6.2l.5 6.2H12zM12 17.8l-3-.8-.2-2.3H6.4l.4 4.3L12 20.4z" /><path fill="#fff" d="M12 12.5h2.7l-.3 3-2.4.7v2.5l4.6-1.3.7-7.5H12zM12 7.7v2.4h5.4l.2-2.4z" /></svg>
-          <span>HTML5</span>
-        </div>
-        <div className="skill-item">
-          <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="#5c9ee7" strokeWidth="1.6"><path d="M17.5 3.5l-11 5v7l11 5 3-1.5v-14z" /><path d="M6.5 8.5l8 3.5-8 3.5" /></svg>
-          <span>Visual Studio</span>
-        </div>
-        <div className="skill-item">
-          <svg viewBox="0 0 24 24" width="40" height="40"><path fill="#83cd29" d="M12 1.5L2 7v10l10 5.5 10-5.5V7z" /><path fill="#fff" d="M12 5.2L6 8.5v7l6 3.3 6-3.3v-7zM10.8 9h1.3l2.3 6h-1.3l-.5-1.3h-2.3L9.8 15H8.5zm.6 3.6h1.4l-.7-1.9z" /></svg>
-          <span>Node.js</span>
-        </div>
-        <div className="skill-item">
-          <svg viewBox="0 0 24 24" width="40" height="40"><circle cx="12" cy="12" r="10.5" fill="#21759b" /><path fill="#fff" d="M2.6 12a9.4 9.4 0 0 0 5.3 8.5L3.8 8.9a9.3 9.3 0 0 0-1.2 3.1zm16.5-.5c0-1.2-.4-2-.8-2.6-.5-.8-.9-1.4-.9-2.2 0-.9.7-1.7 1.6-1.7h.1a9.4 9.4 0 0 0-14.2 1.8h.6c.9 0 2.3-.1 2.3-.1.5 0 .5.6.1.7 0 0-.5.1-1 .1L9.4 16l2.1-6.3-1.5-4c-.5 0-1-.1-1-.1-.5 0-.4-.7.1-.7 0 0 1.5.1 2.3.1.9 0 2.3-.1 2.3-.1.5 0 .5.6.1.7 0 0-.5.1-1 .1l2.5 7.4.7-2.3c.3-1 .5-1.7.5-2.3zm-6.6 1.4l-2.1 6c1.2.4 2.6.4 3.9 0zm7.7-5c0 .2 0 .5-.1.8L18.2 20a9.4 9.4 0 0 0 2-11.1zM12 2.6A9.4 9.4 0 1 0 21.4 12 9.4 9.4 0 0 0 12 2.6zm0 19.4A10 10 0 1 1 22 12a10 10 0 0 1-10 10z" /></svg>
-          <span>WordPress</span>
-        </div>
-        <div className="skill-item">
-          <svg viewBox="0 0 24 24" width="40" height="40"><path fill="#f34f29" d="M23.5 11.3L12.7.5a1.6 1.6 0 0 0-2.3 0L8.2 2.7l2.8 2.8a2 2 0 0 1 2.5 1.9 2 2 0 0 1-2 2 2 2 0 0 1-2-2 2 2 0 0 1 .1-.6L6.9 4.1.5 10.4a1.6 1.6 0 0 0 0 2.3l10.8 10.8a1.6 1.6 0 0 0 2.3 0l10.8-10.8a1.6 1.6 0 0 0 .1-.4 1.6 1.6 0 0 0 0-1zM9.4 18.6a2 2 0 0 1-2-2 2 2 0 0 1 2-2 2 2 0 0 1 2 2 2 2 0 0 1-2 2zm7-7a2 2 0 0 1-.9-.2v5.4a2 2 0 1 1-1.6 0V11a2 2 0 1 1 2.5-1.9 2 2 0 0 1-2 2z" /></svg>
-          <span>Git</span>
-        </div>
-        <div className="skill-item">
-          <svg viewBox="0 0 24 24" width="40" height="40" fill="currentColor"><path d="M12 .5A11.5 11.5 0 0 0 .5 12c0 5.1 3.3 9.4 7.9 11 .6.1.8-.3.8-.6v-2.2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.7-1.3-1.7-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.7 1.3 3.4 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.8 0-1.3.4-2.3 1.2-3.2-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.6.2 2.8.1 3.1.8.9 1.2 1.9 1.2 3.2 0 4.5-2.7 5.5-5.3 5.8.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5z" /></svg>
-          <span>GitHub</span>
-        </div>
+      <div className={"skills-grid" + (revealed ? " is-revealed" : "")} ref={gridRef}>
+        {SKILLS.map((s, i) => (
+          <div
+            className="skill-item"
+            key={s.name}
+            style={{ "--base-rot": `${s.rot}deg`, "--i": i }}
+          >
+            <div className="skill-item-inner">
+              <span className="skill-sketch-frame" aria-hidden="true">
+                <svg viewBox="0 0 100 100">
+                  <path d="M50,6 C74,5 95,24 96,49 C97,75 76,95 50,96 C25,97 5,77 4,51 C3,26 25,7 50,6 Z" />
+                </svg>
+              </span>
+              <svg className="skill-icon" viewBox="0 0 24 24" width="34" height="34">{s.icon}</svg>
+              <span className="skill-label">{s.name}</span>
+            </div>
+          </div>
+        ))}
       </div>
     </section>
   );
