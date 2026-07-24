@@ -9,6 +9,8 @@
   --mono: "Architects Daughter", cursive;
   --sans: "Architects Daughter", cursive;
   --serif: "Architects Daughter", cursive;
+
+  --header-h: 92px;
 }
 
 /* ---------- LOADING SPLASH ---------- */
@@ -198,11 +200,28 @@ p { margin: 0; color: var(--text-dim); }
 /* ---------- TOPBAR ---------- */
 
 .topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 1.6rem 6vw;
   border-bottom: 2px solid var(--text);
+  background: var(--bg);
+}
+/* Page content pushed down by exactly the fixed header's height, so
+   nothing loads hidden underneath it, and every section's scroll target
+   (side-nav, scroll-cue, wheel-snap) lands below it rather than partially
+   behind it. */
+main { padding-top: var(--header-h); }
+.work, .skills, .services, .process, .estimator-section, .faq, .contact, .hero {
+  scroll-margin-top: var(--header-h);
+}
+@media (max-width: 760px) {
+  :root { --header-h: 80px; }
 }
 
 .brand {
@@ -759,8 +778,11 @@ p { margin: 0; color: var(--text-dim); }
   50% { transform: translateY(16px) rotate(-5deg); }
 }
 
-/* Make sure real content sits above the background layer */
-.topbar, main, .site-footer {
+/* Make sure real content sits above the background layer. .topbar isn't
+   here — it's fixed (see above) with its own explicit z-index, and this
+   rule's plain `position: relative` would silently override that back to
+   relative since it comes later in the file. */
+main, .site-footer {
   position: relative;
   z-index: 1;
 }

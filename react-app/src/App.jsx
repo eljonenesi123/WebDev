@@ -280,8 +280,16 @@ function ScrollCue() {
           });
           const next = els[closest + 1];
           // scrollTo with a computed Y rather than scrollIntoView — the
-          // latter consistently landed ~26px short here.
-          if (next) window.scrollTo({ top: next.getBoundingClientRect().top + window.scrollY, behavior: "smooth" });
+          // latter consistently landed ~26px short here. Pulled up further
+          // by the fixed header's height so its target isn't left partially
+          // hidden underneath it.
+          if (next) {
+            const headerH = document.querySelector(".topbar")?.offsetHeight || 0;
+            window.scrollTo({
+              top: next.getBoundingClientRect().top + window.scrollY - headerH,
+              behavior: "smooth",
+            });
+          }
         }}
       >
         <svg className="scroll-cue-arrow" viewBox="0 0 40 60" aria-hidden="true">
@@ -865,10 +873,19 @@ export default function App() {
         if (index < 0 || index >= sections.length || isAnimating) return;
         isAnimating = true;
         navButtons.forEach((b, i) => b.classList.toggle("active", i === index));
+        // GSAP's ScrollToPlugin aligns an element's own top with the
+        // viewport top — it doesn't know about the fixed header sitting on
+        // top of that, so later sections need their target explicitly
+        // pulled up by the header's height (index 0 doesn't: main's own
+        // padding-top already reserves that space, so y:0 already lands
+        // right below the header).
+        const headerH = document.querySelector(".topbar")?.offsetHeight || 0;
+        const targetY =
+          index === 0 ? 0 : sections[index].getBoundingClientRect().top + window.scrollY - headerH;
         gsap.to(window, {
           duration: SLIDE_DURATION,
           ease: "power2.inOut",
-          scrollTo: { y: index === 0 ? 0 : sections[index], autoKill: false },
+          scrollTo: { y: targetY, autoKill: false },
           onComplete: () => {
             isAnimating = false;
           },
