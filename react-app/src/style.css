@@ -656,7 +656,7 @@ p { margin: 0; color: var(--text-dim); }
   align-items: center;
   justify-content: center;
   text-align: center;
-  font-family: var(--mono);
+  font-family: "JetBrains Mono", monospace;
   font-size: clamp(0.55rem, 1.3vw, 0.8rem);
   font-size: clamp(0.5rem, 3.6cqw, 0.82rem);
   color: rgba(244, 240, 230, 0.85);
@@ -680,7 +680,7 @@ p { margin: 0; color: var(--text-dim); }
   padding: 0 0.6rem;
 }
 .phone-btn {
-  font-family: var(--mono);
+  font-family: "JetBrains Mono", monospace;
   font-size: clamp(0.48rem, 1.05vw, 0.7rem);
   font-size: clamp(0.44rem, 3.1cqw, 0.72rem);
   padding: 0.45rem 0.4rem;
@@ -879,14 +879,18 @@ p { margin: 0; color: var(--text-dim); }
   animation: blink 1s step-end infinite;
 }
 
+/* Kept on the original mono/sans here specifically — the rest of the site
+   moved to the hand-drawn font, but the phone mockup's own screen text
+   (eyebrow + title, both only ever used inside PhoneMock) stays as it was. */
 .eyebrow {
-  font-family: var(--mono);
+  font-family: "JetBrains Mono", monospace;
   font-size: 0.82rem;
   color: var(--accent);
   margin-bottom: 1.2rem;
 }
 
 .hero-title {
+  font-family: "Inter", sans-serif;
   font-size: clamp(1.7rem, 3vw, 2.6rem);
   line-height: 1.28;
   letter-spacing: -0.01em;
@@ -2668,7 +2672,7 @@ p { margin: 0; color: var(--text-dim); }
 /* ---------- FAQ ---------- */
 
 .faq { text-align: center; }
-.faq .section-title { text-align: center; }
+.faq .section-title { text-align: center; font-family: "Fraunces", serif; }
 
 /* ---------- FAQ AS AN iMESSAGE THREAD ---------- */
 /* Classic iOS Messages bubbles: grey "received" on the left (the question),
@@ -2686,9 +2690,11 @@ p { margin: 0; color: var(--text-dim); }
   gap: 0.65rem;
 }
 
+/* FAQ also kept on its original fonts, not the hand-drawn one the rest of
+   the site moved to. */
 .imessage-date {
   align-self: center;
-  font-family: var(--mono);
+  font-family: "JetBrains Mono", monospace;
   font-size: 0.72rem;
   letter-spacing: 0.04em;
   color: var(--text-dim);
@@ -2706,7 +2712,7 @@ p { margin: 0; color: var(--text-dim); }
   max-width: 78%;
   padding: 0.65rem 1rem;
   border-radius: 18px;
-  font-family: var(--sans);
+  font-family: "Inter", sans-serif;
   font-size: 0.92rem;
   line-height: 1.4;
   opacity: 0;
