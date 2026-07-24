@@ -1986,6 +1986,42 @@ p { margin: 0; color: var(--text-dim); }
 
 .contact { border-bottom: none; }
 
+/* The whole section framed like a device screen — thick rounded border,
+   hand-drawn wavy lines + a soft blob tucked in the top-right corner
+   (same stroke language as .sketch-oval elsewhere) instead of a flat
+   modern gradient blob, so it stays on-brand rather than just imported. */
+.contact-card {
+  position: relative;
+  overflow: hidden;
+  border: 2px solid var(--text);
+  border-radius: 28px;
+  padding: 3rem 3.5rem;
+  background: var(--surface);
+}
+.contact-decor {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: min(55%, 480px);
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+.contact-decor-blob { fill: var(--accent); opacity: 0.12; }
+.contact-decor-line { fill: none; stroke: var(--accent); stroke-width: 1.5; opacity: 0.3; }
+
+.contact-card > .section-title,
+.contact-card > .contact-sub,
+.contact-card > .contact-layout {
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 900px) {
+  .contact-card { padding: 2.2rem 1.6rem; border-radius: 20px; }
+  .contact-decor { opacity: 0.6; }
+}
+
 .contact-sub { max-width: 480px; margin-bottom: 2.5rem; }
 
 .contact-layout {

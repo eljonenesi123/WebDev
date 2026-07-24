@@ -522,11 +522,19 @@ function Contact() {
 
   return (
     <section className="contact" id="contact">
-      <h2 className="section-title">{t("contact.title", "Contact")}</h2>
-      <p className="contact-sub">{t("contact.sub", "Tell me what you're trying to build. I'll reply within a day or two.")}</p>
+      <div className="contact-card">
+        <svg className="contact-decor" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true">
+          <path className="contact-decor-blob" d="M260,-40 C340,-20 400,40 380,110 C360,180 280,190 240,150 C200,110 180,40 220,0 C230,-20 245,-35 260,-40 Z" />
+          <path className="contact-decor-line" d="M180,320 C220,240 200,150 260,95 C320,40 300,-30 345,-70" />
+          <path className="contact-decor-line" d="M140,320 C180,240 160,150 220,95 C280,40 260,-30 305,-70" />
+          <path className="contact-decor-line" d="M100,320 C140,240 120,150 180,95 C240,40 220,-30 265,-70" />
+        </svg>
 
-      <div className="contact-layout">
-        <ContactForm />
+        <h2 className="section-title">{t("contact.title", "Contact")}</h2>
+        <p className="contact-sub">{t("contact.sub", "Tell me what you're trying to build. I'll reply within a day or two.")}</p>
+
+        <div className="contact-layout">
+          <ContactForm />
 
         <div className="contact-side">
           <p className="contact-side-label">{t("contact.alt", "Or reach me directly")}</p>
@@ -554,6 +562,7 @@ function Contact() {
             <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M4 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L14 13l5 2v4c0 1-1 2-2 2C10 21 3 14 3 7c0-1 1-2 1-2z" /></svg>
             <span>Call</span>
           </a>
+          </div>
         </div>
       </div>
     </section>
