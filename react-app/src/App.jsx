@@ -490,7 +490,7 @@ function Services() {
 }
 
 const FAQ_ITEMS = [
-  { q: "How long does a website take to build?", a: "A landing page usually takes 3 to 5 days. Something with several pages or a contact form takes 1 to 2 weeks. It depends on how much content you already have ready." },
+  { q: "How long does a website take to build?", a: "A landing page usually takes 3 to 5 days. Something with several pages or a contact form takes 1 to 2 weeks. It depends on how much content you already have ready.", open: true },
   { q: "Do you work with clients outside your own country?", a: "Yes. Everything is handled remotely, so location doesn't matter. Most of the process happens over WhatsApp or email anyway." },
   { q: "Will my site work properly on phones?", a: "Yes. Every site I build starts from the mobile layout first, then scales up to desktop, not the other way around." },
   { q: "Can you redesign a site I already have?", a: "Yes. I can rebuild it from scratch or work with what's already there, depending on what shape it's in." },
@@ -506,10 +506,10 @@ function Faq() {
       <div className="imessage-thread">
         <p className="imessage-date">Today</p>
         {FAQ_ITEMS.map((item) => (
-          <div className="imessage-pair" key={item.q}>
-            <p className="imessage-bubble imessage-received">{item.q}</p>
+          <details className="imessage-pair" key={item.q} open={item.open || undefined}>
+            <summary className="imessage-bubble imessage-received">{item.q}</summary>
             <p className="imessage-bubble imessage-sent">{item.a}</p>
-          </div>
+          </details>
         ))}
       </div>
     </section>

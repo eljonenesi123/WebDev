@@ -2369,7 +2369,12 @@ p { margin: 0; color: var(--text-dim); }
   background: #E5E5EA;
   color: #0A0A0A;
   border-bottom-left-radius: 4px;
+  cursor: pointer;
+  list-style: none;
+  touch-action: manipulation;
 }
+.imessage-received::-webkit-details-marker { display: none; }
+.imessage-received:hover { background: #DADADF; }
 .imessage-received::before,
 .imessage-received::after {
   content: "";
