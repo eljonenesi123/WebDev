@@ -89,6 +89,67 @@ body {
   transition: width 0.1s linear;
 }
 
+/* ---------- AMBIENT BACKGROUND SHAPES ---------- */
+/* Fixed behind every section on every page — sections here don't carry
+   their own opaque background (one flat --bg color site-wide), so this
+   sits visibly behind all of them at once instead of needing to be
+   repeated per-section. z-index 0 + first in the DOM keeps it under
+   everything else without needing to touch any other element's stacking. */
+.ambient-shapes {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.ambient-shape {
+  position: absolute;
+  fill: var(--text);
+  opacity: 0.05;
+}
+.ambient-shape-1 {
+  width: min(48vw, 620px);
+  height: min(48vw, 620px);
+  top: -8%;
+  left: -10%;
+  animation: ambientDrift1 46s ease-in-out infinite;
+}
+.ambient-shape-2 {
+  width: min(34vw, 440px);
+  height: min(34vw, 440px);
+  top: 55%;
+  right: -8%;
+  animation: ambientDrift2 58s ease-in-out infinite;
+}
+.ambient-shape-3 {
+  width: min(40vw, 520px);
+  height: min(40vw, 520px);
+  bottom: -12%;
+  left: 30%;
+  animation: ambientDrift3 64s ease-in-out infinite;
+}
+@keyframes ambientDrift1 {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  50% { transform: translate(4vw, 3vh) rotate(12deg); }
+}
+@keyframes ambientDrift2 {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  50% { transform: translate(-3vw, -4vh) rotate(-10deg); }
+}
+@keyframes ambientDrift3 {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  50% { transform: translate(-4vw, 2vh) rotate(8deg); }
+}
+@media (max-width: 700px) {
+  .ambient-shape { opacity: 0.04; }
+  .ambient-shape-1 { width: 70vw; height: 70vw; }
+  .ambient-shape-2 { width: 55vw; height: 55vw; }
+  .ambient-shape-3 { width: 62vw; height: 62vw; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ambient-shape { animation: none; }
+}
+
 /* ---------- CURSOR SPOTLIGHT ---------- */
 .cursor-spotlight {
   position: fixed;

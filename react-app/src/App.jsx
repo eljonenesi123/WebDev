@@ -18,6 +18,28 @@ import ContactForm from "./components/ContactForm";
 
 gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
+// Fixed behind every section (not scoped to one page) — a handful of
+// large, soft abstract shapes drifting slowly across the viewport
+// regardless of scroll position. Pure CSS transform animation, no JS
+// per-frame work, so it costs nothing (this replaced a three.js scene
+// earlier in the project specifically for being too heavy — same mistake
+// wasn't worth repeating here for a purely decorative layer).
+function AmbientShapes() {
+  return (
+    <div className="ambient-shapes" aria-hidden="true">
+      <svg className="ambient-shape ambient-shape-1" viewBox="0 0 400 400">
+        <path d="M200,40 C300,35 365,120 360,210 C355,305 280,365 190,360 C100,355 35,285 40,195 C45,105 110,45 200,40 Z" />
+      </svg>
+      <svg className="ambient-shape ambient-shape-2" viewBox="0 0 400 400">
+        <circle cx="200" cy="200" r="160" />
+      </svg>
+      <svg className="ambient-shape ambient-shape-3" viewBox="0 0 400 400">
+        <path d="M200,60 C280,70 340,140 330,220 C320,300 240,350 165,335 C90,320 45,250 60,175 C75,100 130,50 200,60 Z" />
+      </svg>
+    </div>
+  );
+}
+
 // Full-screen intro shown once on load: logo, name, a quote already used
 // elsewhere on the site (og:description) — slides away upward after a beat
 // to reveal the real page, instead of just appearing.
@@ -868,6 +890,7 @@ export default function App() {
       <LoadingSplash />
       <CookieBanner visible={cookieVisible} onAccept={accept} onDecline={decline} />
 
+      <AmbientShapes />
       <div className="scroll-progress" aria-hidden="true" ref={progressRef}></div>
       <div className="cursor-spotlight" aria-hidden="true" ref={spotlightRef}></div>
       <div className="grain-overlay" aria-hidden="true"></div>
