@@ -6,9 +6,14 @@
   --text-dim: #4A4A4A;
   --accent: #4E3320;
 
-  --mono: "Architects Daughter", cursive;
-  --sans: "Architects Daughter", cursive;
-  --serif: "Architects Daughter", cursive;
+  --mono: "JetBrains Mono", monospace;
+  --sans: "Inter", sans-serif;
+  /* Abril Fatface is now the site's dominant display font (every section
+     title + the hero highlight both key off this) — a handful of specific
+     spots stay hand-drawn ("Architects Daughter", hardcoded rather than
+     through this variable): scroll-cue labels, sketch badge text, skill
+     labels, and the process step marks. */
+  --serif: "Abril Fatface", serif;
 
   --header-h: 92px;
 }
