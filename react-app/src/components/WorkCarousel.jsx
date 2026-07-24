@@ -1,12 +1,64 @@
-import { lazy, Suspense, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { trackEvent } from "../analytics";
 import { useTranslation } from "../i18n";
 import { asset } from "../asset";
 
-// Heavy (three.js) — only fetched once the Work section is actually near
-// the viewport, via the IntersectionObserver-gated `want3D` below, so it
-// never adds to the initial page load.
-const WorkLaptop3D = lazy(() => import("./WorkLaptop3D"));
+// Fanned photo stack on the intro slide — replaced a three.js/WebGL laptop
+// scene (heavy, and laggy on weaker machines even lazy-loaded) with a plain
+// CSS transform fan. Same visual ambition, none of the render-loop cost.
+const STACK_IMAGES = [
+  { src: "/assets/stack-1.webp", rot: -14, lift: 10 },
+  { src: "/assets/stack-2.webp", rot: -5, lift: -6 },
+  { src: "/assets/stack-3.webp", rot: 6, lift: -4 },
+  { src: "/assets/stack-4.webp", rot: 15, lift: 12 },
+];
+
+function PhotoStack() {
+  const tiltRef = useRef(null);
+
+  // Cursor-follow tilt on the whole stack — same technique as the hero
+  // phone and the device mockups elsewhere in this file, applied to a
+  // separate wrapper so it doesn't fight each card's own entrance
+  // animation or hover-lift (both live on different elements below).
+  useEffect(() => {
+    if (window.matchMedia("(max-width: 1000px), (prefers-reduced-motion: reduce)").matches) return;
+    const el = tiltRef.current;
+    if (!el) return;
+    function onMove(e) {
+      const rect = el.getBoundingClientRect();
+      const px = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
+      const py = Math.min(1, Math.max(0, (e.clientY - rect.top) / rect.height));
+      el.style.transform = `rotateX(${(0.5 - py) * 8}deg) rotateY(${(px - 0.5) * 8}deg)`;
+    }
+    function onLeave() {
+      el.style.transform = "rotateX(0deg) rotateY(0deg)";
+    }
+    window.addEventListener("pointermove", onMove);
+    el.addEventListener("pointerleave", onLeave);
+    return () => {
+      window.removeEventListener("pointermove", onMove);
+      el.removeEventListener("pointerleave", onLeave);
+    };
+  }, []);
+
+  return (
+    <div className="photo-stack-tilt" ref={tiltRef}>
+      <div className="photo-stack" aria-hidden="true">
+        {STACK_IMAGES.map((img, i) => (
+          <div
+            className="photo-stack-card"
+            key={img.src}
+            style={{ "--rot": `${img.rot}deg`, "--lift": `${img.lift}px`, "--i": i }}
+          >
+            <div className="photo-stack-card-inner">
+              <img src={asset(img.src)} alt="" loading="lazy" />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 // Work section: horizontal mini-carousel (intro -> laptop -> phone -> browser).
 // Ported 1:1 from script.js's work-carousel IIFE: same transform-based
@@ -27,8 +79,6 @@ export default function WorkCarousel() {
   const topVideoRef = useRef(null);
   const ipadVideoRef = useRef(null);
   const cvVideoRef = useRef(null);
-  const [want3D, setWant3D] = useState(false);
-  const [isNear3D, setIsNear3D] = useState(false);
 
   // Guarded here (not just in the wheel handler below) so a mis-tapped or
   // double-tapped arrow/dot on mobile can't queue a second jump mid-transition
@@ -43,26 +93,6 @@ export default function WorkCarousel() {
       return next;
     });
   };
-
-  // Fetch the 3D laptop chunk once (want3D, never unset — the browser keeps
-  // the module cached) once Work is within ~600px of the viewport. But only
-  // keep the actual <Canvas> mounted while still that near (isNear3D, which
-  // toggles both ways) — otherwise its render loop and texture-redraw
-  // interval kept running forever in the background even scrolled far away,
-  // which is what was making the rest of the page feel laggy.
-  useEffect(() => {
-    const el = sectionRef.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsNear3D(entry.isIntersecting);
-        if (entry.isIntersecting) setWant3D(true);
-      },
-      { rootMargin: "600px 0px" }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
 
   // Only the visible slide's video should ever load/play — with preload="none"
   // and no autoPlay, each one stays untouched (no network request at all)
@@ -198,12 +228,8 @@ export default function WorkCarousel() {
               See them <span aria-hidden="true">→</span>
             </button>
           </div>
-          <div className="work-laptop-3d-wrap" aria-hidden="true">
-            {want3D && isNear3D && (
-              <Suspense fallback={<div className="work-laptop-3d-fallback" />}>
-                <WorkLaptop3D />
-              </Suspense>
-            )}
+          <div className="work-photo-stack-wrap">
+            <PhotoStack />
           </div>
         </div>
 
