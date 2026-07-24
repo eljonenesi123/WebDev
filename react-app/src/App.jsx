@@ -697,6 +697,35 @@ export default function App() {
     return () => window.removeEventListener("pointermove", onMove);
   }, []);
 
+  // --- Magnetic pull on primary buttons: nudges toward the cursor within a
+  // radius, snaps back on leave (desktop only — no cursor to react to on
+  // touch devices). Re-queries on every move instead of caching the node
+  // list once, since it's only a handful of elements and buttons like the
+  // pricing CTA get replaced when the tier toggle re-renders. ---
+  useEffect(() => {
+    if (window.matchMedia("(max-width: 1000px), (prefers-reduced-motion: reduce)").matches) return;
+    const reach = 70;
+    function onMove(e) {
+      document.querySelectorAll(".btn-primary").forEach((btn) => {
+        const rect = btn.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        const dx = e.clientX - cx;
+        const dy = e.clientY - cy;
+        const dist = Math.hypot(dx, dy);
+        const catchRadius = reach + rect.width / 2;
+        if (dist < catchRadius) {
+          const pull = (1 - dist / catchRadius) * 0.3;
+          btn.style.transform = `translate(${dx * pull}px, ${dy * pull}px)`;
+        } else if (btn.style.transform) {
+          btn.style.transform = "";
+        }
+      });
+    }
+    window.addEventListener("pointermove", onMove);
+    return () => window.removeEventListener("pointermove", onMove);
+  }, []);
+
   // --- GSAP entrance animations + scroll reveals + parallax + wheel-driven
   // section snapping. Ported from script.js as a single effect since it's
   // inherently DOM/scroll-imperative; the DOM structure/classes it queries
@@ -849,6 +878,7 @@ export default function App() {
 
       <div className="scroll-progress" aria-hidden="true" ref={progressRef}></div>
       <div className="cursor-spotlight" aria-hidden="true" ref={spotlightRef}></div>
+      <div className="grain-overlay" aria-hidden="true"></div>
 
       <Header lang={lang} setLang={setLang} menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <SideNav />
