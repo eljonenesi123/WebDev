@@ -1,0 +1,12 @@
+/* Tailwind v4, utilities + theme only — no preflight/reset layer, so it
+   doesn't clobber the existing hand-written base styles in style.css.
+   Semantic color tokens map onto the same CSS variables already defined
+   there, so bg-background/text-foreground track the site's real palette
+   (including its dark-mode override) instead of introducing a second one. */
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+@theme {
+  --color-background: var(--bg);
+  --color-foreground: var(--text);
+}
