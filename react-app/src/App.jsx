@@ -11,6 +11,7 @@ import { asset } from "./asset";
 import CookieBanner from "./components/CookieBanner";
 import PhoneMock from "./components/PhoneMock";
 import SketchBadges from "./components/SketchBadges";
+import WhyStats from "./components/WhyStats";
 import WorkCarousel from "./components/WorkCarousel";
 import ProcessPath from "./components/ProcessPath";
 import Estimator from "./components/Estimator";
@@ -178,7 +179,7 @@ function Header({ lang, setLang, menuOpen, setMenuOpen, theme, setTheme }) {
 
 // --- Side "elevator" nav: 01-08, wired up to the wheel/keyboard section-snap effect below via data-target. ---
 function SideNav() {
-  const targets = [".hero", ".work", ".skills", ".process", ".services", ".estimator-section", ".globe-section", ".faq", ".contact"];
+  const targets = [".hero", ".why-stats", ".work", ".skills", ".process", ".services", ".estimator-section", ".globe-section", ".faq", ".contact"];
   return (
     <nav className="side-nav" aria-label="Section navigation">
       {targets.map((target, i) => (
@@ -193,8 +194,8 @@ function SideNav() {
 // Fixed hand-drawn "keep scrolling" cue, bottom-right on every section,
 // labeled with whichever section comes next. Hides once the last section
 // (Contact) is reached since there's nothing further down to point at.
-const SCROLL_CUE_SECTIONS = [".hero", ".work", ".skills", ".process", ".services", ".estimator-section", ".globe-section", ".faq", ".contact"];
-const SCROLL_CUE_LABELS = ["Work", "Skills", "Process", "Services", "Estimator", "Global Reach", "FAQ", "Contact"];
+const SCROLL_CUE_SECTIONS = [".hero", ".why-stats", ".work", ".skills", ".process", ".services", ".estimator-section", ".globe-section", ".faq", ".contact"];
+const SCROLL_CUE_LABELS = ["Why This Matters", "Work", "Skills", "Process", "Services", "Estimator", "Global Reach", "FAQ", "Contact"];
 
 function ScrollCue() {
   const [hidden, setHidden] = useState(false);
@@ -861,9 +862,9 @@ export default function App() {
       });
 
       document
-        .querySelectorAll(".hero, .work, .skills, .services, .process, .estimator-section, .globe-section, .faq, .contact")
+        .querySelectorAll(".hero, .why-stats, .work, .skills, .services, .process, .estimator-section, .globe-section, .faq, .contact")
         .forEach((section) => {
-          const inner = section.querySelector(".hero-title, .work-grid, .price-card-single, .process-list, .contact-grid");
+          const inner = section.querySelector(".hero-title, .stats-grid, .work-grid, .price-card-single, .process-list, .contact-grid");
           if (!inner) return;
           gsap.fromTo(
             inner,
@@ -882,7 +883,7 @@ export default function App() {
     if (!prefersReducedMotion && !window.matchMedia("(max-width: 760px)").matches) {
       const SLIDE_DURATION = 1.6;
       const sections = Array.from(
-        document.querySelectorAll(".hero, .work, .skills, .services, .process, .estimator-section, .globe-section, .faq, .contact")
+        document.querySelectorAll(".hero, .why-stats, .work, .skills, .services, .process, .estimator-section, .globe-section, .faq, .contact")
       );
       const navButtons = Array.from(document.querySelectorAll(".side-nav button"));
       let isAnimating = false;
@@ -983,6 +984,7 @@ export default function App() {
 
       <main id="top">
         <Hero />
+        <WhyStats />
         <WorkCarousel />
         <Skills />
         <ProcessPath />
