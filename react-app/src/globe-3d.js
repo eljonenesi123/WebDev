@@ -92,6 +92,43 @@ function themeColor() {
   return getComputedStyle(document.documentElement).getPropertyValue("--text").trim() || "#0A0A0A";
 }
 
+// A proper graticule — latitude rings + longitude meridians as actual
+// circles, not a triangulated SphereGeometry wireframe (which draws every
+// diagonal edge of every quad and reads as a dense mesh, not a globe grid).
+function buildGraticule(THREE, color) {
+  const group = new THREE.Group();
+  const mat = new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.22 });
+  const segments = 64;
+
+  for (let lat = -60; lat <= 60; lat += 30) {
+    const latRad = (lat * Math.PI) / 180;
+    const r = Math.cos(latRad);
+    const y = Math.sin(latRad);
+    const pts = [];
+    for (let i = 0; i <= segments; i++) {
+      const theta = (i / segments) * Math.PI * 2;
+      pts.push(new THREE.Vector3(Math.cos(theta) * r, y, Math.sin(theta) * r));
+    }
+    group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), mat));
+  }
+
+  for (let lon = 0; lon < 180; lon += 30) {
+    const lonRad = (lon * Math.PI) / 180;
+    const pts = [];
+    for (let i = 0; i <= segments; i++) {
+      const phi = (i / segments) * Math.PI * 2;
+      pts.push(new THREE.Vector3(
+        Math.sin(phi) * Math.cos(lonRad),
+        Math.cos(phi),
+        Math.sin(phi) * Math.sin(lonRad)
+      ));
+    }
+    group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), mat));
+  }
+
+  return { group, material: mat };
+}
+
 export async function initGlobe3D(container) {
   const [[THREE, { OrbitControls }], geojson] = await Promise.all([
     Promise.all([import(/* @vite-ignore */ THREE_URL), import(/* @vite-ignore */ ORBIT_URL)]),
@@ -109,16 +146,12 @@ export async function initGlobe3D(container) {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   container.appendChild(renderer.domElement);
 
-  const wireGeo = new THREE.SphereGeometry(1, 24, 16);
-  const wireMat = new THREE.MeshBasicMaterial({
-    color: themeColor(), wireframe: true, transparent: true, opacity: 0.16,
-  });
-  const wireSphere = new THREE.Mesh(wireGeo, wireMat);
-  scene.add(wireSphere);
+  const { group: graticule, material: wireMat } = buildGraticule(THREE, themeColor());
+  scene.add(graticule);
 
   const dotGeo = new THREE.BufferGeometry();
-  dotGeo.setAttribute("position", buildLandPositions(THREE, polygons, 16000));
-  const dotMat = new THREE.PointsMaterial({ color: themeColor(), size: 0.012, sizeAttenuation: true });
+  dotGeo.setAttribute("position", buildLandPositions(THREE, polygons, 20000));
+  const dotMat = new THREE.PointsMaterial({ color: themeColor(), size: 0.017, sizeAttenuation: true });
   const dots = new THREE.Points(dotGeo, dotMat);
   scene.add(dots);
 
@@ -173,7 +206,7 @@ export async function initGlobe3D(container) {
     io.disconnect();
     mo.disconnect();
     controls.dispose();
-    wireGeo.dispose();
+    graticule.children.forEach((line) => line.geometry.dispose());
     wireMat.dispose();
     dotGeo.dispose();
     dotMat.dispose();
