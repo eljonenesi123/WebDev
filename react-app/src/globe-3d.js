@@ -1,38 +1,78 @@
 // Real 3D wireframe dotted globe — Three.js loaded at runtime from a CDN
 // (esm.sh, which auto-resolves Three's internal bare imports) rather than
 // as an npm dependency, so it never touches this project's own build or
-// bundle. Only ever imported from GlobeSection.jsx once the section is
-// near the viewport. initGlobe3D(container) returns a cleanup function
-// that fully disposes the scene/renderer/listeners.
+// bundle. Continent dot placement uses real land polygon data (Natural
+// Earth 1:110m land, via jsDelivr's GitHub mirror) instead of a hand-drawn
+// approximation, so it actually traces recognizable landmasses. Only ever
+// imported from GlobeSection.jsx once the section is near the viewport.
+// initGlobe3D(container) returns a cleanup function that fully disposes
+// the scene/renderer/listeners.
 
 const THREE_VERSION = "0.160.0";
 const THREE_URL = `https://esm.sh/three@${THREE_VERSION}`;
 const ORBIT_URL = `https://esm.sh/three@${THREE_VERSION}/examples/jsm/controls/OrbitControls.js`;
+const LAND_GEOJSON_URL =
+  "https://cdn.jsdelivr.net/gh/nvkelso/natural-earth-vector@master/geojson/ne_110m_land.geojson";
 
-// Simplified, decorative continent silhouettes as [lon, lat] rings — not
-// surveyed GIS data, just enough for a recognizable stippled world.
-const CONTINENTS = [
-  [[-17,15],[-10,5],[10,4],[9,-5],[13,-18],[18,-34],[26,-33],[32,-25],[35,-15],[40,-2],[45,10],[43,15],[35,22],[32,31],[25,32],[10,37],[-6,35],[-17,15]],
-  [[-10,36],[0,43],[10,45],[20,42],[30,45],[45,42],[60,55],[75,50],[90,50],[100,55],[110,52],[130,45],[140,45],[150,60],[170,65],[178,68],[150,72],[100,78],[60,78],[40,70],[20,68],[0,65],[-10,55],[-10,36]],
-  [[-170,66],[-160,70],[-140,70],[-120,70],[-95,68],[-80,60],[-65,50],[-60,45],[-70,25],[-82,22],[-97,18],[-105,20],[-115,30],[-125,40],[-130,55],[-155,60],[-170,66]],
-  [[-80,10],[-70,10],[-60,5],[-50,0],[-35,-8],[-38,-20],[-45,-25],[-58,-35],[-68,-45],[-72,-40],[-75,-20],[-80,-5],[-80,10]],
-  [[113,-22],[122,-18],[130,-12],[137,-12],[142,-11],[145,-17],[150,-22],[153,-28],[150,-33],[145,-38],[140,-37],[135,-35],[128,-32],[118,-35],[113,-26],[113,-22]],
-];
-
-function pointInPoly(lon, lat, poly) {
+// Ray-casting point-in-ring test on plain [lon, lat] pairs — a flat 2D
+// test, not spherical, which is a fine approximation at this decorative
+// scale (same simplification the site's earlier hand-drawn version used).
+function pointInRing(lon, lat, ring) {
   let inside = false;
-  for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
-    const [xi, yi] = poly[i], [xj, yj] = poly[j];
+  for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+    const [xi, yi] = ring[i], [xj, yj] = ring[j];
     const hit = yi > lat !== yj > lat && lon < ((xj - xi) * (lat - yi)) / (yj - yi) + xi;
     if (hit) inside = !inside;
   }
   return inside;
 }
-function isLand(lon, lat) {
-  return CONTINENTS.some((poly) => pointInPoly(lon, lat, poly));
+
+function ringBounds(ring) {
+  let minLon = Infinity, maxLon = -Infinity, minLat = Infinity, maxLat = -Infinity;
+  for (const [lon, lat] of ring) {
+    if (lon < minLon) minLon = lon;
+    if (lon > maxLon) maxLon = lon;
+    if (lat < minLat) minLat = lat;
+    if (lat > maxLat) maxLat = lat;
+  }
+  return { minLon, maxLon, minLat, maxLat };
 }
 
-function buildLandPositions(THREE, count) {
+// Each polygon feature: outer ring (land) minus any hole rings (lakes etc),
+// each with a precomputed bbox so most point tests short-circuit cheaply
+// instead of ray-casting against every ring of every one of the 127 land
+// masses for every candidate point.
+function buildPolygons(geojson) {
+  const polys = [];
+  for (const feature of geojson.features) {
+    if (feature.geometry.type !== "Polygon") continue;
+    const [outer, ...holes] = feature.geometry.coordinates;
+    polys.push({
+      outer,
+      outerBounds: ringBounds(outer),
+      holes: holes.map((h) => ({ ring: h, bounds: ringBounds(h) })),
+    });
+  }
+  return polys;
+}
+
+function isLand(lon, lat, polygons) {
+  for (const poly of polygons) {
+    const b = poly.outerBounds;
+    if (lon < b.minLon || lon > b.maxLon || lat < b.minLat || lat > b.maxLat) continue;
+    if (!pointInRing(lon, lat, poly.outer)) continue;
+    let inHole = false;
+    for (const hole of poly.holes) {
+      const hb = hole.bounds;
+      if (lon < hb.minLon || lon > hb.maxLon || lat < hb.minLat || lat > hb.maxLat) continue;
+      if (pointInRing(lon, lat, hole.ring)) { inHole = true; break; }
+    }
+    if (!inHole) return true;
+  }
+  return false;
+}
+
+function buildLandPositions(THREE, polygons, count) {
   const out = [];
   const golden = Math.PI * (3 - Math.sqrt(5));
   for (let i = 0; i < count; i++) {
@@ -43,7 +83,7 @@ function buildLandPositions(THREE, count) {
     const z = Math.sin(theta) * r;
     const lat = (Math.asin(y) * 180) / Math.PI;
     const lon = (Math.atan2(z, x) * 180) / Math.PI;
-    if (isLand(lon, lat)) out.push(x, y, z);
+    if (isLand(lon, lat, polygons)) out.push(x, y, z);
   }
   return new THREE.BufferAttribute(new Float32Array(out), 3);
 }
@@ -53,11 +93,12 @@ function themeColor() {
 }
 
 export async function initGlobe3D(container) {
-  const [THREE, { OrbitControls }] = await Promise.all([
-    import(/* @vite-ignore */ THREE_URL),
-    import(/* @vite-ignore */ ORBIT_URL),
+  const [[THREE, { OrbitControls }], geojson] = await Promise.all([
+    Promise.all([import(/* @vite-ignore */ THREE_URL), import(/* @vite-ignore */ ORBIT_URL)]),
+    fetch(LAND_GEOJSON_URL).then((r) => r.json()),
   ]);
 
+  const polygons = buildPolygons(geojson);
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   const scene = new THREE.Scene();
@@ -76,8 +117,8 @@ export async function initGlobe3D(container) {
   scene.add(wireSphere);
 
   const dotGeo = new THREE.BufferGeometry();
-  dotGeo.setAttribute("position", buildLandPositions(THREE, 9000));
-  const dotMat = new THREE.PointsMaterial({ color: themeColor(), size: 0.015, sizeAttenuation: true });
+  dotGeo.setAttribute("position", buildLandPositions(THREE, polygons, 16000));
+  const dotMat = new THREE.PointsMaterial({ color: themeColor(), size: 0.012, sizeAttenuation: true });
   const dots = new THREE.Points(dotGeo, dotMat);
   scene.add(dots);
 
