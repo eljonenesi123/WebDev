@@ -740,10 +740,11 @@ export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const { visible: cookieVisible, accept, decline, openSettings } = useCookieConsent();
 
+  // Always light on a first visit — the visitor opts into dark via the
+  // toggle rather than the site following their OS-level preference.
   const [theme, setTheme] = useState(() => {
     const saved = localStorage.getItem("theme");
-    if (saved === "dark" || saved === "light") return saved;
-    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    return saved === "dark" ? "dark" : "light";
   });
   useEffect(() => {
     document.documentElement.dataset.theme = theme;

@@ -225,7 +225,7 @@ h1, h2, h3 { font-family: var(--mono); font-weight: 700; margin: 0; }
 
 p { margin: 0; color: var(--text-dim); }
 
-::selection { background: var(--accent); color: #fff; }
+::selection { background: var(--accent); color: var(--bg); }
 
 /* ---------- TOPBAR ---------- */
 
@@ -1022,7 +1022,9 @@ main, .site-footer {
 }
 .btn-primary {
   background: var(--accent);
-  color: #ffffff;
+  /* --bg not a literal white — --accent lightens in dark mode (see
+     :root[data-theme="dark"]), and white-on-light-tan lost contrast there. */
+  color: var(--bg);
   border: 1px solid var(--accent);
   font-weight: 600;
 }
@@ -1209,8 +1211,10 @@ main, .site-footer {
   overflow: hidden;
   /* A fresh accent for this section only (pill, CTA, dots, arrow hover all
      read this variable already) — everything else on the site keeps the
-     brown accent, this section alone moves to black. */
-  --accent: #0A0A0A;
+     brown accent, this section alone moves to black. Reads var(--text)
+     rather than a literal #0A0A0A so it flips to white automatically in
+     dark mode instead of turning invisible against the now-dark page. */
+  --accent: var(--text);
 }
 
 .work-carousel {
@@ -1273,7 +1277,9 @@ main, .site-footer {
   font-style: italic;
   font-size: 0.8rem;
   font-weight: 700;
-  color: #fff;
+  /* --bg instead of a literal white — stays the correct contrast against
+     --accent (now var(--text)) whichever way that flips with the theme. */
+  color: var(--bg);
   background: var(--accent);
   letter-spacing: 0.01em;
   text-transform: uppercase;
@@ -1291,7 +1297,7 @@ main, .site-footer {
   font-style: italic;
   font-weight: 700;
   font-size: 1.05rem;
-  color: #fff;
+  color: var(--bg);
   background: var(--accent);
   border: 1px solid var(--accent);
   border-radius: 30px;
@@ -2087,6 +2093,14 @@ main, .site-footer {
 /* Itemized "receipt" — the estimate is built up as line items with a
    running total, like a real printed ticket, instead of a flat number. */
 .receipt {
+  /* Always a light printed-paper card, in either theme — so its own text
+     (which reads var(--text)/var(--text-dim)/var(--line) below) needs its
+     own always-dark values here too, instead of inheriting the page's,
+     which flip to near-white in dark mode and vanish against this same
+     light background. */
+  --text: #171717;
+  --text-dim: #55524c;
+  --line: rgba(0, 0, 0, 0.15);
   flex: 1 1 0;
   min-width: 0;
   max-width: 320px;
@@ -2196,7 +2210,7 @@ main, .site-footer {
 .process-path-svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
 .process-path-line {
   fill: none;
-  stroke: #000;
+  stroke: var(--text);
   stroke-width: 3.5;
   stroke-linecap: round;
   filter: url(#pencilRough);
