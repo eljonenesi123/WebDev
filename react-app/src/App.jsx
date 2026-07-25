@@ -72,7 +72,7 @@ function LoadingSplash() {
 }
 
 // --- Topbar: brand, desktop nav, language switch, mobile menu toggle+panel. ---
-function Header({ lang, setLang, menuOpen, setMenuOpen }) {
+function Header({ lang, setLang, menuOpen, setMenuOpen, theme, setTheme }) {
   const { t } = useTranslation();
   const panelRef = useRef(null);
   const toggleRef = useRef(null);
@@ -125,6 +125,24 @@ function Header({ lang, setLang, menuOpen, setMenuOpen }) {
             </button>
           ))}
         </div>
+
+        <button
+          type="button"
+          className="theme-toggle"
+          aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+          onClick={() => setTheme((t) => (t === "dark" ? "light" : "dark"))}
+        >
+          {theme === "dark" ? (
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+              <circle cx="12" cy="12" r="4.5" />
+              <path d="M12 2v2.5M12 19.5V22M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2 12h2.5M19.5 12H22M4.2 19.8L6 18M18 6l1.8-1.8" />
+            </svg>
+          ) : (
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M20.7 14.9A8.5 8.5 0 0 1 9.1 3.3a.6.6 0 0 0-.7-.8A9.5 9.5 0 1 0 21.5 15.6a.6.6 0 0 0-.8-.7z" />
+            </svg>
+          )}
+        </button>
 
         <button
           ref={toggleRef}
@@ -722,6 +740,16 @@ export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const { visible: cookieVisible, accept, decline, openSettings } = useCookieConsent();
 
+  const [theme, setTheme] = useState(() => {
+    const saved = localStorage.getItem("theme");
+    if (saved === "dark" || saved === "light") return saved;
+    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  });
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    localStorage.setItem("theme", theme);
+  }, [theme]);
+
   const progressRef = useRef(null);
   const spotlightRef = useRef(null);
 
@@ -946,7 +974,7 @@ export default function App() {
       <div className="cursor-spotlight" aria-hidden="true" ref={spotlightRef}></div>
       <div className="grain-overlay" aria-hidden="true"></div>
 
-      <Header lang={lang} setLang={setLang} menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+      <Header lang={lang} setLang={setLang} menuOpen={menuOpen} setMenuOpen={setMenuOpen} theme={theme} setTheme={setTheme} />
       <SideNav />
       <ScrollCue />
 

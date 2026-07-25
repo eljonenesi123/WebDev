@@ -18,6 +18,31 @@
   --header-h: 92px;
 }
 
+:root[data-theme="dark"] {
+  --bg: #15130F;
+  --surface: #211D17;
+  --line: rgba(255, 255, 255, 0.14);
+  --text: #F2EFE8;
+  --text-dim: #ABA79D;
+  --accent: #E0A46E;
+}
+
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: none;
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+.theme-toggle:hover { border-color: var(--accent); }
+.theme-toggle svg { width: 18px; height: 18px; }
+
 /* ---------- LOADING SPLASH ---------- */
 
 .loading-splash {
