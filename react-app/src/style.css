@@ -1880,10 +1880,10 @@ main, .site-footer {
 
 .skills-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 2.2rem 1.6rem;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 2.6rem 1.4rem;
   margin: 2.8rem auto 0;
-  max-width: 560px;
+  max-width: 660px;
 }
 
 /* Each tool as a hand-drawn "sticker" — a wobbly circle frame at its own
@@ -1924,39 +1924,75 @@ main, .site-footer {
 .skill-item:hover .skill-item-inner {
   transform: scale(1.1) rotate(calc(var(--base-rot) * -1)) translateY(-4px);
 }
+.skill-item.is-active .skill-item-inner {
+  transform: scale(1.1) rotate(calc(var(--base-rot) * -1)) translateY(-4px);
+}
 
-.skill-sketch-frame {
-  position: absolute;
-  top: 0.15rem;
-  width: 66px;
-  height: 66px;
-  pointer-events: none;
+.skill-item { cursor: pointer; }
+
+/* Plain circular badge — monochrome (currentColor) by default in both
+   themes since it just reads var(--text), filling with the tool's own
+   brand color only on hover/tap. --brand/--brand-contrast are set per item
+   inline (App.jsx), the same pattern already used for --base-rot/--i. */
+.skill-badge {
+  position: relative;
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.25s ease;
+  /* Tracks the badge's own current background so icons that punch out an
+     inner numeral/flap as a "cutout" (HTML5/CSS3/Node.js below) stay
+     readable — without this, that cutout stayed pinned to the default
+     --surface color even once the badge filled with a brand color and the
+     ribbon inverted to white, making it nearly invisible against the now-
+     also-light ribbon on hover. */
+  --skill-cutout: var(--surface);
 }
-.skill-sketch-frame svg {
-  width: 100%;
-  height: 100%;
-  fill: var(--surface);
-  stroke: var(--text);
-  stroke-width: 1.6;
-  opacity: 0.7;
-  transition: stroke 0.25s ease, opacity 0.25s ease;
+.skill-badge svg {
+  color: var(--text);
+  transition: color 0.25s ease;
 }
-.skill-item:hover .skill-sketch-frame svg { stroke: var(--accent); opacity: 1; }
 
 .skill-icon {
   position: relative;
   display: block;
 }
 
-.skill-label {
-  position: relative;
-  font-family: "Architects Daughter", cursive;
-  font-size: 0.85rem;
-  color: var(--text-dim);
-  text-align: center;
-  transition: color 0.2s ease;
+/* Name pill — hidden by default, fades in below the badge on hover/tap,
+   filled with the same brand color as the badge. */
+.skill-tooltip {
+  position: absolute;
+  top: calc(100% + 0.55rem);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  background: var(--brand);
+  color: var(--brand-contrast);
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  font-weight: 600;
+  white-space: nowrap;
+  padding: 0.3rem 0.65rem;
+  border-radius: 20px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  z-index: 3;
 }
-.skill-item:hover .skill-label { color: var(--text); }
+
+@media (hover: hover) {
+  .skill-item:hover .skill-badge { background: var(--brand); --skill-cutout: var(--brand); }
+  .skill-item:hover .skill-badge svg { color: var(--brand-contrast); }
+  .skill-item:hover .skill-tooltip { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+/* Touch devices have no hover — tapping toggles this class instead
+   (App.jsx), with a document-level outside-tap listener to dismiss it. */
+.skill-item.is-active .skill-badge { background: var(--brand); --skill-cutout: var(--brand); }
+.skill-item.is-active .skill-badge svg { color: var(--brand-contrast); }
+.skill-item.is-active .skill-tooltip { opacity: 1; transform: translateX(-50%) translateY(0); }
 
 @media (prefers-reduced-motion: reduce) {
   .skills-grid.is-revealed .skill-item { animation: none; opacity: 1; transform: scale(1) rotate(var(--base-rot)); }

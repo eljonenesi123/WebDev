@@ -82,7 +82,15 @@ function buildLandPositions(THREE, polygons, count) {
     const x = Math.cos(theta) * r;
     const z = Math.sin(theta) * r;
     const lat = (Math.asin(y) * 180) / Math.PI;
-    const lon = (Math.atan2(z, x) * 180) / Math.PI;
+    // atan2(x, z) — not atan2(z, x) — so that lon=0 (Greenwich, through
+    // Africa/Europe) lands on the point directly facing the camera
+    // (x=0, z=1) by default, with lon increasing eastward toward the
+    // camera's right (matching +x) and going negative toward the Americas
+    // on the camera's left. The swapped argument order previously put
+    // lon=+90 at screen-center and confined the entire Western Hemisphere
+    // to the hidden back face, which is why Africa (real lon ~0-20°E)
+    // rendered where the Americas (~-60 to -130°W) should have been.
+    const lon = (Math.atan2(x, z) * 180) / Math.PI;
     if (isLand(lon, lat, polygons)) out.push(x, y, z);
   }
   return new THREE.BufferAttribute(new Float32Array(out), 3);
