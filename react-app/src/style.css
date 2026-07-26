@@ -588,7 +588,10 @@ main { padding-top: var(--header-h); }
 
 .hero-visual {
   flex: 1;
+  width: 100%;
   display: flex;
+  flex-direction: column;
+  gap: 1.6rem;
   justify-content: center;
   align-items: center;
   position: relative;
@@ -608,50 +611,69 @@ main { padding-top: var(--header-h); }
   -webkit-user-drag: none;
 }
 
-/* ---------- HERO PHONE MOCK ---------- */
-/* All hero copy/CTAs are overlaid as % zones onto the screen area baked
-   into assets/intro.png (843x1264: hand holding a phone with an empty
-   status bar / 3-dot row / card already composed into the photo). */
+/* ---------- HERO DESK MOCK ---------- */
+/* The mock website UI is overlaid onto the monitor's screen area in
+   assets/hero-desk.webp — a pre-cropped 1536x590 version of the original
+   photo (trimmed to just the monitor + a modest slice of desk, removing
+   the empty transparent margin above/below) so the graphic doesn't carry
+   dead vertical space once it's sized to fit within one viewport. Screen
+   bounds were re-measured against this cropped frame (pixel-scanned for
+   the teal-placeholder region, not eyeballed): x:[444,1089]/y:[83,427],
+   i.e. left 28.91% / top 14.07% / width 41.99% / height 58.31% — see
+   DeskMock.jsx. .desk-screen paints its own solid var(--surface)
+   background over the source image's placeholder gradient, so the overlay
+   reads as a real webpage rendered on the screen, not text floating on
+   top of the stock image, and fully follows the site's own light/dark
+   theme rather than staying fixed. */
 
-.hero-phone-only {
+.hero-mock-only {
   flex-direction: column;
   justify-content: center;
-  padding-top: 2.5rem;
-  padding-bottom: 1.5rem;
+  padding-top: 1.1rem;
+  padding-bottom: 0.9rem;
   gap: 0;
 }
 
-.phone-tilt {
-  transform-style: preserve-3d;
-  transition: transform 0.15s ease-out;
-  will-change: transform;
-}
-
-.phone-mock {
+.desk-mock {
   position: relative;
-  height: min(94vh, 980px);
-  aspect-ratio: 843 / 1264;
-  filter: drop-shadow(0 40px 70px rgba(0, 0, 0, 0.5));
-  animation: phoneFloat 7s ease-in-out infinite, phoneFadeIn 0.8s ease both;
-  /* The overlay text below sizes itself off this box (cqw), not the
-     viewport — a wide-but-short laptop screen shrinks this box via the vh
-     cap above while the viewport WIDTH stays large, so anything sized off
-     vw stayed full-size in a now-smaller box and overflowed it. Container
-     query units track this box's own rendered size instead, at any
-     combination of viewport width/height. */
+  /* Full-bleed breakout — cancels .hero's own 6vw left/right padding
+     exactly (both are hardcoded to the same 6vw on purpose) so the desk
+     touches both screen edges instead of leaving that padding as a visible
+     gap on each side. The generic margin-left:50%+translateX(-50%)
+     centering trick was tried first but doesn't resolve correctly against
+     a flex-item container here, so this uses a direct, exact counter-
+     offset against the known padding value instead of a derived one. */
+  width: calc(100% + 12vw);
+  margin-left: -6vw;
+  /* .hero-visual's align-items:center re-centers this item's oversized
+     margin-box symmetrically (splitting the -6vw offset in half instead of
+     applying it fully), since the margin box is wider than the container —
+     overriding to flex-start here so the margin actually lands the box
+     flush against the viewport edge as intended. */
+  align-self: flex-start;
+  aspect-ratio: 1536 / 590;
+  filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.3));
+  animation: deskFloat 7s ease-in-out infinite, deskFadeIn 0.8s ease both;
+  /* Overlay text below sizes itself off this box (cqw/cqh) so it scales
+     with the box's own rendered width at any viewport size, rather than
+     needing separate breakpoint-by-breakpoint font tuning. */
   container-type: size;
 }
 
-@keyframes phoneFloat {
+@keyframes deskFloat {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-12px); }
+  50% { transform: translateY(-10px); }
 }
-@keyframes phoneFadeIn {
+@keyframes deskFadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
 }
+@keyframes mockTextIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 
-.phone-img {
+.desk-img {
   width: 100%;
   height: 100%;
   display: block;
@@ -660,115 +682,185 @@ main { padding-top: var(--header-h); }
   -webkit-user-drag: none;
 }
 
-.phone-topzone {
+.desk-screen {
   position: absolute;
-  top: 17%;
-  left: 33%;
-  width: 34%;
-  height: 27%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
+  left: 28.91%;
+  top: 14.07%;
+  width: 41.99%;
+  height: 58.31%;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
 }
-.phone-topzone > * {
+.desk-screen > * {
   opacity: 0;
-  animation: phoneTextIn 0.6s ease both;
+  animation: mockTextIn 0.6s ease both;
 }
-.phone-topzone > *:nth-child(1) { animation-delay: 0.45s; }
-.phone-topzone > *:nth-child(2) { animation-delay: 0.58s; }
-@keyframes phoneTextIn {
-  from { opacity: 0; transform: translateY(14px); }
-  to { opacity: 1; transform: translateY(0); }
+.desk-screen > *:nth-child(1) { animation-delay: 0.35s; }
+.desk-screen > *:nth-child(2) { animation-delay: 0.48s; }
+.desk-screen > *:nth-child(3) { animation-delay: 0.6s; }
+
+.desk-browserbar {
+  display: flex;
+  align-items: center;
+  gap: 0.5cqw;
+  flex-shrink: 0;
+  padding: 1cqh 1.6cqw;
 }
-.phone-topzone .phone-eyebrow {
-  font-size: 0.55rem;
-  font-size: clamp(0.5rem, 2.1cqw, 0.62rem);
-  margin-bottom: 0.4rem;
-  color: #fff;
+.desk-browserbar-dot {
+  width: 0.8cqw;
+  height: 0.8cqw;
+  min-width: 3px;
+  min-height: 3px;
+  border-radius: 50%;
+  background: var(--line);
+  flex-shrink: 0;
 }
-.phone-topzone .hero-title {
-  font-size: clamp(0.68rem, 1.5vw, 1rem);
-  font-size: clamp(0.6rem, 4.6cqw, 1.05rem);
-  line-height: 1.25;
-  margin-bottom: 0;
-  color: #f4f0e6;
+.desk-browserbar-url {
+  flex: 1;
+  height: 1.4cqh;
+  min-height: 4px;
+  margin-left: 0.6cqw;
+  border-radius: 6px;
+  background: var(--line);
 }
 
-.phone-caption {
-  position: absolute;
-  top: 44%;
-  left: 33%;
-  width: 34%;
-  height: 12%;
+.desk-nav {
   display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  padding: 0.8cqh 1.6cqw;
+  border-bottom: 1px solid var(--line);
+}
+.desk-nav-mark {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 700;
+  font-size: 1.5cqw;
+  background: var(--text);
+  color: var(--bg);
+  padding: 0.25em 0.5em;
+  border-radius: 4px;
+  line-height: 1;
+}
+.desk-nav-links {
+  display: flex;
+  gap: 1.3cqw;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.95cqw;
+  color: var(--text-dim);
+}
+
+.desk-hero {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
-  font-family: "JetBrains Mono", monospace;
-  font-size: clamp(0.55rem, 1.3vw, 0.8rem);
-  font-size: clamp(0.5rem, 3.6cqw, 0.82rem);
-  color: rgba(244, 240, 230, 0.85);
-  animation: phoneCaptionIn 0.45s ease;
+  gap: 0.9cqh;
+  padding: 0 3cqw;
 }
-@keyframes phoneCaptionIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
+.desk-hero .hero-title {
+  font-size: 2.5cqw;
+  font-weight: 800;
+  line-height: 1.22;
+  color: var(--text);
+  margin-bottom: 0;
+}
+.desk-hero-sub {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 1.05cqw;
+  color: var(--text-dim);
 }
 
-.phone-card-zone {
-  position: absolute;
-  top: 56.5%;
-  left: 33%;
-  width: 34%;
-  height: 17%;
+.desk-cta-row {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0 0.6rem;
+  gap: 0.8cqw;
+  margin-top: 0.4cqh;
 }
-.phone-btn {
+.mock-btn {
   font-family: "JetBrains Mono", monospace;
-  font-size: clamp(0.48rem, 1.05vw, 0.7rem);
-  font-size: clamp(0.44rem, 3.1cqw, 0.72rem);
-  padding: 0.45rem 0.4rem;
+  font-size: 1cqw;
+  padding: 0.7cqh 1.4cqw;
   border-radius: 20px;
-  text-align: center;
   font-weight: 600;
+  text-align: center;
   transition: transform 0.15s ease;
-  opacity: 0;
-  animation: phoneTextIn 0.6s ease both;
 }
-.phone-btn:nth-child(1) { animation-delay: 1.1s; }
-.phone-btn:nth-child(2) { animation-delay: 1.22s; }
-.phone-btn:hover { transform: scale(1.04); }
-.phone-btn-primary { background: #17171a; color: #f4f0e6; }
-.phone-btn-line { border: 1px solid rgba(23, 23, 26, 0.35); color: #17171a; }
+.mock-btn:hover { transform: scale(1.04); }
+.mock-btn-primary {
+  background: var(--text);
+  color: var(--bg);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+}
+.mock-btn-line {
+  background: transparent;
+  border: 1.5px solid var(--text);
+  color: var(--text);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+}
 
-@media (max-width: 1000px) {
-  .phone-mock { height: min(80vh, 720px); }
+/* Below ~900px, the monitor's screen occupies too small a slice of the
+   full edge-to-edge desk image for its UI to stay legible if the whole
+   image just keeps shrinking with the viewport — instead, zoom into
+   exactly the screen region (the same bounds as .desk-screen above,
+   computed once as a crop) and let .desk-screen fill that cropped view
+   edge-to-edge (still touching both its own container's edges, same as
+   the desktop full-bleed treatment, just a tighter frame). Numbers derived
+   from the screen fractions above: wrapper aspect-ratio is the screen's
+   own (645:344); image width/position solve for "screen exactly fills the
+   wrapper" at that aspect ratio. */
+@media (max-width: 900px) {
+  .hero-mock-only { padding-top: 1rem; padding-bottom: 0.8rem; }
+  .desk-mock {
+    width: min(94vw, 640px);
+    margin-left: 0;
+    /* Desktop's align-self:flex-start (needed there for the full-bleed
+       breakout) would otherwise flush this narrower, non-breakout mobile
+       card against .hero-visual's left edge and let it overflow past its
+       own right edge instead of centering normally. */
+    align-self: center;
+    aspect-ratio: 645 / 344;
+    overflow: hidden;
+    border-radius: 14px;
+  }
+  .desk-img {
+    position: absolute;
+    width: 238.1%;
+    height: auto;
+    left: -68.85%;
+    top: -24.14%;
+    object-fit: unset;
+  }
+  .desk-screen {
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .desk-browserbar-dot { width: 1.4cqw; height: 1.4cqw; }
+  .desk-nav-mark { font-size: 2.6cqw; }
+  .desk-nav-links { font-size: 1.7cqw; gap: 2.2cqw; }
+  /* The crop's aspect ratio (645:344, wide) makes cqh units small next to
+     cqw — gaps inherited from the desktop rules in cqh nearly vanished
+     here, so headline/subline/buttons crowded together. Switching this
+     block's vertical rhythm to cqw keeps it proportional regardless of the
+     container's aspect ratio. */
+  .desk-hero { gap: 1.4cqw; }
+  .desk-hero .hero-title { font-size: 3.4cqw; }
+  .desk-hero-sub { font-size: 1.8cqw; margin-top: 0.2cqw; }
+  .desk-cta-row { margin-top: 0.6cqw; }
+  .mock-btn { font-size: 1.7cqw; padding: 1.1cqw 2.2cqw; }
 }
-@media (max-width: 700px) {
-  .phone-mock { height: min(78vh, 620px); }
-}
-/* Existing overrides above only key off WIDTH — a wide-but-short laptop
-   screen (1366x768, 1280x720) falls through them entirely and still gets
-   the full 94vh phone, which alone is taller than what's left after the
-   headline above it, forcing the whole hero past one viewport. Height-based
-   query catches that case regardless of width. */
+
 @media (max-height: 900px) and (min-width: 1001px) {
-  /* Phone stays no smaller than 70vh — its overlay text/buttons are fixed
-     rem sizes baked to the image, not proportional to the container, so
-     shrinking it much past this starts overlapping/clipping that content.
-     The rest of the savings comes from the surrounding text and badges. */
-  .phone-mock { height: min(70vh, 640px); }
   .hero-hook { margin-bottom: 0.3rem; }
   .hero-hook-line, .hero-hook-mark-text { font-size: clamp(1.5rem, 3.4vw, 2.2rem); }
   .hero-hook-sub { margin-top: 0.4rem; font-size: 0.8rem; }
-  .hero-phone-only { padding-top: 1.2rem; padding-bottom: 0.6rem; }
+  .hero-mock-only { padding-top: 1.2rem; padding-bottom: 0.6rem; }
 }
 
 .float-shape {
@@ -1100,15 +1192,21 @@ main, .site-footer {
    adjusted bezier path, not a perfect ellipse) behind a handwriting-font
    claim, plus small sparkle marks — like a pencil-annotated screenshot. */
 
+/* The desk mock is now full-bleed (spans edge-to-edge), leaving no room to
+   flank ovals beside it at any viewport width the way the old narrower
+   phone/desk box allowed — so the "stacked below, centered, wrapping" layout
+   (previously a <1500px fallback only) is now the permanent, only layout. */
 .sketch-badges {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 2;
+  position: static;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  padding-top: 1.4rem;
 }
 
 .sketch-badge {
-  position: absolute;
+  position: relative;
   width: 190px;
   padding: 1.1rem 0.7rem;
   display: flex;
@@ -1120,10 +1218,10 @@ main, .site-footer {
 }
 /* Ambient drift once settled — small continuous float/rotate instead of
    sitting perfectly still after the entrance, like the sparkles already do. */
-.sketch-badge-1 { top: 8%; right: calc(50% + 250px); --base-rot: -4deg; animation-delay: 1.7s, 1.7s; }
-.sketch-badge-2 { top: 8%; left: calc(50% + 250px); --base-rot: 3deg; animation-delay: 1.9s, 1.9s; }
-.sketch-badge-3 { top: 46%; right: calc(50% + 260px); --base-rot: 3deg; animation-delay: 2.1s, 2.1s; }
-.sketch-badge-4 { top: 46%; left: calc(50% + 260px); --base-rot: -3deg; animation-delay: 2.3s, 2.3s; }
+.sketch-badge-1 { --base-rot: -4deg; animation-delay: 1.7s, 1.7s; }
+.sketch-badge-2 { --base-rot: 3deg; animation-delay: 1.9s, 1.9s; }
+.sketch-badge-3 { --base-rot: 3deg; animation-delay: 2.1s, 2.1s; }
+.sketch-badge-4 { --base-rot: -3deg; animation-delay: 2.3s, 2.3s; }
 
 .sketch-oval {
   position: absolute;
@@ -1173,34 +1271,12 @@ main, .site-footer {
   100% { opacity: 1; transform: scale(1) rotate(0deg); }
 }
 
-/* Below the width where flanking the phone has room, stack the badges in a
-   simple centered column underneath it instead. Badge stays position:relative
-   (not static) so .sketch-oval's position:absolute+inset:0 still anchors to
-   its own badge box instead of expanding to the nearest positioned ancestor. */
-@media (max-width: 1500px) {
-  .hero-visual { flex-direction: column; gap: 1.6rem; }
-  .sketch-badges {
-    position: static;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 1rem;
-    padding-bottom: 1rem;
-  }
-  .sketch-badge {
-    position: relative;
-    top: auto;
-    left: auto;
-    right: auto;
-    bottom: auto;
-    width: 160px;
-    --base-rot: 0deg;
-  }
-  .sketch-sparkle { display: none; }
+@media (max-width: 700px) {
+  .sketch-badge { width: 160px; }
 }
 
 @media (max-height: 900px) and (min-width: 1001px) {
-  .sketch-badges { padding-bottom: 0.4rem; gap: 0.6rem; }
+  .sketch-badges { padding-top: 0.6rem; gap: 0.6rem; }
   .sketch-badge { width: 140px; padding: 0.75rem 0.55rem; }
 }
 

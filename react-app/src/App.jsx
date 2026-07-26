@@ -9,8 +9,8 @@ import { trackEvent } from "./analytics";
 import { asset } from "./asset";
 
 import CookieBanner from "./components/CookieBanner";
-import PhoneMock from "./components/PhoneMock";
 import SketchBadges from "./components/SketchBadges";
+import DeskMock from "./components/DeskMock";
 import WhyStats from "./components/WhyStats";
 import WorkCarousel from "./components/WorkCarousel";
 import ProcessPath from "./components/ProcessPath";
@@ -331,7 +331,7 @@ function ScrollCue() {
 
 function Hero() {
   return (
-    <section className="hero hero-phone-only">
+    <section className="hero hero-mock-only">
       <div className="hero-hook">
         <p className="hero-hook-line">Your brand deserves</p>
         <p className="hero-hook-mark-wrap">
@@ -343,7 +343,7 @@ function Hero() {
         <p className="hero-hook-sub">And this is where that begins.</p>
       </div>
       <div className="hero-visual">
-        <PhoneMock />
+        <DeskMock />
         <SketchBadges />
       </div>
     </section>
@@ -964,7 +964,12 @@ export default function App() {
       document
         .querySelectorAll(".hero, .why-stats, .work, .skills, .services, .process, .estimator-section, .globe-section, .faq, .contact")
         .forEach((section) => {
-          const inner = section.querySelector(".hero-title, .stats-grid, .work-grid, .price-card-single, .process-list, .contact-grid");
+          // .hero-title deliberately excluded — it's only ever the embedded
+          // mock-website headline inside the desk-mock screen (DeskMock.jsx),
+          // not a standalone section heading, and picking it up here left a
+          // stray scroll-linked transform on it that overlapped the subline
+          // in that tight, small-scale layout.
+          const inner = section.querySelector(".stats-grid, .work-grid, .price-card-single, .process-list, .contact-grid");
           if (!inner) return;
           gsap.fromTo(
             inner,
