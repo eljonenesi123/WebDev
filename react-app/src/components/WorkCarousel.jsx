@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { trackEvent } from "../analytics";
 import { useTranslation } from "../i18n";
 import { asset } from "../asset";
+import { useCursorTilt } from "../useCursorTilt";
 
 // Fanned photo stack on the intro slide — replaced a three.js/WebGL laptop
 // scene (heavy, and laggy on weaker machines even lazy-loaded) with a plain
@@ -20,26 +21,7 @@ function PhotoStack() {
   // phone and the device mockups elsewhere in this file, applied to a
   // separate wrapper so it doesn't fight each card's own entrance
   // animation or hover-lift (both live on different elements below).
-  useEffect(() => {
-    if (window.matchMedia("(max-width: 1000px), (prefers-reduced-motion: reduce)").matches) return;
-    const el = tiltRef.current;
-    if (!el) return;
-    function onMove(e) {
-      const rect = el.getBoundingClientRect();
-      const px = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
-      const py = Math.min(1, Math.max(0, (e.clientY - rect.top) / rect.height));
-      el.style.transform = `rotateX(${(0.5 - py) * 8}deg) rotateY(${(px - 0.5) * 8}deg)`;
-    }
-    function onLeave() {
-      el.style.transform = "rotateX(0deg) rotateY(0deg)";
-    }
-    window.addEventListener("pointermove", onMove);
-    el.addEventListener("pointerleave", onLeave);
-    return () => {
-      window.removeEventListener("pointermove", onMove);
-      el.removeEventListener("pointerleave", onLeave);
-    };
-  }, []);
+  useCursorTilt(tiltRef, 8);
 
   return (
     <div className="photo-stack-tilt" ref={tiltRef}>
@@ -164,48 +146,10 @@ export default function WorkCarousel() {
   }, [current]);
 
   // Cursor-follow tilt on the laptop, same technique as the hero phone's tilt.
-  useEffect(() => {
-    if (window.matchMedia("(max-width: 1000px), (prefers-reduced-motion: reduce)").matches) return;
-    const el = laptopTiltRef.current;
-    if (!el) return;
-    function onMove(e) {
-      const rect = el.getBoundingClientRect();
-      const px = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
-      const py = Math.min(1, Math.max(0, (e.clientY - rect.top) / rect.height));
-      el.style.transform = `rotateX(${(0.5 - py) * 10}deg) rotateY(${(px - 0.5) * 10}deg)`;
-    }
-    function onLeave() {
-      el.style.transform = "rotateX(0deg) rotateY(0deg)";
-    }
-    window.addEventListener("pointermove", onMove);
-    el.addEventListener("pointerleave", onLeave);
-    return () => {
-      window.removeEventListener("pointermove", onMove);
-      el.removeEventListener("pointerleave", onLeave);
-    };
-  }, []);
+  useCursorTilt(laptopTiltRef, 10);
 
   // Same cursor-follow tilt, applied to the iPad photo.
-  useEffect(() => {
-    if (window.matchMedia("(max-width: 1000px), (prefers-reduced-motion: reduce)").matches) return;
-    const el = ipadTiltRef.current;
-    if (!el) return;
-    function onMove(e) {
-      const rect = el.getBoundingClientRect();
-      const px = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
-      const py = Math.min(1, Math.max(0, (e.clientY - rect.top) / rect.height));
-      el.style.transform = `rotateX(${(0.5 - py) * 10}deg) rotateY(${(px - 0.5) * 10}deg)`;
-    }
-    function onLeave() {
-      el.style.transform = "rotateX(0deg) rotateY(0deg)";
-    }
-    window.addEventListener("pointermove", onMove);
-    el.addEventListener("pointerleave", onLeave);
-    return () => {
-      window.removeEventListener("pointermove", onMove);
-      el.removeEventListener("pointerleave", onLeave);
-    };
-  }, []);
+  useCursorTilt(ipadTiltRef, 10);
 
   return (
     <section className="work" id="work" ref={sectionRef}>
@@ -362,7 +306,7 @@ export default function WorkCarousel() {
               <span className="device-browser-url">eljonenesi123.github.io/CV</span>
             </div>
             <div className="device-browser-screen">
-              <video ref={cvVideoRef} muted loop playsInline preload="none" poster={asset("/assets/CV.png")}>
+              <video ref={cvVideoRef} muted loop playsInline preload="none">
                 <source src={asset("/assets/cv-demo.mp4")} type="video/mp4" />
               </video>
             </div>

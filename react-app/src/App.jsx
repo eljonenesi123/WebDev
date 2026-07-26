@@ -758,18 +758,31 @@ export default function App() {
   const spotlightRef = useRef(null);
 
   // --- Scroll progress bar. ---
+  // Was writing `width` (a layout-triggering property) on every raw scroll
+  // event — scroll fires far more often than the display refreshes, so this
+  // forced a layout recalc many times per frame during a fast scroll/fling.
+  // Batched to one write per frame via rAF, and switched to `transform:
+  // scaleX()` so the write is compositor-only (no layout/paint at all).
   useEffect(() => {
     const bar = progressRef.current;
     if (!bar) return;
+    let raf = null;
     function update() {
+      raf = null;
       const h = document.documentElement;
       const scrolled = h.scrollTop;
       const max = h.scrollHeight - h.clientHeight;
-      bar.style.width = (max > 0 ? (scrolled / max) * 100 : 0) + "%";
+      bar.style.transform = `scaleX(${max > 0 ? scrolled / max : 0})`;
     }
-    document.addEventListener("scroll", update, { passive: true });
+    function onScroll() {
+      if (raf == null) raf = requestAnimationFrame(update);
+    }
+    document.addEventListener("scroll", onScroll, { passive: true });
     update();
-    return () => document.removeEventListener("scroll", update);
+    return () => {
+      document.removeEventListener("scroll", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
   }, []);
 
   // --- Cursor spotlight: soft light that follows the pointer (desktop only). ---
@@ -777,12 +790,26 @@ export default function App() {
     if (window.matchMedia("(max-width: 760px)").matches) return;
     const el = spotlightRef.current;
     if (!el) return;
+    // Batched to one write per animation frame instead of one per raw
+    // mousemove event — mousemove can fire far more often than the display
+    // refreshes, so most of those writes were previously wasted work.
+    let raf = null;
+    let last = null;
+    function apply() {
+      raf = null;
+      if (!last) return;
+      el.style.setProperty("--sx", last.x + "px");
+      el.style.setProperty("--sy", last.y + "px");
+    }
     function onMove(e) {
-      el.style.setProperty("--sx", e.clientX + "px");
-      el.style.setProperty("--sy", e.clientY + "px");
+      last = { x: e.clientX, y: e.clientY };
+      if (raf == null) raf = requestAnimationFrame(apply);
     }
     window.addEventListener("pointermove", onMove);
-    return () => window.removeEventListener("pointermove", onMove);
+    return () => {
+      window.removeEventListener("pointermove", onMove);
+      if (raf) cancelAnimationFrame(raf);
+    };
   }, []);
 
   // --- Magnetic pull on primary buttons: nudges toward the cursor within a
@@ -793,13 +820,25 @@ export default function App() {
   useEffect(() => {
     if (window.matchMedia("(max-width: 1000px), (prefers-reduced-motion: reduce)").matches) return;
     const reach = 70;
-    function onMove(e) {
-      document.querySelectorAll(".btn-primary").forEach((btn) => {
-        const rect = btn.getBoundingClientRect();
+    // Batched to once per animation frame (was running on every raw
+    // mousemove) and reads all buttons' rects before writing any of their
+    // transforms — reading rect B right after writing transform A forces a
+    // synchronous layout recalculation to flush A's pending style change
+    // first, so interleaving read/write/read/write across multiple buttons
+    // was real layout thrashing on every mouse move across the whole page.
+    let raf = null;
+    let last = null;
+    function apply() {
+      raf = null;
+      if (!last) return;
+      const btns = Array.from(document.querySelectorAll(".btn-primary"));
+      const rects = btns.map((btn) => btn.getBoundingClientRect());
+      btns.forEach((btn, i) => {
+        const rect = rects[i];
         const cx = rect.left + rect.width / 2;
         const cy = rect.top + rect.height / 2;
-        const dx = e.clientX - cx;
-        const dy = e.clientY - cy;
+        const dx = last.x - cx;
+        const dy = last.y - cy;
         const dist = Math.hypot(dx, dy);
         const catchRadius = reach + rect.width / 2;
         if (dist < catchRadius) {
@@ -810,8 +849,15 @@ export default function App() {
         }
       });
     }
+    function onMove(e) {
+      last = { x: e.clientX, y: e.clientY };
+      if (raf == null) raf = requestAnimationFrame(apply);
+    }
     window.addEventListener("pointermove", onMove);
-    return () => window.removeEventListener("pointermove", onMove);
+    return () => {
+      window.removeEventListener("pointermove", onMove);
+      if (raf) cancelAnimationFrame(raf);
+    };
   }, []);
 
   // --- GSAP entrance animations + scroll reveals + parallax + wheel-driven

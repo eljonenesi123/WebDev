@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "../i18n";
 import { asset } from "../asset";
+import { useCursorTilt } from "../useCursorTilt";
 import HeroTitle from "./HeroTitle";
 
 const POINTS = [
@@ -25,26 +26,7 @@ export default function PhoneMock() {
   // Cursor-follow tilt (desktop only). Lives on a separate wrapper from
   // .phone-mock so this JS-driven transform doesn't fight the CSS
   // phoneFloat/phoneFadeIn keyframe animations, which also animate transform.
-  useEffect(() => {
-    if (window.matchMedia("(max-width: 1000px), (prefers-reduced-motion: reduce)").matches) return;
-    const el = tiltRef.current;
-    if (!el) return;
-    function onMove(e) {
-      const rect = el.getBoundingClientRect();
-      const px = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
-      const py = Math.min(1, Math.max(0, (e.clientY - rect.top) / rect.height));
-      el.style.transform = `rotateX(${(0.5 - py) * 14}deg) rotateY(${(px - 0.5) * 14}deg)`;
-    }
-    function onLeave() {
-      el.style.transform = "rotateX(0deg) rotateY(0deg)";
-    }
-    window.addEventListener("pointermove", onMove);
-    el.addEventListener("pointerleave", onLeave);
-    return () => {
-      window.removeEventListener("pointermove", onMove);
-      el.removeEventListener("pointerleave", onLeave);
-    };
-  }, []);
+  useCursorTilt(tiltRef, 14);
 
   // Mobile: tilt via device orientation (gyroscope) instead of the cursor —
   // gives phones/tablets their own ambient 3D interaction (tilt your actual

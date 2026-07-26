@@ -115,10 +115,12 @@ body {
   top: 0;
   left: 0;
   height: 2px;
-  width: 0%;
+  width: 100%;
+  transform: scaleX(0);
+  transform-origin: left;
   background: linear-gradient(90deg, var(--accent), #7ec98f);
   z-index: 200;
-  transition: width 0.1s linear;
+  will-change: transform;
 }
 
 /* ---------- AMBIENT BACKGROUND SHAPES ---------- */
