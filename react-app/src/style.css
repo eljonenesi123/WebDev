@@ -613,24 +613,24 @@ main { padding-top: var(--header-h); }
 
 /* ---------- HERO DESK MOCK ---------- */
 /* The mock website UI is overlaid onto the monitor's screen area in
-   assets/hero-desk.webp — a pre-cropped 1536x590 version of the original
-   photo (trimmed to just the monitor + a modest slice of desk, removing
-   the empty transparent margin above/below) so the graphic doesn't carry
-   dead vertical space once it's sized to fit within one viewport. Screen
-   bounds were re-measured against this cropped frame (pixel-scanned for
-   the teal-placeholder region, not eyeballed): x:[444,1089]/y:[83,427],
-   i.e. left 28.91% / top 14.07% / width 41.99% / height 58.31% — see
-   DeskMock.jsx. .desk-screen paints its own solid var(--surface)
-   background over the source image's placeholder gradient, so the overlay
-   reads as a real webpage rendered on the screen, not text floating on
-   top of the stock image, and fully follows the site's own light/dark
-   theme rather than staying fixed. */
+   assets/hero-desk.webp — a pre-cropped 1536x480 version of the original
+   photo (trims the webcam accessory and most of the keyboard/desk depth,
+   keeping just enough desk surface to read as "sitting on a desk") so the
+   graphic is short enough on its own to fit within one viewport at
+   full-bleed width. Screen bounds were re-measured against this cropped
+   frame (pixel-scanned for the teal-placeholder region, not eyeballed):
+   x:[444,1089]/y:[15,359], i.e. left 28.91% / top 3.13% / width 41.99% /
+   height 71.67% — see DeskMock.jsx. .desk-screen paints its own solid
+   var(--surface) background over the source image's placeholder gradient,
+   so the overlay reads as a real webpage rendered on the screen, not text
+   floating on top of the stock image, and fully follows the site's own
+   light/dark theme rather than staying fixed. */
 
 .hero-mock-only {
   flex-direction: column;
   justify-content: center;
-  padding-top: 1.1rem;
-  padding-bottom: 0.9rem;
+  padding-top: 0.8rem;
+  padding-bottom: 0.6rem;
   gap: 0;
 }
 
@@ -651,7 +651,7 @@ main { padding-top: var(--header-h); }
      overriding to flex-start here so the margin actually lands the box
      flush against the viewport edge as intended. */
   align-self: flex-start;
-  aspect-ratio: 1536 / 590;
+  aspect-ratio: 1536 / 480;
   filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.3));
   animation: deskFloat 7s ease-in-out infinite, deskFadeIn 0.8s ease both;
   /* Overlay text below sizes itself off this box (cqw/cqh) so it scales
@@ -685,9 +685,9 @@ main { padding-top: var(--header-h); }
 .desk-screen {
   position: absolute;
   left: 28.91%;
-  top: 14.07%;
+  top: 3.13%;
   width: 41.99%;
-  height: 58.31%;
+  height: 71.67%;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -803,57 +803,41 @@ main { padding-top: var(--header-h); }
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
 }
 
-/* Below ~900px, the monitor's screen occupies too small a slice of the
-   full edge-to-edge desk image for its UI to stay legible if the whole
-   image just keeps shrinking with the viewport — instead, zoom into
-   exactly the screen region (the same bounds as .desk-screen above,
-   computed once as a crop) and let .desk-screen fill that cropped view
-   edge-to-edge (still touching both its own container's edges, same as
-   the desktop full-bleed treatment, just a tighter frame). Numbers derived
-   from the screen fractions above: wrapper aspect-ratio is the screen's
-   own (645:344); image width/position solve for "screen exactly fills the
-   wrapper" at that aspect ratio. */
+/* Below ~900px, the full-bleed-width box (aspect-ratio 1536:480) would be
+   too short to keep the screen UI legible if it just kept the desktop's
+   exact framing — instead, switch object-fit to cover with a taller
+   container aspect ratio, which crops the image's WIDTH only (some of the
+   desk surface to either side of the monitor) while keeping its full
+   HEIGHT — the monitor+stand+desk all stay visible, just not the full
+   1536px-wide span of desk. Screen bounds recomputed for this crop: with
+   container aspect ratio 9:5, cover crops (1536 - 1.8*480)/2 = 336px off
+   each side, leaving x:[336,1200] visible (864px wide) — screen
+   (x:[444,1089]) sits safely inside that with ~110px of margin on both
+   sides. As fractions of that visible slice: left (444-336)/864 = 12.5%,
+   width 645/864 = 74.65%. Vertical fractions (3.13%/71.67%) are unchanged
+   from the desktop crop since cover isn't cropping height here. */
 @media (max-width: 900px) {
-  .hero-mock-only { padding-top: 1rem; padding-bottom: 0.8rem; }
+  .hero-mock-only { padding-top: 0.7rem; padding-bottom: 0.6rem; }
   .desk-mock {
-    width: min(94vw, 640px);
-    margin-left: 0;
-    /* Desktop's align-self:flex-start (needed there for the full-bleed
-       breakout) would otherwise flush this narrower, non-breakout mobile
-       card against .hero-visual's left edge and let it overflow past its
-       own right edge instead of centering normally. */
-    align-self: center;
-    aspect-ratio: 645 / 344;
-    overflow: hidden;
-    border-radius: 14px;
+    aspect-ratio: 9 / 5;
   }
   .desk-img {
-    position: absolute;
-    width: 238.1%;
-    height: auto;
-    left: -68.85%;
-    top: -24.14%;
-    object-fit: unset;
+    object-fit: cover;
   }
   .desk-screen {
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
+    left: 12.5%;
+    top: 3.13%;
+    width: 74.65%;
+    height: 71.67%;
   }
-  .desk-browserbar-dot { width: 1.4cqw; height: 1.4cqw; }
-  .desk-nav-mark { font-size: 2.6cqw; }
-  .desk-nav-links { font-size: 1.7cqw; gap: 2.2cqw; }
-  /* The crop's aspect ratio (645:344, wide) makes cqh units small next to
-     cqw — gaps inherited from the desktop rules in cqh nearly vanished
-     here, so headline/subline/buttons crowded together. Switching this
-     block's vertical rhythm to cqw keeps it proportional regardless of the
-     container's aspect ratio. */
-  .desk-hero { gap: 1.4cqw; }
-  .desk-hero .hero-title { font-size: 3.4cqw; }
-  .desk-hero-sub { font-size: 1.8cqw; margin-top: 0.2cqw; }
-  .desk-cta-row { margin-top: 0.6cqw; }
-  .mock-btn { font-size: 1.7cqw; padding: 1.1cqw 2.2cqw; }
+  .desk-browserbar-dot { width: 1.1cqw; height: 1.1cqw; }
+  .desk-nav-mark { font-size: 2cqw; }
+  .desk-nav-links { font-size: 1.3cqw; gap: 1.7cqw; }
+  .desk-hero { gap: 1cqw; }
+  .desk-hero .hero-title { font-size: 2.6cqw; }
+  .desk-hero-sub { font-size: 1.4cqw; margin-top: 0.2cqw; }
+  .desk-cta-row { margin-top: 0.5cqw; }
+  .mock-btn { font-size: 1.3cqw; padding: 0.9cqw 1.8cqw; }
 }
 
 @media (max-height: 900px) and (min-width: 1001px) {
