@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -635,17 +635,40 @@ const FAQ_ITEMS = [
   { q: "How much does a website cost?", a: "It starts at €75 for a single page and €100 for a multi-page site. Exact pricing depends on scope, see the Services section above for details." },
 ];
 
+function FaqChevron() {
+  return (
+    <svg className="faq-chevron" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 function Faq() {
+  // First-time-visitor nudge that the questions are tappable — dismissed
+  // for good after the first click anywhere in the thread, since by then
+  // the interaction pattern has already been demonstrated.
+  const [hintVisible, setHintVisible] = useState(true);
+
   return (
     <section className="faq" id="faq">
       <h2 className="section-title">FAQ</h2>
-      <div className="imessage-thread">
+      <div className="imessage-thread" onClick={() => setHintVisible(false)}>
         <p className="imessage-date">Today</p>
-        {FAQ_ITEMS.map((item) => (
-          <details className="imessage-pair" key={item.q} open={item.open || undefined}>
-            <summary className="imessage-bubble imessage-received">{item.q}</summary>
-            <p className="imessage-bubble imessage-sent">{item.a}</p>
-          </details>
+        {FAQ_ITEMS.map((item, i) => (
+          <Fragment key={item.q}>
+            <details className="imessage-pair" open={item.open || undefined}>
+              <summary className="imessage-bubble imessage-received">
+                <span className="imessage-bubble-text">{item.q}</span>
+                <FaqChevron />
+              </summary>
+              <p className="imessage-bubble imessage-sent">{item.a}</p>
+            </details>
+            {i === 0 && (
+              <p className={"faq-hint" + (hintVisible ? "" : " is-hidden")} aria-hidden={!hintVisible}>
+                Tap a question to see the answer
+              </p>
+            )}
+          </Fragment>
         ))}
       </div>
     </section>
