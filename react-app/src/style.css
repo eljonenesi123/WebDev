@@ -3376,6 +3376,29 @@ main, .site-footer {
   .faq-hint { font-size: 0.68rem; }
 }
 
+/* Desktop only: question and answer sit side by side as a single row
+   instead of stacked — each .imessage-pair becomes a row (question first
+   in source order lands on the left, answer to its right when expanded),
+   rather than the mobile-style top-to-bottom chat thread. Both bubbles'
+   own tail/color/radius styling is untouched; only their arrangement
+   changes. Answer is absent from the DOM entirely while collapsed (native
+   <details> behavior), so there's nothing to animate/reflow into place
+   when it appears — it simply mounts into the row next to its question. */
+@media (min-width: 701px) {
+  .imessage-thread { max-width: 860px; }
+  .imessage-pair {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  .imessage-bubble { max-width: 47%; }
+  /* Both bubbles reset to top-aligned on the row's cross-axis — the
+     mobile column layout used flex-start/flex-end here to hug the left
+     and right edges of a vertical stack, which doesn't apply once they're
+     side by side instead of stacked. */
+  .imessage-received, .imessage-sent { align-self: flex-start; }
+}
+
 .form-status {
   font-family: var(--mono);
   font-size: 0.82rem;
