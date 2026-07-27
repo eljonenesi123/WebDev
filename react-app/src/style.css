@@ -813,24 +813,47 @@ main { padding-top: var(--header-h); }
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
 }
 
-/* Below ~900px, same image/framing as desktop (object-fit:contain, same
-   .desk-screen %) — full monitor/keyboard/mouse stay visible at every
-   width, nothing is cropped. Buttons get their own bumped, clamp()-floored
-   size here (not just the desktop cqw scaling) since at a narrow phone
-   width the plain cqw value renders too small to comfortably read/tap —
-   this only touches .mock-btn; desktop's sizing above is untouched. */
+/* Below ~900px, width is capped at 100vw (edge-to-edge, can't grow wider
+   without overflowing), so the only way to make the graphic bigger is to
+   make it TALLER at that same width — which means trimming some of the
+   plain, empty desk surface on the far left/right (object-fit:cover with a
+   taller container aspect-ratio, cropping width only) rather than the
+   full-bleed .desk-mock always mirroring desktop's wide, mostly-empty-desk
+   framing. This crop (1096px wide out of the source's 1536, symmetric
+   around the monitor) was checked visually against the actual asset: the
+   monitor, keyboard, mouse and mousepad all stay fully inside it with
+   margin to spare — only bare wood desk on the outer edges is trimmed.
+   Buttons get their own bumped, clamp()-floored size here (not just the
+   desktop cqw scaling) since at a narrow phone width the plain cqw value
+   renders too small to comfortably read/tap — this only touches
+   .mock-btn; desktop's sizing above is untouched. */
 @media (max-width: 900px) {
-  .hero-mock-only { padding-top: 0.7rem; padding-bottom: 0.6rem; }
+  .hero-hook { margin-bottom: 0.2rem; }
+  .hero-mock-only { padding-top: 0.15rem; padding-bottom: 0.6rem; }
+  /* These float via position:absolute at fixed top:2-3% offsets tuned for
+     the old, much-taller flanking-badge canvas — now that the badges are
+     always a stacked row below the mock (not flanking it), they land in
+     the empty gap between the subline and the monitor instead, which is
+     exactly the space being asked to close here. */
+  .sketch-sparkle-1, .sketch-sparkle-2 { display: none; }
   /* .desk-mock's height normally comes only from aspect-ratio (no explicit
      height) — .desk-screen's own height:49.71% then depends on that being
      treated as a "definite" size to resolve against, which isn't
      consistently handled the same way everywhere once container-type:size
      is also in play on the same element. Pinning an explicit, directly
-     computed height here (matching the same 1536:692 ratio exactly, so
-     visually nothing changes) removes that ambiguity for mobile, where
+     computed height here removes that ambiguity for mobile, where
      .desk-mock is also at its full-bleed 100vw-derived width and this
      matters most. Desktop's rule above is untouched. */
-  .desk-mock { height: calc(100vw / 2.21965); }
+  .desk-mock {
+    aspect-ratio: 1096 / 692;
+    height: calc(100vw / 1.58382);
+  }
+  .desk-img { object-fit: cover; }
+  /* .desk-screen's left/width are recomputed against this narrower 1096px
+     frame (screen x:[444,1089] in the source becomes x:[224,869] once the
+     220px trimmed off the left edge is subtracted, i.e. 20.44%/58.85% of
+     1096 — top/height are untouched since this crop only trims width). */
+  .desk-screen { left: 20.44%; width: 58.85%; }
   /* .desk-screen's own box is a fixed % of a now much shorter mock (the
      full uncropped image leaves far less height per pixel of width than
      the old tighter crop did) — with the buttons below given a guaranteed
@@ -2919,6 +2942,22 @@ main, .site-footer {
      carousel already fills 100dvh with its own padding, so this section's
      own padding would double up and push it taller than one viewport. */
   .work { padding: 0; }
+  /* The shared .hero rule just above resets padding-top to 3rem via its
+     shorthand, silently overriding the much smaller value set earlier
+     (@media max-width:900px) for .hero-mock-only specifically, since both
+     target the same element and this one comes later in the file — the
+     same cascade gotcha this file has hit before. Reasserted here, after
+     the conflicting rule, to actually win. */
+  .hero-mock-only { padding-top: 0.15rem; }
+  /* .hero-visual has flex:1 (grows to fill all remaining height in the
+     100vh section) plus justify-content:center — on mobile that means it
+     was centering its own content (the monitor + the ovals below it)
+     inside a much taller empty box, which is what was actually pushing
+     the monitor down away from the subline above, not any padding/margin
+     between them. Letting it size to its own content and align to the
+     top removes that gap; .hero's own justify-content:center (unchanged)
+     still centers the hook+visual pair as a whole within the viewport. */
+  .hero-visual { flex: none; justify-content: flex-start; }
   .service-list { grid-template-columns: 1fr; gap: 2rem; }
   .contact-grid { grid-template-columns: 1fr; gap: 2.5rem; }
   .contact-alt {
