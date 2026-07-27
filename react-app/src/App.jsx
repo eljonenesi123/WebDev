@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 
 import { useTranslation } from "./i18n";
 import { useCookieConsent } from "./useCookieConsent";
@@ -18,7 +17,7 @@ import Estimator from "./components/Estimator";
 import GlobeSection from "./components/GlobeSection";
 import ContactForm from "./components/ContactForm";
 
-gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+gsap.registerPlugin(ScrollTrigger);
 
 // Fixed behind every section (not scoped to one page) — a handful of
 // large, soft abstract shapes drifting slowly across the viewport
@@ -914,10 +913,14 @@ export default function App() {
     };
   }, []);
 
-  // --- GSAP entrance animations + scroll reveals + parallax + wheel-driven
-  // section snapping. Ported from script.js as a single effect since it's
-  // inherently DOM/scroll-imperative; the DOM structure/classes it queries
-  // are the same ones rendered by the JSX below, so the selectors match 1:1.
+  // --- GSAP entrance animations + scroll reveals + parallax + the side
+  // nav's click-to-scroll/active-highlight. Ported from script.js as a
+  // single effect since it's inherently DOM/scroll-imperative; the DOM
+  // structure/classes it queries are the same ones rendered by the JSX
+  // below, so the selectors match 1:1. (This used to also wheel/keydown-
+  // jack the whole page into one-tick-per-section jumps; removed in favor
+  // of normal scrolling — the side nav now just smooth-scrolls on click,
+  // same as clicking any other in-page link.)
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const cleanups = [];
@@ -983,87 +986,52 @@ export default function App() {
         });
     }
 
-    // Slide speed control (desktop only): one wheel tick = one smooth,
-    // slower slide to the next/previous section.
-    if (!prefersReducedMotion && !window.matchMedia("(max-width: 760px)").matches) {
-      const SLIDE_DURATION = 1.6;
+    // Side "elevator" nav: clicking a number smooth-scrolls to that section
+    // (a discrete, user-initiated jump — not scroll-jacking, the same as
+    // clicking any other in-page anchor link). Which button is "active" is
+    // tracked passively via IntersectionObserver, independent of any of
+    // this — normal page scroll is never intercepted or overridden.
+    {
       const sections = Array.from(
         document.querySelectorAll(".hero, .why-stats, .work, .skills, .services, .process, .estimator-section, .globe-section, .faq, .contact")
       );
       const navButtons = Array.from(document.querySelectorAll(".side-nav button"));
-      let isAnimating = false;
 
-      function currentIndex() {
-        let closest = 0;
-        let closestDist = Infinity;
-        sections.forEach((sec, i) => {
-          const dist = Math.abs(sec.offsetTop - window.scrollY);
-          if (dist < closestDist) {
-            closestDist = dist;
-            closest = i;
-          }
-        });
-        return closest;
-      }
-
-      function goTo(index) {
-        if (index < 0 || index >= sections.length || isAnimating) return;
-        isAnimating = true;
-        navButtons.forEach((b, i) => b.classList.toggle("active", i === index));
-        // GSAP's ScrollToPlugin aligns an element's own top with the
-        // viewport top — it doesn't know about the fixed header sitting on
-        // top of that, so later sections need their target explicitly
-        // pulled up by the header's height (index 0 doesn't: main's own
-        // padding-top already reserves that space, so y:0 already lands
-        // right below the header).
+      function scrollToSection(index) {
+        // GSAP's ScrollToPlugin used to align the target under the fixed
+        // header automatically; a plain scrollTo needs that offset applied
+        // by hand (index 0 doesn't: main's own padding-top already reserves
+        // that space, so y:0 already lands right below the header).
         const headerH = document.querySelector(".topbar")?.offsetHeight || 0;
         const targetY =
           index === 0 ? 0 : sections[index].getBoundingClientRect().top + window.scrollY - headerH;
-        gsap.to(window, {
-          duration: SLIDE_DURATION,
-          ease: "power2.inOut",
-          scrollTo: { y: targetY, autoKill: false },
-          onComplete: () => {
-            isAnimating = false;
-          },
-        });
+        window.scrollTo({ top: targetY, behavior: "smooth" });
       }
-
-      function onWheel(e) {
-        if (isAnimating) {
-          e.preventDefault();
-          return;
-        }
-        if (Math.abs(e.deltaY) < 10) return;
-        e.preventDefault();
-        goTo(currentIndex() + (e.deltaY > 0 ? 1 : -1));
-      }
-
-      function onKeyDown(e) {
-        if (isAnimating) return;
-        if (e.key === "ArrowDown" || e.key === "PageDown") {
-          e.preventDefault();
-          goTo(currentIndex() + 1);
-        } else if (e.key === "ArrowUp" || e.key === "PageUp") {
-          e.preventDefault();
-          goTo(currentIndex() - 1);
-        }
-      }
-
-      window.addEventListener("wheel", onWheel, { passive: false });
-      window.addEventListener("keydown", onKeyDown);
 
       const navClickHandlers = navButtons.map((btn, i) => {
-        const handler = () => goTo(i);
+        const handler = () => scrollToSection(i);
         btn.addEventListener("click", handler);
         return handler;
       });
-      navButtons.forEach((b, i) => b.classList.toggle("active", i === currentIndex()));
+
+      const navObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            const i = sections.indexOf(entry.target);
+            if (i === -1) return;
+            navButtons.forEach((b, bi) => b.classList.toggle("active", bi === i));
+          });
+        },
+        // Fires when a section crosses the vertical center of the
+        // viewport — a shrunk root, not a scroll listener.
+        { rootMargin: "-50% 0px -50% 0px", threshold: 0 }
+      );
+      sections.forEach((sec) => navObserver.observe(sec));
 
       cleanups.push(() => {
-        window.removeEventListener("wheel", onWheel);
-        window.removeEventListener("keydown", onKeyDown);
         navButtons.forEach((btn, i) => btn.removeEventListener("click", navClickHandlers[i]));
+        navObserver.disconnect();
       });
     }
 

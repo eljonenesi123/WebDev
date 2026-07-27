@@ -53,8 +53,6 @@ export default function WorkCarousel() {
   const { t } = useTranslation();
   const [current, setCurrent] = useState(0);
   const touchStartX = useRef(0);
-  const sectionRef = useRef(null);
-  const isActiveRef = useRef(false);
   const isSlidingRef = useRef(false);
   const laptopTiltRef = useRef(null);
   const ipadTiltRef = useRef(null);
@@ -99,52 +97,6 @@ export default function WorkCarousel() {
     goTo(dx < 0 ? current + 1 : current - 1);
   };
 
-  // Track whether the Work section is the one currently filling the
-  // viewport, so the wheel intercept below only fires while it's active.
-  useEffect(() => {
-    const el = sectionRef.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => { isActiveRef.current = entry.intersectionRatio > 0.95; },
-      { threshold: [0, 0.95, 1] }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
-
-  // While Work fills the screen, a wheel tick steps the carousel instead of
-  // the page's normal section-to-section snap (see App.jsx). Only once
-  // you're on the first/last slide does a further tick fall through to move
-  // to the previous/next section, like scrolling normally would.
-  // `capture: true` guarantees this runs before App.jsx's own window-level
-  // wheel handler regardless of effect re-run order (see write-up below).
-  useEffect(() => {
-    if (window.matchMedia("(max-width: 760px), (prefers-reduced-motion: reduce)").matches) return;
-    function onWheel(e) {
-      if (!isActiveRef.current) return;
-      if (Math.abs(e.deltaY) < 10) return;
-      if (isSlidingRef.current) {
-        e.preventDefault();
-        e.stopImmediatePropagation();
-        return;
-      }
-      const forward = e.deltaY > 0;
-      if (forward && current < TOTAL - 1) {
-        e.preventDefault();
-        e.stopImmediatePropagation();
-        goTo(current + 1);
-      } else if (!forward && current > 0) {
-        e.preventDefault();
-        e.stopImmediatePropagation();
-        goTo(current - 1);
-      }
-      // else: already at the first/last slide in that direction — let the
-      // event bubble up to App.jsx's normal vertical section-snap.
-    }
-    window.addEventListener("wheel", onWheel, { passive: false, capture: true });
-    return () => window.removeEventListener("wheel", onWheel, { capture: true });
-  }, [current]);
-
   // Cursor-follow tilt on the laptop, same technique as the hero phone's tilt.
   useCursorTilt(laptopTiltRef, 10);
 
@@ -152,7 +104,7 @@ export default function WorkCarousel() {
   useCursorTilt(ipadTiltRef, 10);
 
   return (
-    <section className="work" id="work" ref={sectionRef}>
+    <section className="work" id="work">
       <div
         className={"work-carousel pos-" + current}
         id="work-carousel"
