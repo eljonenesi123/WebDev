@@ -1893,7 +1893,11 @@ main, .site-footer {
 
 .device-ipad-tilt {
   flex-shrink: 0;
-  width: min(40vw, 460px);
+  /* ~35% larger than the old min(40vw, 460px) — the tablet mockup read as
+     small relative to the empty space around it. .work-slide's gap/padding
+     already leaves plenty of room at typical desktop widths, so this only
+     needed a straight scale-up, not a layout rework. */
+  width: min(54vw, 620px);
   transform-style: preserve-3d;
   transition: transform 0.15s ease-out;
   will-change: transform;
@@ -2114,7 +2118,7 @@ main, .site-footer {
   .work-photo-stack-wrap { width: 76vw; height: 62vw; max-height: 320px; margin: 0 auto; }
   .photo-stack-card { width: 48%; }
   .device-laptop-tilt { width: 70vw; }
-  .device-ipad-tilt { width: 58vw; }
+  .device-ipad-tilt { width: min(76vw, 380px); }
   .device-browser { width: 60vw; }
   .work-arrow { width: 44px; height: 44px; font-size: 1rem; top: auto; bottom: 1rem; transform: none; }
   .work-arrow-prev { left: 1rem; }
