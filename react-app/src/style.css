@@ -736,11 +736,42 @@ main { padding-top: var(--header-h); }
   flex-shrink: 0;
   background: #cfcfcf;
 }
+.desk-tabs-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
 .desk-tabs {
   display: flex;
   align-items: flex-end;
   gap: 2px;
   padding: 0.5cqh 0.6cqw 0;
+  min-width: 0;
+}
+.desk-window-controls {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0.5cqh 0.6cqw 0.35cqh;
+  flex-shrink: 0;
+}
+.desk-win-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.4cqw;
+  height: 1.4cqw;
+  min-width: 13px;
+  min-height: 13px;
+  border-radius: 3px;
+  font-size: 0.8cqw;
+  line-height: 1;
+  color: rgba(0, 0, 0, 0.55);
+}
+.desk-win-max { font-size: 0.6cqw; }
+.desk-win-close:hover {
+  background: #e04b3f;
+  color: #ffffff;
 }
 .desk-tab {
   display: flex;
@@ -758,16 +789,13 @@ main { padding-top: var(--header-h); }
   color: #171717;
 }
 .desk-tab-favicon {
-  width: 0.7cqw;
-  height: 0.7cqw;
-  min-width: 5px;
-  min-height: 5px;
-  border-radius: 2px;
+  width: 0.85cqw;
+  height: 0.85cqw;
+  min-width: 9px;
+  min-height: 9px;
+  border-radius: 3px;
   flex-shrink: 0;
 }
-.desk-tab-favicon-site { background: #0a0a0a; border-radius: 50%; }
-.desk-tab-favicon-mail { background: #d64b3f; }
-.desk-tab-favicon-docs { background: #4285c9; }
 .desk-tab-label {
   font-family: "JetBrains Mono", monospace;
   font-size: 0.68cqw;
@@ -859,24 +887,21 @@ main { padding-top: var(--header-h); }
   text-align: center;
   gap: 0.9cqh;
   padding: 0 3cqw;
-  /* The mock website's own design — a warm amber-to-black diagonal wave,
-     fixed regardless of site theme (see .desk-screen above). #e0a46e is
-     the site's own dark-mode accent color, reused here so this reads as
-     an extension of the real brand palette rather than an arbitrary
-     unrelated color. */
-  background: linear-gradient(135deg, #e8b878 0%, #b9803f 30%, #4a2f1a 65%, #0a0a0a 100%);
+  /* Neutral placeholder — a real color/treatment for this mock content
+     area is still to be decided. */
+  background: #f2f0eb;
 }
 .desk-hero .hero-title {
   font-size: 2.5cqw;
   font-weight: 800;
   line-height: 1.22;
-  color: #ffffff;
+  color: #171717;
   margin-bottom: 0;
 }
 .desk-hero-sub {
   font-family: "JetBrains Mono", monospace;
   font-size: 1.05cqw;
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(0, 0, 0, 0.6);
 }
 
 .desk-cta-row {
@@ -904,10 +929,10 @@ main { padding-top: var(--header-h); }
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
 }
 .mock-btn-line {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1.5px solid rgba(255, 255, 255, 0.85);
-  color: #ffffff;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.03);
+  border: 1.5px solid rgba(0, 0, 0, 0.7);
+  color: #171717;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
 /* Below ~900px, width is capped at 100vw (edge-to-edge, can't grow wider
@@ -1268,29 +1293,16 @@ main, .site-footer {
   margin-bottom: 2.5rem;
 }
 
+/* These used to be full-viewport-tall slides for a pinned-scroll layout;
+   that system is gone, but most content here is much shorter than a full
+   screen, so forcing min-height:100vh just centered it inside a tall empty
+   box — a dead-space gap with nothing left to justify it. Sized to content
+   with a consistent padding rhythm instead. */
 .work, .skills, .services, .process, .estimator-section, .globe-section, .faq, .contact, .why-stats {
-  padding: 4rem 6vw;
-  min-height: 100vh;
-  /* dvh (not vh) so this matches the work-carousel's own 100dvh slides on
-     mobile — vh ignores the collapsing address bar and renders taller than
-     the actual visible viewport, which left a dead zone below the fold that
-     could swallow taps on the carousel arrow. */
-  min-height: 100dvh;
+  padding: 5rem 6vw;
   display: flex;
   flex-direction: column;
   justify-content: center;
-}
-
-/* Content sized for a tall monitor doesn't automatically fit a shorter-but-
-   just-as-wide laptop screen (1366x768, 1280x720 etc.) — these only key off
-   width, so a laptop at typical desktop widths fell through them entirely
-   and needed extra scrolling to see a section that's meant to be one screen. */
-@media (max-height: 900px) and (min-width: 901px) {
-  .work, .skills, .services, .process, .estimator-section, .globe-section, .faq, .contact, .why-stats {
-    padding-top: 2.4rem;
-    padding-bottom: 2.4rem;
-  }
-  .section-title { margin-bottom: 1.6rem; }
 }
 
 /* ---------- SECTION BACKGROUND ---------- */
