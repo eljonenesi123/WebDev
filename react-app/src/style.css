@@ -3389,9 +3389,21 @@ main, .site-footer {
   .imessage-pair {
     flex-direction: row;
     align-items: flex-start;
-    gap: 1rem;
+    flex-wrap: nowrap;
+    gap: 0.55rem;
   }
-  .imessage-bubble { max-width: 47%; }
+  /* A percentage max-width on both bubbles (e.g. 47%/47%) put them both
+     into the same flex-shrink pool: since the row's hypothetical size
+     (question's one-line width + the much longer answer's one-line width)
+     easily exceeds the pair's box, flexbox's shrink distribution squeezed
+     BOTH down well below even the question's own comfortable width,
+     wrapping a short question onto 3 cramped lines and leaving what reads
+     as a gap of dead space around it. flex:0 0 auto plus an explicit
+     min/max-width per bubble takes them out of that shared shrink pool —
+     each just sizes to its own content within its own sensible range. */
+  .imessage-bubble { flex: 0 0 auto; width: fit-content; }
+  .imessage-received { min-width: 200px; max-width: 320px; }
+  .imessage-sent { min-width: 220px; max-width: 400px; }
   /* Both bubbles reset to top-aligned on the row's cross-axis — the
      mobile column layout used flex-start/flex-end here to hug the left
      and right edges of a vertical stack, which doesn't apply once they're
