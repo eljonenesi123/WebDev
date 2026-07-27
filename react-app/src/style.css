@@ -441,6 +441,15 @@ main { padding-top: var(--header-h); }
   font-size: 0.95rem;
   color: var(--text);
   white-space: nowrap;
+  /* This sits fixed in the bottom-right corner on every section — without
+     its own backdrop, whatever happens to scroll underneath it (e.g. the
+     "Why This Matters" callout ovals, which wrap into that corner) reads
+     as visually overlapping/colliding with it. A solid chip behind the
+     text keeps it legible regardless of what's behind it, rather than
+     hand-tuning every section's layout to avoid this one fixed corner. */
+  background: var(--bg);
+  padding: 0.15rem 0.55rem;
+  border-radius: 20px;
 }
 .scroll-cue-btn { width: 44px; height: 60px; padding: 0; border: none; background: none; cursor: pointer; }
 .scroll-cue-arrow { width: 100%; height: 100%; animation: scrollCueBounce 1.8s ease-in-out infinite; }
@@ -812,6 +821,16 @@ main { padding-top: var(--header-h); }
    this only touches .mock-btn; desktop's sizing above is untouched. */
 @media (max-width: 900px) {
   .hero-mock-only { padding-top: 0.7rem; padding-bottom: 0.6rem; }
+  /* .desk-mock's height normally comes only from aspect-ratio (no explicit
+     height) — .desk-screen's own height:49.71% then depends on that being
+     treated as a "definite" size to resolve against, which isn't
+     consistently handled the same way everywhere once container-type:size
+     is also in play on the same element. Pinning an explicit, directly
+     computed height here (matching the same 1536:692 ratio exactly, so
+     visually nothing changes) removes that ambiguity for mobile, where
+     .desk-mock is also at its full-bleed 100vw-derived width and this
+     matters most. Desktop's rule above is untouched. */
+  .desk-mock { height: calc(100vw / 2.21965); }
   /* .desk-screen's own box is a fixed % of a now much shorter mock (the
      full uncropped image leaves far less height per pixel of width than
      the old tighter crop did) — with the buttons below given a guaranteed
