@@ -2186,28 +2186,45 @@ main, .site-footer {
   gap: 0.6rem;
 }
 
-/* Icon sits directly on the page — no circular backdrop — always in its
-   real brand color (--brand, set per item inline in App.jsx) rather than
-   monochrome-until-hover, since the whole point now is that the colors
-   are the permanent visual focus, not a reveal-on-interaction gimmick. */
+/* Circle filled with the tool's own brand color permanently (not just on
+   hover) — --brand/--brand-contrast set per item inline in App.jsx. The
+   icon itself needs the contrast color rather than its own brand color on
+   top of that fill, since several of these (CSS3, HTML5, Git...) are
+   single-color glyphs whose "brand color" IS the fill fill — putting that
+   same color on top of an identically-colored circle would make the icon
+   disappear into its own backdrop. */
 .skill-badge {
   position: relative;
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  background: var(--brand);
   display: flex;
   align-items: center;
   justify-content: center;
   /* HTML5/CSS3/Node.js's icons punch out an inner numeral/flap as a
-     "cutout" that has to match whatever it's sitting on to read as a
-     cutout rather than a solid patch — that's the page background now
-     that there's no filled badge circle behind it. */
-  --skill-cutout: var(--bg);
+     "cutout" — matched to the circle's own fill so it reads as a cutout
+     rather than a solid patch. */
+  --skill-cutout: var(--brand);
 }
-.skill-badge svg { color: var(--brand); }
+.skill-badge svg { color: var(--brand-contrast); }
+
+/* GitHub's real mark is near-black, which nearly disappears against the
+   site's own near-black dark-mode circle — swapped to a light variant
+   just for that theme via --brand-dark/--brand-contrast-dark (only set on
+   items that need it; every other icon falls back to its one true brand
+   color in both themes). */
+:root[data-theme="dark"] .skill-badge {
+  background: var(--brand-dark, var(--brand));
+  --skill-cutout: var(--brand-dark, var(--brand));
+}
+:root[data-theme="dark"] .skill-badge svg { color: var(--brand-contrast-dark, var(--brand-contrast)); }
 
 .skill-icon {
   position: relative;
   display: block;
-  width: 48px;
-  height: 48px;
+  width: 40px;
+  height: 40px;
 }
 
 /* Name label — permanently visible underneath the icon. */
@@ -2228,7 +2245,8 @@ main, .site-footer {
    "Visual Studio") a wide enough column to sit on one line. */
 @media (max-width: 900px) {
   .skills-grid { grid-template-columns: repeat(2, 1fr); gap: 2rem 1.5rem; max-width: 320px; }
-  .skill-icon { width: 40px; height: 40px; }
+  .skill-badge { width: 68px; height: 68px; }
+  .skill-icon { width: 32px; height: 32px; }
   .skill-tooltip { font-size: 0.62rem; }
 }
 

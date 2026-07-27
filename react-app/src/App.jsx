@@ -393,7 +393,12 @@ const SKILLS = [
     icon: <path d="M23.5 11.3L12.7.5a1.6 1.6 0 0 0-2.3 0L8.2 2.7l2.8 2.8a2 2 0 0 1 2.5 1.9 2 2 0 0 1-2 2 2 2 0 0 1-2-2 2 2 0 0 1 .1-.6L6.9 4.1.5 10.4a1.6 1.6 0 0 0 0 2.3l10.8 10.8a1.6 1.6 0 0 0 2.3 0l10.8-10.8a1.6 1.6 0 0 0 .1-.4 1.6 1.6 0 0 0 0-1zM9.4 18.6a2 2 0 0 1-2-2 2 2 0 0 1 2-2 2 2 0 0 1 2 2 2 2 0 0 1-2 2zm7-7a2 2 0 0 1-.9-.2v5.4a2 2 0 1 1-1.6 0V11a2 2 0 1 1 2.5-1.9 2 2 0 0 1-2 2z" />,
   },
   {
-    name: "GitHub", rot: 6, brand: "#181717", contrast: "white",
+    // GitHub's real mark is near-black, which nearly vanishes against the
+    // site's own near-black dark-mode background — swapped to white/dark
+    // just for that theme so the badge stays visible, same real brand,
+    // just the light variant of it (this is how GitHub's own brand
+    // guidelines already treat dark surfaces).
+    name: "GitHub", rot: 6, brand: "#181717", contrast: "white", darkBrand: "#ffffff", darkContrast: "dark",
     icon: <path d="M12 .5A11.5 11.5 0 0 0 .5 12c0 5.1 3.3 9.4 7.9 11 .6.1.8-.3.8-.6v-2.2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.7-1.3-1.7-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.7 1.3 3.4 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.8 0-1.3.4-2.3 1.2-3.2-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.6.2 2.8.1 3.1.8.9 1.2 1.9 1.2 3.2 0 4.5-2.7 5.5-5.3 5.8.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5z" />,
   },
   {
@@ -462,6 +467,8 @@ function Skills() {
               "--i": i,
               "--brand": s.brand,
               "--brand-contrast": s.contrast === "dark" ? "#171717" : "#ffffff",
+              ...(s.darkBrand ? { "--brand-dark": s.darkBrand } : {}),
+              ...(s.darkContrast ? { "--brand-contrast-dark": s.darkContrast === "dark" ? "#171717" : "#ffffff" } : {}),
             }}
           >
             <div className="skill-item-inner">
