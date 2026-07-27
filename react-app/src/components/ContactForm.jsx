@@ -54,20 +54,30 @@ export default function ContactForm() {
     <form className="contact-form" id="contact-form" onSubmit={handleSubmit}>
       <input type="hidden" name="_subject" value="New message from portfolio site" />
 
-      <label htmlFor="cf-name">Name *</label>
-      <input type="text" id="cf-name" name="Name" required />
+      <div className="field">
+        <input type="text" id="cf-name" name="Name" placeholder=" " required />
+        <label htmlFor="cf-name">Name *</label>
+      </div>
 
-      <label htmlFor="cf-company">Company / Business (optional)</label>
-      <input type="text" id="cf-company" name="Company" />
+      <div className="field">
+        <input type="text" id="cf-company" name="Company" placeholder=" " />
+        <label htmlFor="cf-company">Company / Business (optional)</label>
+      </div>
 
-      <label htmlFor="cf-email">{t("contact.email", "Email")} *</label>
-      <input type="email" id="cf-email" name="Email" required />
+      <div className="field">
+        <input type="email" id="cf-email" name="Email" placeholder=" " required />
+        <label htmlFor="cf-email">{t("contact.email", "Email")} *</label>
+      </div>
 
-      <label htmlFor="cf-phone">Phone *</label>
-      <input type="tel" id="cf-phone" name="Phone" required />
+      <div className="field">
+        <input type="tel" id="cf-phone" name="Phone" placeholder=" " required />
+        <label htmlFor="cf-phone">Phone *</label>
+      </div>
 
-      <label htmlFor="cf-message">{t("contact.msg", "What do you need built?")} *</label>
-      <textarea id="cf-message" name="Message" rows="5" required></textarea>
+      <div className="field">
+        <textarea id="cf-message" name="Message" rows="4" placeholder=" " required></textarea>
+        <label htmlFor="cf-message">{t("contact.msg", "What do you need built?")} *</label>
+      </div>
 
       <label className="terms-check">
         <input type="checkbox" id="cf-terms" name="Agreed" required />

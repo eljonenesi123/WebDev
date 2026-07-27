@@ -62,7 +62,7 @@ export const translations = {
     "process.s3.p": "I build it, and you see progress along the way — not just a reveal at the end.",
     "process.s4.h": "Launch",
     "process.s4.p": "Your site goes live on your domain. I stay reachable after launch for fixes and small changes.",
-    "contact.title": "Contact",
+    "contact.title": "Let's build something",
     "contact.sub": "Tell me what you're trying to build. I'll reply within a day or two.",
     "contact.name": "Name",
     "contact.email": "Email",

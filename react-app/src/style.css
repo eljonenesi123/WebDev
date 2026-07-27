@@ -2774,84 +2774,111 @@ main, .site-footer {
 
 .contact { border-bottom: none; }
 
-/* The whole section framed like a device screen — thick rounded border,
-   hand-drawn wavy lines + a soft blob tucked in the top-right corner
-   (same stroke language as .sketch-oval elsewhere) instead of a flat
-   modern gradient blob, so it stays on-brand rather than just imported. */
-.contact-card {
-  position: relative;
-  overflow: hidden;
-  border: 2px solid var(--text);
-  border-radius: 28px;
-  padding: 3rem 3.5rem;
-  background: var(--surface);
-}
-.contact-decor {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: min(55%, 480px);
-  height: 100%;
-  z-index: 0;
-  pointer-events: none;
-}
-.contact-decor-blob { fill: var(--accent); opacity: 0.12; }
-.contact-decor-line { fill: none; stroke: var(--accent); stroke-width: 1.5; opacity: 0.3; }
+/* No card, no boxed inputs — the section now reads as an open two-column
+   split (headline/details/socials on the left, a bare underline-only form
+   on the right) instead of a bordered device-screen panel. */
+.contact-sub { max-width: 420px; margin-bottom: 1.8rem; }
 
-.contact-card > .section-title,
-.contact-card > .contact-sub,
-.contact-card > .contact-layout {
-  position: relative;
-  z-index: 1;
-}
-
-@media (max-width: 900px) {
-  .contact-card { padding: 2.2rem 1.6rem; border-radius: 20px; }
-  .contact-decor { opacity: 0.6; }
-}
-
-/* The card + full form (5 fields, a textarea, terms, button) is the tallest
-   content on the whole page — the single biggest offender on short laptop
-   screens, so it gets its own tighter rhythm rather than just the shared
-   section padding cut above. */
-.contact-sub { max-width: 480px; margin-bottom: 2.5rem; }
-
-.contact-layout {
+.contact-split {
   display: grid;
-  grid-template-columns: 1.4fr 1fr;
-  gap: 3.5rem;
+  grid-template-columns: 1fr 1.1fr;
+  gap: 4rem;
   align-items: start;
+  max-width: 1100px;
+  margin: 2.5rem auto 0;
+  text-align: left;
+}
+
+.contact-info { position: relative; }
+
+.contact-sparkle {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  fill: var(--text);
+  opacity: 0.5;
+  animation: sketchSparkle 3s ease-in-out infinite;
+}
+.contact-sparkle-1 { top: -1.6rem; left: -0.6rem; animation-delay: 0.4s; }
+.contact-sparkle-2 { top: 0.4rem; right: 6%; animation-delay: 1.3s; }
+
+.contact-direct {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
   margin-top: 2rem;
+}
+.contact-direct-link {
+  font-family: var(--mono);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text);
+  width: fit-content;
+  border-bottom: 1.5px solid transparent;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+.contact-direct-link:hover { color: var(--accent); border-bottom-color: var(--accent); }
+
+.contact-socials {
+  display: flex;
+  gap: 0.7rem;
+  margin-top: 1.8rem;
 }
 
 .contact-form {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
 }
-.contact-form label {
-  font-family: var(--mono);
-  font-size: 0.78rem;
-  color: var(--text-dim);
-  margin-top: 1rem;
+
+.field {
+  position: relative;
+  margin-top: 1.7rem;
 }
-.contact-form input,
-.contact-form textarea {
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 4px;
+.field:first-child { margin-top: 0; }
+.field input,
+.field textarea {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1.5px solid var(--line);
+  border-radius: 0;
   color: var(--text);
   font-family: var(--sans);
-  font-size: 0.95rem;
-  padding: 0.75rem 0.9rem;
+  font-size: 0.98rem;
+  padding: 0.5rem 0.1rem;
   resize: vertical;
+  transition: border-color 0.15s ease;
 }
-.contact-form input:focus,
-.contact-form textarea:focus {
+.field textarea { min-height: 4.5rem; }
+.field input:focus,
+.field textarea:focus {
   outline: none;
-  border-color: var(--accent);
+  border-bottom-color: var(--accent);
 }
-.contact-form button { margin-top: 1.6rem; align-self: flex-start; border: none; }
+/* Floating label: sits over the field like placeholder text until the
+   field is focused or already has a value, then shrinks up out of the
+   way — driven by :placeholder-shown so it works without any JS state.
+   Every field needs a (blank) placeholder for that pseudo-class to exist
+   at all. */
+.field label {
+  position: absolute;
+  left: 0.1rem;
+  top: 0.5rem;
+  font-family: var(--mono);
+  font-size: 0.92rem;
+  color: var(--text-dim);
+  pointer-events: none;
+  transform-origin: left top;
+  transition: transform 0.15s ease, color 0.15s ease;
+}
+.field input:focus + label,
+.field input:not(:placeholder-shown) + label,
+.field textarea:focus + label,
+.field textarea:not(:placeholder-shown) + label {
+  transform: translateY(-1.25rem) scale(0.8);
+  color: var(--accent);
+}
+.contact-form button { margin-top: 1.8rem; align-self: flex-start; border: none; }
 
 .terms-check {
   display: flex;
@@ -2898,71 +2925,44 @@ main, .site-footer {
 .terms-check a { color: var(--accent); border-bottom: 1px solid var(--accent); padding-bottom: 1px; }
 .terms-check a:hover { color: #333333; border-color: #333333; }
 
-.contact-side {
-  display: flex;
-  flex-direction: column;
-  gap: 0.9rem;
-  border-left: 1px solid var(--line);
-  padding-left: 2rem;
-}
-.contact-side-label {
-  font-family: var(--mono);
-  font-size: 0.78rem;
-  color: var(--text-dim);
-  margin-bottom: 0.3rem;
-}
 .social-link {
   display: flex;
-  align-items: center;
-  gap: 0.9rem;
-  color: var(--text);
-  font-family: var(--mono);
-  font-size: 0.92rem;
-  font-weight: 600;
+  color: var(--text-dim);
   transition: color 0.15s ease, transform 0.15s ease;
 }
 .social-link svg {
   flex-shrink: 0;
-  color: var(--text-dim);
-  transition: color 0.2s ease, background 0.2s ease;
-  width: 38px;
-  height: 38px;
-  padding: 9px;
-  box-sizing: border-box;
-  border: 1px solid var(--line);
-  border-radius: 50%;
-  background: rgba(255,255,255,0.03);
+  width: 20px;
+  height: 20px;
 }
-.social-link:hover { color: var(--accent); transform: translateX(3px); }
-.social-link:hover svg { color: var(--accent); border-color: var(--accent); background: rgba(0,0,0,0.05); }
+.social-link:hover { color: var(--accent); transform: translateY(-2px); }
 
 .cw-toggle { cursor: pointer; border-bottom: 1px dashed currentColor; }
 .cw-toggle:hover { opacity: 0.75; }
 .cw-toggle.is-false { color: #e5605a; }
 
+/* Mobile: single column, stacked exactly in source order — headline,
+   supporting line, direct contact details and socials first, form below. */
 @media (max-width: 760px) {
-  .contact-layout { grid-template-columns: 1fr; gap: 2.2rem; }
-  .contact-side { border-left: none; border-top: 1px solid var(--line); padding-left: 0; padding-top: 1.6rem; }
+  .contact-split { grid-template-columns: 1fr; gap: 2.2rem; margin-top: 1.6rem; }
+  .contact-sparkle { display: none; }
 }
 
 /* Placed after every base rule it touches — an earlier attempt at this same
    override sat above several of these selectors and lost the cascade
-   silently (see [[css_cascade_gotcha]]). The whole card + form is the
-   tallest content on the page, so it needs the deepest cut of any section. */
+   silently (see [[css_cascade_gotcha]]). The full form (5 fields, a
+   textarea, terms, button) is the tallest content on the page, so it needs
+   the deepest cut of any section. */
 @media (max-height: 900px) and (min-width: 901px) {
-  .contact-card { padding: 1.4rem 1.8rem; }
   .contact-sub { margin-bottom: 0.9rem; }
-  .contact-form { gap: 0.2rem; }
-  .contact-form label { margin-top: 0.3rem; font-size: 0.72rem; }
-  .contact-form input,
-  .contact-form textarea { padding: 0.45rem 0.7rem; }
-  .contact-form textarea { max-height: 3rem; }
+  .field { margin-top: 1rem; }
+  .field textarea { min-height: 2.6rem; }
   .terms-check { margin-top: 0.5rem; }
   .terms-check span { font-size: 0.74rem; }
   .contact-form button { margin-top: 0.6rem; }
-  .contact-layout { margin-top: 1rem; gap: 2.4rem; }
-  .contact-side { gap: 0.55rem; }
-  .social-link svg { width: 32px; height: 32px; padding: 7px; }
+  .contact-split { margin-top: 1rem; gap: 2.4rem; }
+  .contact-direct { margin-top: 1rem; }
+  .contact-socials { margin-top: 1rem; }
 }
 
 /* ---------- FOOTER ---------- */
@@ -3126,13 +3126,6 @@ main, .site-footer {
      still centers the hook+visual pair as a whole within the viewport. */
   .hero-visual { flex: none; justify-content: flex-start; }
   .service-list { grid-template-columns: 1fr; gap: 2rem; }
-  .contact-grid { grid-template-columns: 1fr; gap: 2.5rem; }
-  .contact-alt {
-    border-left: none;
-    border-top: 1px solid var(--line);
-    padding-left: 0;
-    padding-top: 1.8rem;
-  }
   .tier-toggle, .price-card-single { max-width: 100%; }
   .topbar { padding: 1.2rem 6vw; }
   .lang-switch { gap: 0.4rem; }
@@ -3246,17 +3239,6 @@ main, .site-footer {
   flex-direction: column;
   gap: 1.15rem;
 }
-
-.faq-hint {
-  align-self: flex-start;
-  margin: -0.55rem 0 0 0.6rem;
-  font-family: "JetBrains Mono", monospace;
-  font-size: 0.72rem;
-  color: var(--text-dim);
-  opacity: 0.85;
-  transition: opacity 0.4s ease;
-}
-.faq-hint.is-hidden { opacity: 0; }
 
 /* FAQ also kept on its original fonts, not the hand-drawn one the rest of
    the site moved to. */
@@ -3373,7 +3355,6 @@ main, .site-footer {
 @media (max-width: 700px) {
   .imessage-thread { max-width: 100%; gap: 0.9rem; }
   .imessage-bubble { max-width: 86%; font-size: 0.88rem; }
-  .faq-hint { font-size: 0.68rem; }
 }
 
 /* Desktop only: question and answer sit side by side as a single row
