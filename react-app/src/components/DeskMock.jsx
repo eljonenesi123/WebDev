@@ -4,18 +4,16 @@ import HeroTitle from "./HeroTitle";
 
 // The hero's whole "mock website" payload is overlaid as a % zone onto the
 // monitor's screen area in assets/hero-desk.webp. That file is a pre-cropped
-// version of the original 1536x1024 source (cropped to y:[238,718], so
-// 1536x480) — trimming the webcam accessory and most of the keyboard/desk
-// depth (keeping just enough desk surface to read as "sitting on a desk")
-// so the graphic is short enough on its own to fit within one viewport at
-// full-bleed width. Screen bounds were re-measured against this cropped
-// frame (pixel-scanned for the teal-placeholder region, not eyeballed):
-// x:[444,1089] / y:[15,359], i.e. left 28.91% / top 3.13% / width 41.99% /
-// height 71.67% of the cropped frame. .desk-screen carries those numbers so
-// every overlay element inside it positions relative to the screen itself,
-// not the whole image. Below ~900px width, .desk-img switches to
-// object-fit:cover with a taller container aspect ratio — see the CSS
-// comment there for how the mobile-specific screen % were derived.
+// version of the original 1536x1024 source (cropped to y:[187,879], so
+// 1536x692) — trimming only the empty transparent margin above/below the
+// real content, so the full monitor, keyboard, and mouse are always
+// visible, at every breakpoint (object-fit:contain throughout, no cropping
+// object-fit:cover trick on mobile). Screen bounds were re-measured against
+// this cropped frame (pixel-scanned for the teal-placeholder region, not
+// eyeballed): x:[444,1089] / y:[66,410], i.e. left 28.91% / top 9.54% /
+// width 41.99% / height 49.71% of the cropped frame. .desk-screen carries
+// those numbers so every overlay element inside it positions relative to
+// the screen itself, not the whole image.
 export default function DeskMock() {
   const { t } = useTranslation();
 
