@@ -950,6 +950,18 @@ main { padding-top: var(--header-h); }
    renders too small to comfortably read/tap — this only touches
    .mock-btn; desktop's sizing above is untouched. */
 @media (max-width: 900px) {
+  /* .hero is still vertically centered (justify-content:center, inherited
+     from the desktop rule) inside a min-height:100vh box — with the hook
+     and monitor together much shorter than a full screen on mobile, that
+     centering was splitting the leftover space into a large gap ABOVE the
+     headline and another below the monitor, rather than actually being
+     empty page margin. Sizing to content instead removes both. */
+  .hero { min-height: 0; justify-content: flex-start; }
+  /* .hero's own gap:3rem (set for the desktop row layout, between the text
+     column and the visual column) carries over unchanged into the mobile
+     column layout, landing as a large vertical gap between the headline
+     and the monitor — tightened here specifically for mobile. */
+  .hero { gap: 0.6rem; }
   .hero-hook { margin-bottom: 0.2rem; }
   .hero-mock-only { padding-top: 0.15rem; padding-bottom: 0.6rem; }
   /* These float via position:absolute at fixed top:2-3% offsets tuned for
@@ -966,16 +978,23 @@ main { padding-top: var(--header-h); }
      computed height here removes that ambiguity for mobile, where
      .desk-mock is also at its full-bleed 100vw-derived width and this
      matters most. Desktop's rule above is untouched. */
+  /* Cropped tighter than the 1096px version below (was: aspect-ratio:
+     1096/692) — trimming more of the bare desk mat on either side of the
+     keyboard/mouse zooms in on the monitor itself, making it read as the
+     dominant element instead of a small object floating in a wide empty
+     desk. Checked against the source asset: keyboard and mouse both sit
+     well inside this 850px-wide window with margin either side, only the
+     mat's outer corners are cropped further than before. */
   .desk-mock {
-    aspect-ratio: 1096 / 692;
-    height: calc(100vw / 1.58382);
+    aspect-ratio: 850 / 692;
+    height: calc(100vw / 1.22832);
   }
   .desk-img { object-fit: cover; }
-  /* .desk-screen's left/width are recomputed against this narrower 1096px
-     frame (screen x:[444,1089] in the source becomes x:[224,869] once the
-     220px trimmed off the left edge is subtracted, i.e. 20.44%/58.85% of
-     1096 — top/height are untouched since this crop only trims width). */
-  .desk-screen { left: 20.44%; width: 58.85%; }
+  /* .desk-screen's left/width recomputed against this narrower 850px frame
+     (screen x:[444,1089] in the source becomes x:[101,746] once the 343px
+     trimmed off the left edge is subtracted, i.e. 11.88%/75.88% of 850 —
+     top/height are untouched since this crop only trims width). */
+  .desk-screen { left: 11.88%; width: 75.88%; }
   /* .desk-screen's own box is a fixed % of a now much shorter mock (the
      full uncropped image leaves far less height per pixel of width than
      the old tighter crop did) — with the buttons below given a guaranteed
@@ -988,18 +1007,27 @@ main { padding-top: var(--header-h); }
      height (see the note above), and a second full chrome row would
      squeeze the actual headline/buttons rather than stay merely small. */
   .desk-tabs { padding: 0.3cqh 0.5cqw 0; }
-  .desk-tab { padding: 0.3cqh 0.55cqw; max-width: 7cqw; gap: 0.3cqw; }
-  .desk-tab-favicon { width: 0.85cqw; height: 0.85cqw; }
-  .desk-tab-label { font-size: 0.8cqw; }
+  /* The screen box itself is proportionally wider now (see .desk-screen
+     above), leaving real spare room in the tab row even though this cap is
+     sized off the mock's own width (unchanged) — widened so labels read as
+     more than a single truncated letter. */
+  .desk-tab { padding: 0.3cqh 0.55cqw; max-width: 13cqw; gap: 0.3cqw; }
+  /* Text above scaled off a much narrower cqw base than the headline
+     outside the mock — a plain cqw value here shrank to near-unreadable
+     since the mock's own container width (100vw) doesn't grow the way its
+     height just did. clamp() keeps the cqw scaling for larger phones/
+     tablets but guarantees a legible rem floor on narrow ones. */
+  .desk-tab-favicon { width: clamp(8px, 2cqw, 11px); height: clamp(8px, 2cqw, 11px); }
+  .desk-tab-label { font-size: clamp(0.5rem, 1.7cqw, 0.68rem); }
   .desk-tab-close, .desk-tab-new { display: none; }
   .desk-toolbar { display: none; }
-  .desk-nav { padding: 0.2cqh 1.2cqw; }
-  .desk-nav-mark { font-size: 1.6cqw; }
-  .desk-nav-links { font-size: 1.05cqw; gap: 1.4cqw; }
-  .desk-hero { gap: 0.35cqw; padding: 0 2.4cqw; }
-  .desk-hero .hero-title { font-size: 2.1cqw; line-height: 1.1; }
-  .desk-hero-sub { font-size: 1.1cqw; margin-top: 0; }
-  .desk-cta-row { margin-top: 0.2cqw; }
+  .desk-nav { padding: 0.3cqh 1.2cqw; }
+  .desk-nav-mark { font-size: clamp(0.62rem, 2.6cqw, 0.85rem); }
+  .desk-nav-links { font-size: clamp(0.56rem, 2.2cqw, 0.75rem); gap: 1.4cqw; }
+  .desk-hero { gap: 0.5cqh; padding: 0 2.4cqw; }
+  .desk-hero .hero-title { font-size: clamp(0.95rem, 4.4cqw, 1.3rem); line-height: 1.15; }
+  .desk-hero-sub { font-size: clamp(0.58rem, 2.2cqw, 0.78rem); margin-top: 0; }
+  .desk-cta-row { margin-top: 0.4cqh; }
   .mock-btn {
     font-size: clamp(0.6rem, 2.4cqw, 0.85rem);
     padding: clamp(0.26rem, 1.6cqw, 0.6rem) clamp(0.6rem, 3cqw, 1.1rem);
@@ -3082,8 +3110,12 @@ main, .site-footer {
      (@media max-width:900px) for .hero-mock-only specifically, since both
      target the same element and this one comes later in the file — the
      same cascade gotcha this file has hit before. Reasserted here, after
-     the conflicting rule, to actually win. */
-  .hero-mock-only { padding-top: 0.15rem; }
+     the conflicting rule, to actually win. Now that .hero is no longer
+     vertically centered in a full-viewport box (see the 900px block),
+     this is the only thing controlling the header-to-headline gap, so it
+     needs to be a deliberate small value rather than the near-zero one
+     that made sense when centering was doing the rest of the work. */
+  .hero-mock-only { padding-top: 1rem; }
   /* .hero-visual has flex:1 (grows to fill all remaining height in the
      100vh section) plus justify-content:center — on mobile that means it
      was centering its own content (the monitor + the ovals below it)
