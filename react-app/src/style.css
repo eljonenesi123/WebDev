@@ -3390,8 +3390,12 @@ main, .site-footer {
     flex-direction: row;
     align-items: flex-start;
     flex-wrap: nowrap;
-    gap: 0.55rem;
+    gap: 1.6rem;
   }
+  /* A reply doesn't land in perfect lockstep with its question — offsetting
+     the answer down a little reads as "arriving a moment after" rather
+     than both bubbles snapping to the exact same top edge. */
+  .imessage-sent { margin-top: 1.1rem; }
   /* A percentage max-width on both bubbles (e.g. 47%/47%) put them both
      into the same flex-shrink pool: since the row's hypothetical size
      (question's one-line width + the much longer answer's one-line width)
