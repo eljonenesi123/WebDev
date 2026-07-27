@@ -708,7 +708,13 @@ main { padding-top: var(--header-h); }
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  background: var(--surface);
+  /* This whole mock represents a fixed website design being shown off —
+     not something that should follow the site's own light/dark toggle —
+     so every color in here is now a hardcoded value instead of a
+     var(--...) that would otherwise flip with site theme. This background
+     covers the browser-bar/nav rows; .desk-hero below paints its own
+     gradient over the remaining content area specifically. */
+  background: #faf6ec;
 }
 .desk-screen > * {
   opacity: 0;
@@ -718,29 +724,103 @@ main { padding-top: var(--header-h); }
 .desk-screen > *:nth-child(2) { animation-delay: 0.48s; }
 .desk-screen > *:nth-child(3) { animation-delay: 0.6s; }
 
+/* Real browser chrome: a darker tab strip with rounded-top tabs (the
+   active one lighter, matching the content area's own top color, so it
+   reads as "raised" onto that surface) plus a toolbar row underneath with
+   nav/refresh icons and a URL bar — standard OS browser conventions,
+   kept strictly monochrome/gray so only the actual page content below
+   carries any brand color. */
 .desk-browserbar {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  background: #cfcfcf;
+}
+.desk-tabs {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  padding: 0.5cqh 0.6cqw 0;
+}
+.desk-tab {
+  display: flex;
+  align-items: center;
+  gap: 0.35cqw;
+  max-width: 9cqw;
+  padding: 0.4cqh 0.7cqw;
+  border-radius: 6px 6px 0 0;
+  background: #dedcd4;
+  color: rgba(0, 0, 0, 0.45);
+  overflow: hidden;
+}
+.desk-tab-active {
+  background: #faf6ec;
+  color: #171717;
+}
+.desk-tab-favicon {
+  width: 0.7cqw;
+  height: 0.7cqw;
+  min-width: 5px;
+  min-height: 5px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+.desk-tab-favicon-site { background: #0a0a0a; border-radius: 50%; }
+.desk-tab-favicon-mail { background: #d64b3f; }
+.desk-tab-favicon-docs { background: #4285c9; }
+.desk-tab-label {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.68cqw;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.desk-tab-close {
+  font-size: 0.85cqw;
+  line-height: 1;
+  opacity: 0.5;
+  flex-shrink: 0;
+  margin-left: 0.1cqw;
+}
+.desk-tab-new {
+  align-self: center;
+  width: 1.3cqw;
+  height: 1.3cqw;
+  min-width: 12px;
+  min-height: 12px;
+  margin: 0 0 0.4cqh 0.3cqw;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85cqw;
+  line-height: 1;
+  color: rgba(0, 0, 0, 0.4);
+}
+
+.desk-toolbar {
   display: flex;
   align-items: center;
   gap: 0.5cqw;
-  flex-shrink: 0;
-  padding: 1cqh 1.6cqw;
+  padding: 0.45cqh 0.9cqw;
+  background: #faf6ec;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
-.desk-browserbar-dot {
-  width: 0.8cqw;
-  height: 0.8cqw;
-  min-width: 3px;
-  min-height: 3px;
-  border-radius: 50%;
-  background: var(--line);
-  flex-shrink: 0;
+.desk-toolbar-icon {
+  font-size: 0.85cqw;
+  color: rgba(0, 0, 0, 0.55);
+  line-height: 1;
 }
-.desk-browserbar-url {
+.desk-toolbar-icon-dim { opacity: 0.35; }
+.desk-toolbar-url {
   flex: 1;
-  height: 1.4cqh;
-  min-height: 4px;
-  margin-left: 0.6cqw;
-  border-radius: 6px;
-  background: var(--line);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.68cqw;
+  color: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
+  padding: 0.3cqh 0.8cqw;
+  margin-left: 0.2cqw;
 }
 
 .desk-nav {
@@ -749,15 +829,15 @@ main { padding-top: var(--header-h); }
   justify-content: space-between;
   flex-shrink: 0;
   padding: 0.8cqh 1.6cqw;
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.15);
 }
 .desk-nav-mark {
   font-family: var(--serif);
   font-style: italic;
   font-weight: 700;
   font-size: 1.5cqw;
-  background: var(--text);
-  color: var(--bg);
+  background: #0a0a0a;
+  color: #f3ecdc;
   padding: 0.25em 0.5em;
   border-radius: 4px;
   line-height: 1;
@@ -767,7 +847,7 @@ main { padding-top: var(--header-h); }
   gap: 1.3cqw;
   font-family: "JetBrains Mono", monospace;
   font-size: 0.95cqw;
-  color: var(--text-dim);
+  color: #4a4a4a;
 }
 
 .desk-hero {
@@ -779,18 +859,24 @@ main { padding-top: var(--header-h); }
   text-align: center;
   gap: 0.9cqh;
   padding: 0 3cqw;
+  /* The mock website's own design — a warm amber-to-black diagonal wave,
+     fixed regardless of site theme (see .desk-screen above). #e0a46e is
+     the site's own dark-mode accent color, reused here so this reads as
+     an extension of the real brand palette rather than an arbitrary
+     unrelated color. */
+  background: linear-gradient(135deg, #e8b878 0%, #b9803f 30%, #4a2f1a 65%, #0a0a0a 100%);
 }
 .desk-hero .hero-title {
   font-size: 2.5cqw;
   font-weight: 800;
   line-height: 1.22;
-  color: var(--text);
+  color: #ffffff;
   margin-bottom: 0;
 }
 .desk-hero-sub {
   font-family: "JetBrains Mono", monospace;
   font-size: 1.05cqw;
-  color: var(--text-dim);
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .desk-cta-row {
@@ -810,15 +896,18 @@ main { padding-top: var(--header-h); }
 }
 .mock-btn:hover { transform: scale(1.04); }
 .mock-btn-primary {
-  background: var(--text);
-  color: var(--bg);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+  /* Solid dark fill reads clearly against both the orange and purple ends
+     of the gradient — tested against a plain white fill, which washed out
+     over the lighter orange region. */
+  background: #171717;
+  color: #f2efe8;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
 }
 .mock-btn-line {
-  background: transparent;
-  border: 1.5px solid var(--text);
-  color: var(--text);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1.5px solid rgba(255, 255, 255, 0.85);
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
 /* Below ~900px, width is capped at 100vw (edge-to-edge, can't grow wider
@@ -869,8 +958,16 @@ main { padding-top: var(--header-h); }
      to still fit inside that box instead of overflowing past its bottom
      edge (which .desk-screen's overflow:hidden was silently clipping,
      cutting off the lower half of the button text). */
-  .desk-browserbar { padding: 0.25cqh 1.2cqw; }
-  .desk-browserbar-dot { width: 1cqw; height: 1cqw; }
+  /* The toolbar row (nav/refresh icons + URL bar) is dropped entirely on
+     mobile — the screen box here is already a fraction of its desktop
+     height (see the note above), and a second full chrome row would
+     squeeze the actual headline/buttons rather than stay merely small. */
+  .desk-tabs { padding: 0.3cqh 0.5cqw 0; }
+  .desk-tab { padding: 0.3cqh 0.55cqw; max-width: 7cqw; gap: 0.3cqw; }
+  .desk-tab-favicon { width: 0.85cqw; height: 0.85cqw; }
+  .desk-tab-label { font-size: 0.8cqw; }
+  .desk-tab-close, .desk-tab-new { display: none; }
+  .desk-toolbar { display: none; }
   .desk-nav { padding: 0.2cqh 1.2cqw; }
   .desk-nav-mark { font-size: 1.6cqw; }
   .desk-nav-links { font-size: 1.05cqw; gap: 1.4cqw; }

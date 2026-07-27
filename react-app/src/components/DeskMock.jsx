@@ -23,10 +23,28 @@ export default function DeskMock() {
 
       <div className="desk-screen">
         <div className="desk-browserbar" aria-hidden="true">
-          <span className="desk-browserbar-dot" />
-          <span className="desk-browserbar-dot" />
-          <span className="desk-browserbar-dot" />
-          <span className="desk-browserbar-url" />
+          <div className="desk-tabs">
+            <span className="desk-tab desk-tab-active">
+              <span className="desk-tab-favicon desk-tab-favicon-site" />
+              <span className="desk-tab-label">Eljon Enesi</span>
+              <span className="desk-tab-close">×</span>
+            </span>
+            <span className="desk-tab">
+              <span className="desk-tab-favicon desk-tab-favicon-mail" />
+              <span className="desk-tab-label">Gmail</span>
+            </span>
+            <span className="desk-tab">
+              <span className="desk-tab-favicon desk-tab-favicon-docs" />
+              <span className="desk-tab-label">Docs</span>
+            </span>
+            <span className="desk-tab-new">+</span>
+          </div>
+          <div className="desk-toolbar">
+            <span className="desk-toolbar-icon">‹</span>
+            <span className="desk-toolbar-icon desk-toolbar-icon-dim">›</span>
+            <span className="desk-toolbar-icon">⟳</span>
+            <span className="desk-toolbar-url">eljonenesi.com</span>
+          </div>
         </div>
 
         <div className="desk-nav" aria-hidden="true">
