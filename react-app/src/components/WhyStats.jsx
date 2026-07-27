@@ -24,14 +24,6 @@ const STATS = [
     label: "of users leave a website because of slow load times",
   },
   {
-    value: 7,
-    decimals: 0,
-    prefix: "-",
-    suffix: "%",
-    negative: true,
-    label: "drop in conversions from just a 1-second delay in load time",
-  },
-  {
     value: 11,
     decimals: 0,
     suffix: "%",

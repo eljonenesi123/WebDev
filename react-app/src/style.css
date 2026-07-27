@@ -1514,7 +1514,7 @@ main, .site-footer {
 
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 2rem 1.4rem;
   margin: 3.4rem auto 0;
   max-width: 1240px;
@@ -1602,7 +1602,7 @@ main, .site-footer {
 }
 
 @media (max-width: 1100px) {
-  .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 2.6rem 1.4rem; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 2.6rem 1.4rem; }
 }
 
 @media (max-width: 700px) {
