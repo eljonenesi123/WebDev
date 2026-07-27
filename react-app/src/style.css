@@ -2178,95 +2178,58 @@ main, .site-footer {
   0%, 100% { transform: scale(1) translateY(0) rotate(var(--base-rot)); }
   50% { transform: scale(1) translateY(-5px) rotate(calc(var(--base-rot) * 0.6)); }
 }
-.skill-item:hover { z-index: 2; }
-
 .skill-item-inner {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.7rem;
-  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-.skill-item:hover .skill-item-inner {
-  transform: scale(1.1) rotate(calc(var(--base-rot) * -1)) translateY(-4px);
-}
-.skill-item.is-active .skill-item-inner {
-  transform: scale(1.1) rotate(calc(var(--base-rot) * -1)) translateY(-4px);
+  gap: 0.6rem;
 }
 
-.skill-item { cursor: pointer; }
-
-/* Plain circular badge — monochrome (currentColor) by default in both
-   themes since it just reads var(--text), filling with the tool's own
-   brand color only on hover/tap. --brand/--brand-contrast are set per item
-   inline (App.jsx), the same pattern already used for --base-rot/--i. */
+/* Icon sits directly on the page — no circular backdrop — always in its
+   real brand color (--brand, set per item inline in App.jsx) rather than
+   monochrome-until-hover, since the whole point now is that the colors
+   are the permanent visual focus, not a reveal-on-interaction gimmick. */
 .skill-badge {
   position: relative;
-  width: 62px;
-  height: 62px;
-  border-radius: 50%;
-  background: var(--surface);
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.25s ease;
-  /* Tracks the badge's own current background so icons that punch out an
-     inner numeral/flap as a "cutout" (HTML5/CSS3/Node.js below) stay
-     readable — without this, that cutout stayed pinned to the default
-     --surface color even once the badge filled with a brand color and the
-     ribbon inverted to white, making it nearly invisible against the now-
-     also-light ribbon on hover. */
-  --skill-cutout: var(--surface);
+  /* HTML5/CSS3/Node.js's icons punch out an inner numeral/flap as a
+     "cutout" that has to match whatever it's sitting on to read as a
+     cutout rather than a solid patch — that's the page background now
+     that there's no filled badge circle behind it. */
+  --skill-cutout: var(--bg);
 }
-.skill-badge svg {
-  color: var(--text);
-  transition: color 0.25s ease;
-}
+.skill-badge svg { color: var(--brand); }
 
 .skill-icon {
   position: relative;
   display: block;
+  width: 48px;
+  height: 48px;
 }
 
-/* Name pill — hidden by default, fades in below the badge on hover/tap,
-   filled with the same brand color as the badge. */
+/* Name label — permanently visible underneath the icon. */
 .skill-tooltip {
-  position: absolute;
-  top: calc(100% + 0.55rem);
-  left: 50%;
-  transform: translateX(-50%) translateY(4px);
-  background: var(--brand);
-  color: var(--brand-contrast);
+  color: var(--text-dim);
   font-family: var(--mono);
-  font-size: 0.62rem;
+  font-size: 0.72rem;
   font-weight: 600;
   white-space: nowrap;
-  padding: 0.3rem 0.65rem;
-  border-radius: 20px;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.25s ease, transform 0.25s ease;
-  z-index: 3;
 }
-
-@media (hover: hover) {
-  .skill-item:hover .skill-badge { background: var(--brand); --skill-cutout: var(--brand); }
-  .skill-item:hover .skill-badge svg { color: var(--brand-contrast); }
-  .skill-item:hover .skill-tooltip { opacity: 1; transform: translateX(-50%) translateY(0); }
-}
-/* Touch devices have no hover — tapping toggles this class instead
-   (App.jsx), with a document-level outside-tap listener to dismiss it. */
-.skill-item.is-active .skill-badge { background: var(--brand); --skill-cutout: var(--brand); }
-.skill-item.is-active .skill-badge svg { color: var(--brand-contrast); }
-.skill-item.is-active .skill-tooltip { opacity: 1; transform: translateX(-50%) translateY(0); }
 
 @media (prefers-reduced-motion: reduce) {
   .skills-grid.is-revealed .skill-item { animation: none; opacity: 1; transform: scale(1) rotate(var(--base-rot)); }
 }
 
+/* 10 icons total — 2 per row divides evenly into 5 full rows with no
+   orphaned leftover on its own line, and gives the longer names (e.g.
+   "Visual Studio") a wide enough column to sit on one line. */
 @media (max-width: 900px) {
-  .skills-grid { grid-template-columns: repeat(3, 1fr); gap: 1.8rem 1rem; }
+  .skills-grid { grid-template-columns: repeat(2, 1fr); gap: 2rem 1.5rem; max-width: 320px; }
+  .skill-icon { width: 40px; height: 40px; }
+  .skill-tooltip { font-size: 0.62rem; }
 }
 
 /* ---------- SERVICES ---------- */

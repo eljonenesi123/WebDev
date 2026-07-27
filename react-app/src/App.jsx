@@ -424,7 +424,6 @@ function Skills() {
   const { t } = useTranslation();
   const gridRef = useRef(null);
   const [revealed, setRevealed] = useState(false);
-  const [activeIndex, setActiveIndex] = useState(null);
 
   useEffect(() => {
     const el = gridRef.current;
@@ -435,17 +434,6 @@ function Skills() {
     );
     observer.observe(el);
     return () => observer.disconnect();
-  }, []);
-
-  // No hover on touch — tapping a badge reveals its fill/name instead, and
-  // tapping anywhere outside the grid dismisses it, mirroring the header
-  // menu's own outside-click-to-close pattern elsewhere in this file.
-  useEffect(() => {
-    function onDocPointerDown(e) {
-      if (gridRef.current && !gridRef.current.contains(e.target)) setActiveIndex(null);
-    }
-    document.addEventListener("pointerdown", onDocPointerDown);
-    return () => document.removeEventListener("pointerdown", onDocPointerDown);
   }, []);
 
   return (
@@ -467,7 +455,7 @@ function Skills() {
       <div className={"skills-grid" + (revealed ? " is-revealed" : "")} ref={gridRef}>
         {SKILLS.map((s, i) => (
           <div
-            className={"skill-item" + (activeIndex === i ? " is-active" : "")}
+            className="skill-item"
             key={s.name}
             style={{
               "--base-rot": `${s.rot}deg`,
@@ -475,12 +463,10 @@ function Skills() {
               "--brand": s.brand,
               "--brand-contrast": s.contrast === "dark" ? "#171717" : "#ffffff",
             }}
-            onClick={() => setActiveIndex((cur) => (cur === i ? null : i))}
-            aria-label={s.name}
           >
             <div className="skill-item-inner">
               <span className="skill-badge">
-                <svg className="skill-icon" viewBox="0 0 24 24" width="30" height="30" fill="currentColor">{s.icon}</svg>
+                <svg className="skill-icon" viewBox="0 0 24 24" fill="currentColor">{s.icon}</svg>
               </span>
               <span className="skill-tooltip">{s.name}</span>
             </div>
