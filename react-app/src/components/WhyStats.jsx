@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import SketchBadges from "./SketchBadges";
 
 // Real numbers, cross-checked (not invented) since this section's whole
 // pitch is credibility — even without on-page citations, they aren't
@@ -117,6 +118,12 @@ export default function WhyStats() {
         </svg>
         <p className="stats-sub">A good website isn't a nice-to-have — the numbers make the case.</p>
       </div>
+
+      {/* Moved here from the hero (where they were only loosely placed
+          under the old pinned-scroll layout) — same message as the stats
+          below (trust, visibility, speed), so they read as a short visual
+          lead-in before the hard numbers back it up. */}
+      <SketchBadges />
 
       <div className={"stats-grid" + (revealed ? " is-revealed" : "")} ref={gridRef}>
         {STATS.map((s, i) => (

@@ -8,7 +8,6 @@ import { trackEvent } from "./analytics";
 import { asset } from "./asset";
 
 import CookieBanner from "./components/CookieBanner";
-import SketchBadges from "./components/SketchBadges";
 import DeskMock from "./components/DeskMock";
 import WhyStats from "./components/WhyStats";
 import WorkCarousel from "./components/WorkCarousel";
@@ -317,11 +316,11 @@ function ScrollCue() {
             <feTurbulence type="fractalNoise" baseFrequency="0.05 0.09" numOctaves="2" seed="9" result="n" />
             <feDisplacementMap in="SourceGraphic" in2="n" scale="3" />
           </filter>
-          <g fill="none" stroke="#000" strokeLinecap="round" filter="url(#pencilRoughCue)">
+          <g fill="none" stroke="currentColor" strokeLinecap="round" filter="url(#pencilRoughCue)">
             <path d="M20,3 L20,36" strokeWidth="3.6" />
             <path d="M21.5,3 L21.5,36" strokeWidth="1.5" opacity="0.5" />
           </g>
-          <path d="M7,29 L20,52 L33,29 C27,33.5 20,36 20,36 C20,36 13,33.5 7,29 Z" fill="#000" filter="url(#pencilRoughCue)" />
+          <path d="M7,29 L20,52 L33,29 C27,33.5 20,36 20,36 C20,36 13,33.5 7,29 Z" fill="currentColor" filter="url(#pencilRoughCue)" />
         </svg>
       </button>
     </div>
@@ -343,7 +342,6 @@ function Hero() {
       </div>
       <div className="hero-visual">
         <DeskMock />
-        <SketchBadges />
       </div>
     </section>
   );

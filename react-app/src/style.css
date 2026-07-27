@@ -451,7 +451,12 @@ main { padding-top: var(--header-h); }
   padding: 0.15rem 0.55rem;
   border-radius: 20px;
 }
-.scroll-cue-btn { width: 44px; height: 60px; padding: 0; border: none; background: none; cursor: pointer; }
+/* color:inherit is needed explicitly — buttons don't inherit color from
+   their ancestors by default in most browsers' UA stylesheets, so without
+   this the arrow's fill="currentColor"/stroke="currentColor" below was
+   resolving to the browser's own default button-text color instead of
+   var(--text), staying dark regardless of site theme. */
+.scroll-cue-btn { width: 44px; height: 60px; padding: 0; border: none; background: none; cursor: pointer; color: inherit; }
 .scroll-cue-arrow { width: 100%; height: 100%; animation: scrollCueBounce 1.8s ease-in-out infinite; }
 
 @keyframes scrollCueBounce {
@@ -460,9 +465,14 @@ main { padding-top: var(--header-h); }
 }
 
 @media (max-width: 760px) {
-  .scroll-cue { right: 1.1rem; bottom: 1.1rem; }
-  .scroll-cue-btn { width: 36px; height: 50px; }
-  .scroll-cue-label { font-size: 0.85rem; }
+  /* Mobile layouts are dense and vary a lot in height section to section —
+     a fixed bottom-right indicator kept colliding with whatever content
+     happened to scroll underneath it there (stat cards, callout ovals).
+     Mobile scrolling is already the obvious/expected interaction on touch
+     devices anyway, so the hint isn't pulling its weight there the way it
+     does on desktop (where it doubles as a discoverability nudge for the
+     less-obvious wheel-driven section flow). */
+  .scroll-cue { display: none; }
 }
 
 /* ---------- HERO ---------- */
@@ -470,7 +480,6 @@ main { padding-top: var(--header-h); }
 .hero {
   padding: 5.5rem 6vw 4.5rem;
   max-width: none;
-  border-bottom: 1px solid var(--line);
   min-height: 100vh;
   display: flex;
   flex-direction: row;
@@ -1164,7 +1173,6 @@ main, .site-footer {
 
 .work, .skills, .services, .process, .estimator-section, .globe-section, .faq, .contact, .why-stats {
   padding: 4rem 6vw;
-  border-bottom: 1px solid var(--line);
   min-height: 100vh;
   /* dvh (not vh) so this matches the work-carousel's own 100dvh slides on
      mobile — vh ignores the collapsing address bar and renders taller than
@@ -1342,6 +1350,30 @@ main, .site-footer {
 }
 .stats-sparkle-1 { top: 8%; left: 8%; animation-delay: 0.4s; }
 .stats-sparkle-2 { top: 12%; right: 9%; animation-delay: 1.1s; }
+
+/* The callout ovals, relocated here from the hero — reuses .sketch-badges'
+   existing centered/wrapping layout as-is (already responsive: a single
+   row on wide screens, wrapping to 2x2 once narrower than ~700px, per its
+   own width overrides below). Only the spacing needs adjusting for this
+   new context: no bottom margin of its own since .stats-grid's existing
+   top margin already provides that gap, avoiding doubled-up spacing
+   (flexbox doesn't collapse margins the way normal block flow would). */
+.why-stats .sketch-badges {
+  padding-top: 0;
+  margin: 2.2rem auto 0;
+  max-width: 900px;
+}
+/* SketchBadges' own internal sparkles are position:absolute against
+   whatever positioned ancestor they land inside — previously that was the
+   hero's own box, sized to match. Here that's .why-stats instead, a very
+   differently-sized container, so their hardcoded top/left offsets would
+   land in arbitrary spots (likely overlapping the stat cards). WhyStats
+   already has its own pair of correctly-positioned sparkles for this exact
+   decorative purpose, so these are just redundant — disabled here rather
+   than re-tuned. */
+.why-stats .sketch-sparkle {
+  display: none;
+}
 
 .stats-grid {
   display: grid;
@@ -2803,8 +2835,6 @@ main, .site-footer {
   font-family: var(--mono);
   font-size: 0.85rem;
   color: var(--text-dim);
-  border-top: 1px solid var(--line);
-  margin-top: -1px;
 }
 .site-footer a { color: var(--text-dim); transition: color 0.15s ease; }
 .site-footer a:hover { color: var(--accent); }
