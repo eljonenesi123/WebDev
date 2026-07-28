@@ -1465,7 +1465,7 @@ main, .site-footer {
   gap: clamp(2.5rem, 6vh, 4.5rem);
   padding: 3rem 6vw;
   text-align: center;
-  background: #e3e3e5;
+  background: var(--bg);
 }
 
 .ctrl-brand-title {
@@ -1476,8 +1476,8 @@ main, .site-footer {
   letter-spacing: -0.01em;
   margin: 0;
 }
-.ctrl-brand-bold { color: #141414; }
-.ctrl-brand-light { color: #8c8c8c; font-weight: 500; }
+.ctrl-brand-bold { color: var(--text); }
+.ctrl-brand-light { color: var(--text-dim); font-weight: 500; }
 
 /* The key is a real cropped photo (its own 3D-rendered asset); the
    figures are a hand-built SVG walk-cycle instead (see Walker below), so
@@ -1606,10 +1606,10 @@ main, .site-footer {
   font-family: var(--sans);
   font-size: clamp(1rem, 2.2vw, 1.3rem);
   line-height: 1.5;
-  color: #b0b0b0;
+  color: var(--text-dim);
   margin: 0;
 }
-.ctrl-brand-sub strong { color: #141414; font-weight: 700; }
+.ctrl-brand-sub strong { color: var(--text); font-weight: 700; }
 
 @media (max-width: 700px) {
   .ctrl-brand { gap: 2rem; padding: 2.5rem 8vw; }
