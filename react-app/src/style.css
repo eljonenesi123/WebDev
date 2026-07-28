@@ -1322,6 +1322,7 @@ main, .site-footer {
 /* ---------- SECTION SHARED ---------- */
 
 .section-title {
+  position: relative;
   font-family: var(--serif);
   font-size: clamp(1.9rem, 4vw, 2.7rem);
   font-weight: 700;
@@ -1330,6 +1331,25 @@ main, .site-footer {
   text-transform: none;
   color: var(--text);
   margin-bottom: 2.5rem;
+}
+/* Soft brown spotlight behind every major heading — same treatment on
+   .ctrl-brand-title below since that section uses its own heading class. */
+.section-title::before,
+.ctrl-brand-title::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 130%;
+  height: 220%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(closest-side, rgba(110, 71, 59, 0.16), transparent 70%);
+  z-index: -1;
+  pointer-events: none;
+}
+:root[data-theme="dark"] .section-title::before,
+:root[data-theme="dark"] .ctrl-brand-title::before {
+  background: radial-gradient(closest-side, rgba(110, 71, 59, 0.32), transparent 70%);
 }
 
 /* These used to be full-viewport-tall slides for a pinned-scroll layout;
@@ -1422,9 +1442,14 @@ main, .site-footer {
   position: absolute;
   width: 20px;
   height: 20px;
-  fill: var(--text);
+  fill: #291C0E;
   opacity: 0;
   animation: sketchSparkle 3s ease-in-out infinite;
+}
+:root[data-theme="dark"] .sketch-sparkle {
+  /* The darker brown nearly vanishes against the dark-mode background —
+     the lighter of the two accent tones reads clearly there instead. */
+  fill: #6E473B;
 }
 .sketch-sparkle-1 { top: 2%; left: calc(50% - 60px); animation-delay: 2.3s; }
 .sketch-sparkle-2 { top: 3%; left: calc(50% + 40px); animation-delay: 2.5s; }
@@ -1478,6 +1503,7 @@ main, .site-footer {
 }
 
 .ctrl-brand-title {
+  position: relative;
   font-family: var(--sans);
   font-weight: 800;
   font-size: clamp(2.2rem, 6vw, 4rem);
@@ -1558,6 +1584,23 @@ main, .site-footer {
 @keyframes ctrlKeyPulse {
   0%, 100% { transform: scale(1); filter: drop-shadow(0 18px 26px rgba(0, 0, 0, 0.22)); }
   50% { transform: scale(1.035); filter: drop-shadow(0 26px 38px rgba(0, 0, 0, 0.3)); }
+}
+/* Light mode's shadow reads fine on the section's light bg but a black
+   key on a near-black dark-mode page needs its own stronger grounding
+   shadow plus a faint light rim so the silhouette itself stays legible —
+   same animation, just a dark-mode-only keyframes swap. */
+:root[data-theme="dark"] .ctrl-key-pulse {
+  animation-name: ctrlKeyPulseDark;
+}
+@keyframes ctrlKeyPulseDark {
+  0%, 100% {
+    transform: scale(1);
+    filter: drop-shadow(0 22px 34px rgba(0, 0, 0, 0.55)) drop-shadow(0 0 0 1px rgba(255, 255, 255, 0.12));
+  }
+  50% {
+    transform: scale(1.035);
+    filter: drop-shadow(0 30px 46px rgba(0, 0, 0, 0.65)) drop-shadow(0 0 8px rgba(255, 255, 255, 0.18));
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   .ctrl-key-pulse { animation: none; }
@@ -1750,7 +1793,7 @@ main, .site-footer {
 }
 .stat-ring-fill {
   fill: none;
-  stroke: var(--text);
+  stroke: #6E473B;
   stroke-width: 6;
   stroke-linecap: round;
 }
