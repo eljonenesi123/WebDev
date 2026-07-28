@@ -1449,6 +1449,169 @@ main, .site-footer {
   .sketch-badge { width: 140px; padding: 0.75rem 0.55rem; }
 }
 
+/* ---------- CTRL YOUR BRAND (interactive keycap moment) ---------- */
+/* A deliberate fixed-style panel like the hero's mock-website screen —
+   recreates a specific flat-lay photo (light gray backdrop, near-black
+   text), so every color here is hardcoded rather than a var(--...) that
+   would otherwise fight the photo once the site is in dark mode. */
+
+.ctrl-brand {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(2.5rem, 6vh, 4.5rem);
+  padding: 3rem 6vw;
+  text-align: center;
+  background: #e3e3e5;
+}
+
+.ctrl-brand-title {
+  font-family: var(--sans);
+  font-weight: 800;
+  font-size: clamp(2.2rem, 6vw, 4rem);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+.ctrl-brand-bold { color: #141414; }
+.ctrl-brand-light { color: #8c8c8c; font-weight: 500; }
+
+/* The key is a real cropped photo (its own 3D-rendered asset); the
+   figures are a hand-built SVG walk-cycle instead (see Walker below), so
+   this box just needs to give both a sensible shared layout, not
+   reproduce exact source-photo pixel coordinates the way it used to. */
+.ctrl-key-stage {
+  position: relative;
+  width: min(78vw, 460px);
+  aspect-ratio: 580 / 370;
+}
+
+/* Outer: slow "walk toward the key, fade out, snap back, fade in" loop —
+   moves the whole SVG group (all three walkers) together. */
+.ctrl-key-figures-drift {
+  position: absolute;
+  left: 58%;
+  top: 32%;
+  width: 46%;
+  pointer-events: none;
+  animation: ctrlFiguresDrift 6s ease-in-out infinite;
+}
+@keyframes ctrlFiguresDrift {
+  0% { transform: translateX(0); opacity: 1; }
+  62% { transform: translateX(-16%); opacity: 1; }
+  72% { opacity: 0; }
+  74% { transform: translateX(0); opacity: 0; }
+  86% { opacity: 1; }
+  100% { transform: translateX(0); opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ctrl-key-figures-drift { animation: none; }
+}
+
+/* Three independent real Lottie walk-cycle instances (see CtrlBrand.jsx),
+   arranged in the same loose triangular cluster the original photo's
+   three figures used — front one closer to the key/lower, back two
+   staggered behind. Each is a plain sized box; lottie-web renders its own
+   SVG into it at runtime. */
+.ctrl-lottie-walkers {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+}
+.ctrl-lottie-walker {
+  position: absolute;
+  width: 42%;
+  aspect-ratio: 1 / 1;
+}
+.ctrl-lottie-walker-1 { left: 2%; top: 4%; }
+.ctrl-lottie-walker-2 { left: 46%; top: 0%; }
+.ctrl-lottie-walker-3 { left: 24%; top: 34%; width: 46%; }
+
+.ctrl-key-pulse {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 59.6%;
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  animation: ctrlKeyPulse 2.8s ease-in-out infinite;
+}
+@keyframes ctrlKeyPulse {
+  0%, 100% { transform: scale(1); filter: drop-shadow(0 18px 26px rgba(0, 0, 0, 0.22)); }
+  50% { transform: scale(1.035); filter: drop-shadow(0 26px 38px rgba(0, 0, 0, 0.3)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ctrl-key-pulse { animation: none; }
+}
+
+/* "Press me" glow — a soft warm ring pulsing behind the key, offset from
+   the key's own scale pulse so the two read as independent layers rather
+   than one flat breathing motion. Sits behind the key image via z-index,
+   inside the same button so it's centered on it automatically. */
+.ctrl-key-glow {
+  position: absolute;
+  left: 46%;
+  top: 42%;
+  width: 115%;
+  height: 115%;
+  transform: translate(-50%, -50%) scale(0.85);
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(224, 164, 110, 0.55), rgba(224, 164, 110, 0) 72%);
+  filter: blur(6px);
+  z-index: -1;
+  opacity: 0.55;
+  animation: ctrlGlowPulse 2.8s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes ctrlGlowPulse {
+  0%, 100% { transform: translate(-50%, -50%) scale(0.85); opacity: 0.45; }
+  50% { transform: translate(-50%, -50%) scale(1.15); opacity: 0.85; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ctrl-key-glow { animation: none; }
+}
+
+/* Split onto its own inner element for the same reason .skill-item and
+   .work-slide-text split entrance-vs-interaction transforms elsewhere in
+   this file — an animation's transform on an element permanently wins
+   over a plain transition on that same element, even mid-cycle, so the
+   press needs a separate element from the one already running the idle
+   pulse keyframe. */
+.ctrl-key-press {
+  display: block;
+  transition: transform 0.15s ease;
+}
+.ctrl-key-press.is-pressed {
+  transform: scale(0.88) translateY(6%);
+}
+
+.ctrl-key-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  -webkit-user-drag: none;
+}
+
+.ctrl-brand-sub {
+  font-family: var(--sans);
+  font-size: clamp(1rem, 2.2vw, 1.3rem);
+  line-height: 1.5;
+  color: #b0b0b0;
+  margin: 0;
+}
+.ctrl-brand-sub strong { color: #141414; font-weight: 700; }
+
+@media (max-width: 700px) {
+  .ctrl-brand { gap: 2rem; padding: 2.5rem 8vw; }
+  .ctrl-key-stage { width: min(82vw, 340px); }
+}
+
 /* ---------- WHY THIS MATTERS (stat cards) ---------- */
 
 .why-stats {

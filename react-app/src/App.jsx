@@ -9,6 +9,7 @@ import { asset } from "./asset";
 
 import CookieBanner from "./components/CookieBanner";
 import DeskMock from "./components/DeskMock";
+import CtrlBrand from "./components/CtrlBrand";
 import WhyStats from "./components/WhyStats";
 import WorkCarousel from "./components/WorkCarousel";
 import ProcessPath from "./components/ProcessPath";
@@ -1065,6 +1066,7 @@ export default function App() {
 
       <main id="top">
         <Hero />
+        <CtrlBrand />
         <WhyStats />
         <WorkCarousel />
         <Skills />
