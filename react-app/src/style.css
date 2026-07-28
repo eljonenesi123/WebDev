@@ -1493,15 +1493,15 @@ main, .site-footer {
    moves the whole SVG group (all three walkers) together. */
 .ctrl-key-figures-drift {
   position: absolute;
-  left: 58%;
-  top: 32%;
+  left: 66%;
+  top: 30%;
   width: 46%;
   pointer-events: none;
   animation: ctrlFiguresDrift 6s ease-in-out infinite;
 }
 @keyframes ctrlFiguresDrift {
   0% { transform: translateX(0); opacity: 1; }
-  62% { transform: translateX(-16%); opacity: 1; }
+  62% { transform: translateX(-9%); opacity: 1; }
   72% { opacity: 0; }
   74% { transform: translateX(0); opacity: 0; }
   86% { opacity: 1; }
@@ -1520,15 +1520,19 @@ main, .site-footer {
   position: relative;
   width: 100%;
   aspect-ratio: 1 / 1;
+  /* The source walk-cycle faces right; the key sits to the left of this
+     cluster and the drift loop moves it further left, so the whole group
+     is mirrored to face the direction it's actually walking. */
+  transform: scaleX(-1);
 }
 .ctrl-lottie-walker {
   position: absolute;
-  width: 42%;
+  width: 50%;
   aspect-ratio: 1 / 1;
 }
 .ctrl-lottie-walker-1 { left: 2%; top: 4%; }
 .ctrl-lottie-walker-2 { left: 46%; top: 0%; }
-.ctrl-lottie-walker-3 { left: 24%; top: 34%; width: 46%; }
+.ctrl-lottie-walker-3 { left: 24%; top: 34%; width: 54%; }
 
 .ctrl-key-pulse {
   position: absolute;
