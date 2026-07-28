@@ -202,6 +202,24 @@ export async function initGlobe3D(container) {
   controls.minDistance = 1.6;
   controls.maxDistance = 4;
 
+  // OrbitControls' own autoRotate keeps spinning underneath drag/zoom input
+  // rather than yielding to it, so it's turned off for the duration of any
+  // interaction (drag-rotate or scroll-zoom both fire the same start/end
+  // events) and resumed a few seconds after the user lets go — from
+  // wherever the globe was left, since autoRotate just resumes its steady
+  // spin from the current camera angle rather than resetting anything.
+  const RESUME_DELAY = 3000;
+  let resumeTimer = null;
+  controls.addEventListener("start", () => {
+    controls.autoRotate = false;
+    clearTimeout(resumeTimer);
+  });
+  controls.addEventListener("end", () => {
+    if (reduceMotion) return;
+    clearTimeout(resumeTimer);
+    resumeTimer = setTimeout(() => { controls.autoRotate = true; }, RESUME_DELAY);
+  });
+
   let raf = null;
   function resize() {
     const rect = container.getBoundingClientRect();
@@ -242,6 +260,7 @@ export async function initGlobe3D(container) {
 
   return function cleanup() {
     stop();
+    clearTimeout(resumeTimer);
     ro.disconnect();
     io.disconnect();
     mo.disconnect();
