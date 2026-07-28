@@ -961,9 +961,9 @@ main { padding-top: var(--header-h); }
      column and the visual column) carries over unchanged into the mobile
      column layout, landing as a large vertical gap between the headline
      and the monitor — tightened here specifically for mobile. */
-  .hero { gap: 0.6rem; }
-  .hero-hook { margin-bottom: 0.2rem; }
-  .hero-mock-only { padding-top: 0.15rem; padding-bottom: 0.6rem; }
+  .hero { gap: 0.3rem; }
+  .hero-hook { margin-bottom: 0.1rem; }
+  .hero-mock-only { padding-top: 0.15rem; padding-bottom: 0.3rem; }
   /* These float via position:absolute at fixed top:2-3% offsets tuned for
      the old, much-taller flanking-badge canvas — now that the badges are
      always a stacked row below the mock (not flanking it), they land in
@@ -986,15 +986,20 @@ main { padding-top: var(--header-h); }
      well inside this 850px-wide window with margin either side, only the
      mat's outer corners are cropped further than before. */
   .desk-mock {
-    aspect-ratio: 850 / 692;
-    height: calc(100vw / 1.22832);
+    aspect-ratio: 700 / 692;
+    height: calc(100vw / 1.01156);
   }
   .desk-img { object-fit: cover; }
-  /* .desk-screen's left/width recomputed against this narrower 850px frame
-     (screen x:[444,1089] in the source becomes x:[101,746] once the 343px
-     trimmed off the left edge is subtracted, i.e. 11.88%/75.88% of 850 —
-     top/height are untouched since this crop only trims width). */
-  .desk-screen { left: 11.88%; width: 75.88%; }
+  /* .desk-screen's left/width recomputed against this narrower 700px frame
+     (screen x:[444,1089] in the source becomes x:[26,671] once the 418px
+     trimmed off the left edge is subtracted, i.e. 3.71%/92.14% of 700 —
+     top/height are untouched since this crop only trims width). Checked
+     visually at several tighter crops than this — anything past ~700
+     starts crowding the keyboard/mouse right up against the frame edge,
+     which risks clipping them on real (non-standard) phone widths even
+     if they technically survive at exactly 390px. This is the tightest
+     crop with a comfortable, verified margin around them. */
+  .desk-screen { left: 3.71%; width: 92.14%; }
   /* .desk-screen's own box is a fixed % of a now much shorter mock (the
      full uncropped image leaves far less height per pixel of width than
      the old tighter crop did) — with the buttons below given a guaranteed
