@@ -153,6 +153,10 @@ body {
   height: min(34vw, 440px);
   top: 55%;
   right: -8%;
+  /* Warm brown accent tint (site's own dark-mode accent family) instead
+     of the neutral --text tone, so the page picks up subtle warmth. */
+  fill: #6E473B;
+  opacity: 0.07;
   animation: ambientDrift2 58s ease-in-out infinite;
 }
 .ambient-shape-3 {
@@ -160,6 +164,8 @@ body {
   height: min(40vw, 520px);
   bottom: -12%;
   left: 30%;
+  fill: #291C0E;
+  opacity: 0.07;
   animation: ambientDrift3 64s ease-in-out infinite;
 }
 @keyframes ambientDrift1 {
@@ -1465,7 +1471,10 @@ main, .site-footer {
   gap: clamp(2.5rem, 6vh, 4.5rem);
   padding: 3rem 6vw;
   text-align: center;
-  background: var(--bg);
+  /* No opaque background here — the site's shared .ambient-shapes layer
+     (fixed behind everything at z-index 0) already relies on every
+     section staying transparent to show through; an opaque fill here
+     was blocking those circles out for this section only. */
 }
 
 .ctrl-brand-title {
