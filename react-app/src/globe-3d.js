@@ -96,6 +96,34 @@ function buildLandPositions(THREE, polygons, count) {
   return new THREE.BufferAttribute(new Float32Array(out), 3);
 }
 
+// Same forward projection the dot sampler's lat/lon came from, inverted:
+// given atan2(x, z) = lon and y = sin(lat), the point on the unit sphere is
+// x = cos(lat)*sin(lon), y = sin(lat), z = cos(lat)*cos(lon) — so a ring's
+// real coastline vertices land exactly on top of the dots derived from the
+// same geometry, not just a nearby approximation.
+function lonLatToVec3(THREE, lon, lat) {
+  const lonRad = (lon * Math.PI) / 180;
+  const latRad = (lat * Math.PI) / 180;
+  const r = Math.cos(latRad);
+  return new THREE.Vector3(r * Math.sin(lonRad), Math.sin(latRad), r * Math.cos(lonRad));
+}
+
+// Thin crisp outline traced along each landmass's real outer boundary ring
+// (the same polygon data the dots are sampled against) — one closed
+// THREE.LineLoop per landmass, sitting on top of the dot-fill. Lake holes
+// are left out on purpose: the ask is a coastline (land/ocean edge), not
+// every interior water body traced too.
+function buildCoastlines(THREE, polygons, color) {
+  const group = new THREE.Group();
+  const mat = new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.9 });
+  for (const poly of polygons) {
+    const pts = poly.outer.map(([lon, lat]) => lonLatToVec3(THREE, lon, lat));
+    const geo = new THREE.BufferGeometry().setFromPoints(pts);
+    group.add(new THREE.LineLoop(geo, mat));
+  }
+  return { group, material: mat };
+}
+
 function themeColor() {
   return getComputedStyle(document.documentElement).getPropertyValue("--text").trim() || "#0A0A0A";
 }
@@ -163,6 +191,9 @@ export async function initGlobe3D(container) {
   const dots = new THREE.Points(dotGeo, dotMat);
   scene.add(dots);
 
+  const { group: coastlines, material: coastMat } = buildCoastlines(THREE, polygons, themeColor());
+  scene.add(coastlines);
+
   const controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
   controls.autoRotate = !reduceMotion;
@@ -205,6 +236,7 @@ export async function initGlobe3D(container) {
     const c = new THREE.Color(themeColor());
     wireMat.color.copy(c);
     dotMat.color.copy(c);
+    coastMat.color.copy(c);
   });
   mo.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
 
@@ -218,6 +250,8 @@ export async function initGlobe3D(container) {
     wireMat.dispose();
     dotGeo.dispose();
     dotMat.dispose();
+    coastlines.children.forEach((line) => line.geometry.dispose());
+    coastMat.dispose();
     renderer.dispose();
     if (renderer.domElement.parentNode) renderer.domElement.parentNode.removeChild(renderer.domElement);
   };
