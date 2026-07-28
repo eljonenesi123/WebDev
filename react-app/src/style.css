@@ -153,10 +153,11 @@ body {
   height: min(34vw, 440px);
   top: 55%;
   right: -8%;
-  /* Warm brown accent tint (site's own dark-mode accent family) instead
-     of the neutral --text tone, so the page picks up subtle warmth. */
+  /* Warm brown accent tint, kept noticeably stronger than the neutral
+     shapes' opacity so it reads as a clear tint (not almost-invisible)
+     in both themes. */
   fill: #6E473B;
-  opacity: 0.07;
+  opacity: 0.18;
   animation: ambientDrift2 58s ease-in-out infinite;
 }
 .ambient-shape-3 {
@@ -165,7 +166,7 @@ body {
   bottom: -12%;
   left: 30%;
   fill: #291C0E;
-  opacity: 0.07;
+  opacity: 0.18;
   animation: ambientDrift3 64s ease-in-out infinite;
 }
 @keyframes ambientDrift1 {
@@ -183,8 +184,15 @@ body {
 @media (max-width: 700px) {
   .ambient-shape { opacity: 0.04; }
   .ambient-shape-1 { width: 70vw; height: 70vw; }
-  .ambient-shape-2 { width: 55vw; height: 55vw; }
-  .ambient-shape-3 { width: 62vw; height: 62vw; }
+  .ambient-shape-2 { width: 55vw; height: 55vw; opacity: 0.13; }
+  .ambient-shape-3 { width: 62vw; height: 62vw; opacity: 0.13; }
+}
+/* Brown-on-near-black has less inherent contrast than brown-on-cream, so
+   the tinted circles need a further opacity boost in dark mode to read
+   as equally "clearly visible" rather than fading into the dark bg. */
+:root[data-theme="dark"] .ambient-shape-2,
+:root[data-theme="dark"] .ambient-shape-3 {
+  opacity: 0.32;
 }
 @media (prefers-reduced-motion: reduce) {
   .ambient-shape { animation: none; }
@@ -1322,7 +1330,6 @@ main, .site-footer {
 /* ---------- SECTION SHARED ---------- */
 
 .section-title {
-  position: relative;
   font-family: var(--serif);
   font-size: clamp(1.9rem, 4vw, 2.7rem);
   font-weight: 700;
@@ -1331,25 +1338,6 @@ main, .site-footer {
   text-transform: none;
   color: var(--text);
   margin-bottom: 2.5rem;
-}
-/* Soft brown spotlight behind every major heading — same treatment on
-   .ctrl-brand-title below since that section uses its own heading class. */
-.section-title::before,
-.ctrl-brand-title::before {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 130%;
-  height: 220%;
-  transform: translate(-50%, -50%);
-  background: radial-gradient(closest-side, rgba(110, 71, 59, 0.16), transparent 70%);
-  z-index: -1;
-  pointer-events: none;
-}
-:root[data-theme="dark"] .section-title::before,
-:root[data-theme="dark"] .ctrl-brand-title::before {
-  background: radial-gradient(closest-side, rgba(110, 71, 59, 0.32), transparent 70%);
 }
 
 /* These used to be full-viewport-tall slides for a pinned-scroll layout;
@@ -1503,7 +1491,6 @@ main, .site-footer {
 }
 
 .ctrl-brand-title {
-  position: relative;
   font-family: var(--sans);
   font-weight: 800;
   font-size: clamp(2.2rem, 6vw, 4rem);
@@ -2464,14 +2451,16 @@ main, .site-footer {
   .skills-grid.is-revealed .skill-item { animation: none; opacity: 1; transform: scale(1) rotate(var(--base-rot)); }
 }
 
-/* 10 icons total — 2 per row divides evenly into 5 full rows with no
-   orphaned leftover on its own line, and gives the longer names (e.g.
-   "Visual Studio") a wide enough column to sit on one line. */
+/* 10 icons total — 4 per row gives two full rows plus a final row of 2,
+   which is centered explicitly (grid's own auto-placement would just
+   left-align that leftover pair in columns 1-2 instead). */
 @media (max-width: 900px) {
-  .skills-grid { grid-template-columns: repeat(2, 1fr); gap: 2rem 1.5rem; max-width: 320px; }
-  .skill-badge { width: 68px; height: 68px; }
-  .skill-icon { width: 32px; height: 32px; }
-  .skill-tooltip { font-size: 0.62rem; }
+  .skills-grid { grid-template-columns: repeat(4, 1fr); gap: 1.6rem 0.8rem; max-width: 420px; }
+  .skills-grid .skill-item:nth-child(9) { grid-column: 2; }
+  .skills-grid .skill-item:nth-child(10) { grid-column: 3; }
+  .skill-badge { width: 56px; height: 56px; }
+  .skill-icon { width: 26px; height: 26px; }
+  .skill-tooltip { font-size: 0.58rem; }
 }
 
 /* ---------- SERVICES ---------- */
@@ -2490,7 +2479,13 @@ main, .site-footer {
 
 .service p { max-width: 380px; }
 
-.services-sub { max-width: 560px; margin-bottom: 2.5rem; }
+/* Every other section's heading/subtitle is centered (.skills, .faq,
+   .estimator-section, .globe-section...) — Services was missed, leaving
+   its title/sub left-aligned above an otherwise-centered pricing card.
+   Scoped to just the heading/sub (not the whole section) since the price
+   card's own checklist reads better left-aligned. */
+.services .section-title { text-align: center; }
+.services-sub { max-width: 560px; margin: 0 auto 2.5rem; text-align: center; }
 
 .services-layout { width: 100%; }
 .services-pricing { position: relative; width: 100%; max-width: 600px; margin: 0 auto; }
