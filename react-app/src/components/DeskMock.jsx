@@ -113,12 +113,6 @@ export default function DeskMock() {
         </div>
 
         <div className={"desk-hero" + (inView ? "" : " is-paused")}>
-          <div className="desk-hero-rings" aria-hidden="true">
-            <span className="desk-hero-glow" />
-            <span className="desk-hero-ring desk-hero-ring-1" />
-            <span className="desk-hero-ring desk-hero-ring-2" />
-            <span className="desk-hero-ring desk-hero-ring-3" />
-          </div>
           <HeroTitle text={t("hero.title", "A website that makes clients trust your brand.")} />
           <p className="desk-hero-sub">{t("hero.point1", "Custom design, not a template")}</p>
 

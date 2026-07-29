@@ -720,6 +720,20 @@ main { padding-top: var(--header-h); }
   width: 41.99%;
   height: 49.71%;
   overflow: hidden;
+  /* The photo's actual screen area curves slightly at the corners inside
+     the bezel; this box is a plain rectangle measured against it, so
+     without a matching radius, anything painted edge-to-edge here (like
+     the gradient mesh) shows square corners poking past that curve. */
+  border-radius: 1.4cqw;
+  /* overflow:hidden + border-radius alone doesn't reliably clip a
+     descendant that has its own filter:blur() (a long-standing Chromium/
+     Safari bug — the blurred child's expanded paint bounds can render past
+     the rounded overflow edge, which is exactly what let the mesh's blob
+     blur poke past the bottom corners here). clip-path is a hard geometric
+     clip, not a paint-bounds heuristic, so it clips filtered children
+     correctly; kept alongside overflow:hidden rather than replacing it,
+     since clip-path alone doesn't establish a scroll/containment boundary. */
+  clip-path: inset(0 round 1.4cqw);
   display: flex;
   flex-direction: column;
   /* This whole mock represents a fixed website design being shown off —
@@ -903,59 +917,90 @@ main { padding-top: var(--header-h); }
   gap: 0.9cqh;
   padding: 0 3cqw;
   overflow: hidden;
-  background: var(--bg);
+  /* Cool blue/purple/teal gradient mesh, painted as this element's own
+     background — not separate positioned child divs (a background can
+     never paint outside its own box, so it's inherently clipped to
+     whatever radius/overflow this element has; a child-div version
+     leaked past the screen's rounded corners since filtered/transformed
+     children aren't reliably clipped by an ancestor's border-radius
+     everywhere). One rule for both site themes on purpose: this mock is a
+     fixed "photo" of a website, not a themed part of the page, so there's
+     no [data-theme="dark"] override — the opaque background-color below
+     means nothing site-side ever shows through either theme. Same proven
+     four-layer geometry/animation as before, just recolored: two purple
+     corner blobs (kept, already cool-toned), teal in place of the old
+     amber blob, blue in place of the old coral blob. */
+  background-image:
+    radial-gradient(circle, rgba(43, 35, 80, 0.97) 0%, rgba(43, 35, 80, 0.65) 32%, transparent 55%),
+    radial-gradient(circle, rgba(43, 35, 80, 0.85) 0%, rgba(43, 35, 80, 0.45) 30%, transparent 50%),
+    radial-gradient(circle, rgba(45, 156, 152, 0.95) 0%, rgba(45, 156, 152, 0.55) 55%, transparent 82%),
+    radial-gradient(circle, rgba(66, 122, 201, 0.9) 0%, rgba(66, 122, 201, 0.5) 55%, transparent 82%);
+  background-repeat: no-repeat;
+  /* Indigo shrunk further still (was 75%/60%) to a tight corner tint;
+     amber/coral enlarged and their falloff pushed further out (was
+     95%/100% size, 50% mid-stop) so their near-full-opacity cores now
+     actually cover most of the box instead of fading before reaching the
+     center — the earlier version left the fixed navy base-color showing
+     through as the dominant tone almost everywhere except right at each
+     blob's own core. */
+  background-size: 55% 55%, 45% 45%, 130% 130%, 135% 135%;
+  background-position: 94% 6%, 2% 98%, 25% 45%, 68% 58%;
+  /* Fixed, not var(--bg): the mock is its own self-contained scene — the
+     space the gradient sits on top of shouldn't be the SITE's light/dark
+     background leaking through in either theme. */
+  background-color: #14152b;
+  /* Combined with mockTextIn (the entrance fade every .desk-screen direct
+     child gets) in one shorthand, not left to the sibling ".desk-screen >
+     *" rule alone: that rule and this one share the same specificity, and
+     this one comes later in the file, so declaring just deskMeshDrift here
+     alone would silently win the whole `animation` shorthand and drop
+     mockTextIn — leaving this element stuck at that rule's static
+     opacity:0 forever (deskMeshDrift never animates opacity, so nothing
+     would bring it back to 1). Both listed together so the fade-in still
+     plays. */
+  animation: mockTextIn 0.6s ease both, deskMeshDrift 22s ease-in-out infinite;
 }
-
-/* Animated concentric-rings background for the mock's content area — a
-   soft blurred glow (site's two brown accents) plus 2-3 rotating rings.
-   Rotation uses the standalone `rotate` property and the pulse uses
-   `transform: scale()` so the two animations don't fight over the same
-   `transform` property on one element. */
-.desk-hero-rings {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  pointer-events: none;
+@keyframes deskMeshDrift {
+  /* One shared timeline drives all four layers' background-position at
+     once (CSS has no way to give each background layer its own
+     independent animation-duration), but each layer's own delta — how far
+     and in which direction its position moves between steps — differs, so
+     the four blobs still read as drifting independently rather than
+     sliding in lockstep. */
+  0%, 100% { background-position: 94% 6%, 2% 98%, 25% 45%, 68% 58%; }
+  25% { background-position: 88% 12%, 8% 92%, 32% 38%, 60% 65%; }
+  50% { background-position: 98% 2%, 0% 100%, 20% 52%, 74% 50%; }
+  75% { background-position: 92% 9%, 6% 94%, 28% 40%, 64% 62%; }
 }
-.desk-hero-glow {
-  position: absolute;
-  width: 48%;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background: radial-gradient(circle, #B08463 0%, #6E473B 45%, #291C0E 72%, transparent 85%);
-  filter: blur(6px);
-  opacity: 0.85;
-}
-.desk-hero-ring {
-  position: absolute;
-  border-radius: 50%;
-  border-style: solid;
-  animation: deskRingSpin linear infinite, deskRingPulse ease-in-out infinite;
-}
-.desk-hero-ring-1 { width: 42%; aspect-ratio: 1; border-width: 2.5px; border-color: #6E473B; animation-duration: 16s, 4s; }
-.desk-hero-ring-2 { width: 62%; aspect-ratio: 1; border-width: 2px; border-color: #291C0E; animation-duration: 24s, 5.5s; animation-direction: reverse, normal; }
-.desk-hero-ring-3 { width: 82%; aspect-ratio: 1; border-width: 1.5px; border-color: #6E473B; opacity: 0.7; animation-duration: 34s, 7s; }
-@keyframes deskRingSpin {
-  from { rotate: 0deg; }
-  to { rotate: 360deg; }
-}
-@keyframes deskRingPulse {
-  0%, 100% { transform: scale(1); opacity: 0.6; }
-  50% { transform: scale(1.05); opacity: 1; }
-}
-.desk-hero.is-paused .desk-hero-ring,
-.desk-hero.is-paused .desk-hero-glow {
+.desk-hero.is-paused {
   animation-play-state: paused;
 }
 @media (prefers-reduced-motion: reduce) {
-  .desk-hero-ring { animation: none; }
+  .desk-hero { animation: none; }
 }
 
-.desk-hero > :not(.desk-hero-rings) {
+/* Dark scrim behind the text block only, sitting between the animated
+   mesh (this element's own background, effectively the bottom paint
+   layer) and the text (z-index:1 below). An ellipse rather than a full-box
+   tint so it only darkens the area the heading/subtext/buttons actually
+   occupy, not the whole screen — the mesh should still read at full
+   vibrance everywhere else. Needed because the mesh drifts continuously,
+   so contrast can't rely on any one fixed color always sitting behind the
+   text; a static darkening layer here works regardless of which part of
+   the animation is currently underneath. */
+.desk-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  /* ellipse Wx Hy are RADII (half-extents), not the full ellipse size — an
+     earlier "60% 65%" was actually ~120%/130% across and blanketed nearly
+     the whole box instead of just sitting behind the text block. Sized
+     down to genuinely hug the heading/subtext/button column only. */
+  background: radial-gradient(ellipse 34% 40% at 50% 50%, rgba(8, 6, 18, 0.5) 0%, rgba(8, 6, 18, 0.22) 60%, transparent 85%);
+  pointer-events: none;
+}
+.desk-hero > * {
   position: relative;
   z-index: 1;
 }
@@ -963,13 +1008,18 @@ main { padding-top: var(--header-h); }
   font-size: 2.5cqw;
   font-weight: 800;
   line-height: 1.22;
-  color: var(--text);
+  /* Fixed light value, not var(--text): that flips to near-black in light
+     mode, which is illegible now that .desk-hero always sits on the fixed
+     dark background-color above regardless of site theme. */
+  color: #f2efe8;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.55);
   margin-bottom: 0;
 }
 .desk-hero-sub {
   font-family: "JetBrains Mono", monospace;
   font-size: 1.05cqw;
-  color: var(--text-dim);
+  color: #d8d4cb;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.6);
 }
 
 .desk-cta-row {
@@ -978,6 +1028,7 @@ main { padding-top: var(--header-h); }
   margin-top: 0.4cqh;
 }
 .mock-btn {
+  position: relative;
   font-family: "JetBrains Mono", monospace;
   font-size: 1cqw;
   padding: 0.7cqh 1.4cqw;
@@ -985,9 +1036,25 @@ main { padding-top: var(--header-h); }
   font-weight: 600;
   text-align: center;
   white-space: nowrap;
-  transition: transform 0.15s ease;
+  overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
-.mock-btn:hover { transform: scale(1.04); }
+.mock-btn:hover { transform: translateY(-2px) scale(1.04); }
+/* Shine sweep: a diagonal light band sits just off-screen to the left and
+   slides across on hover. Same ::before mechanic on both buttons for a
+   cohesive feel, but tinted differently per button below so they don't
+   read as duplicates. */
+.mock-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  left: -60%;
+  width: 40%;
+  transform: skewX(-20deg);
+  transition: left 0.6s ease;
+  pointer-events: none;
+}
+.mock-btn:hover::before { left: 130%; }
 .mock-btn-primary {
   /* Solid dark fill reads clearly against both the orange and purple ends
      of the gradient — tested against a plain white fill, which washed out
@@ -996,11 +1063,36 @@ main { padding-top: var(--header-h); }
   color: #f2efe8;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
 }
+.mock-btn-primary::before {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+}
+.mock-btn-primary:hover {
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+}
 .mock-btn-line {
-  background: rgba(128, 128, 128, 0.08);
-  border: 1.5px solid var(--text);
-  color: var(--text);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  /* Frosted glass, not a var(--text)-bordered outline: the old border used
+     the SITE's light/dark text color, which in light mode landed as a
+     near-white line on the light gradient blobs and effectively vanished.
+     A fixed white-tinted glass + blur reads against both the dark and
+     light ends of the mesh, independent of site theme, and reads as a
+     deliberate second style next to the solid dark primary rather than a
+     duplicate. */
+  background: rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(10px) saturate(180%);
+  -webkit-backdrop-filter: blur(10px) saturate(180%);
+  border: 1.5px solid rgba(255, 255, 255, 0.65);
+  color: #fff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease, border-color 0.25s ease;
+}
+.mock-btn-line::before {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+}
+.mock-btn-line:hover {
+  background: rgba(255, 255, 255, 0.28);
+  border-color: #fff;
+  box-shadow: 0 6px 20px rgba(76, 110, 245, 0.4), 0 0 20px rgba(20, 184, 166, 0.25);
 }
 
 /* Below ~900px, width is capped at 100vw (edge-to-edge, can't grow wider
@@ -1615,6 +1707,15 @@ main, .site-footer {
   left: 0;
   top: 0;
   width: 59.6%;
+  /* Without its own stacking context, this button's z-index:-1 glow child
+     (below) isn't contained to painting behind just the key image — it
+     escapes to the nearest ancestor stacking context instead, where it can
+     land behind/interleave with unrelated layers (the page's ambient
+     background circles) instead of staying scoped to this button, reading
+     as a stray edge near whichever one it lines up with. isolation:isolate
+     forces a stacking context here so the glow only ever paints within
+     this button's own layer. */
+  isolation: isolate;
   border: none;
   background: none;
   padding: 0;
@@ -1656,15 +1757,30 @@ main, .site-footer {
   left: 46%;
   top: 42%;
   width: 115%;
-  height: 115%;
+  /* Forced to a true 1:1 box instead of a second "115%" percentage (which
+     resolved against the key button's own auto height and rarely matched
+     its width) — border-radius:50% on a non-square box clips to an
+     ellipse, and closest-side then sizes the gradient off the shorter
+     axis, so the longer axis got cut off by that ellipse before the
+     gradient had faded out: the hard-edged halo in dark mode. A true
+     circle plus a bigger blur removes that edge entirely. */
+  aspect-ratio: 1 / 1;
   transform: translate(-50%, -50%) scale(0.85);
   border-radius: 50%;
-  background: radial-gradient(closest-side, rgba(224, 164, 110, 0.55), rgba(224, 164, 110, 0) 72%);
-  filter: blur(6px);
+  background: radial-gradient(circle, rgba(224, 164, 110, 0.55) 0%, rgba(224, 164, 110, 0) 65%);
+  filter: blur(22px);
   z-index: -1;
   opacity: 0.55;
   animation: ctrlGlowPulse 2.8s ease-in-out infinite;
   pointer-events: none;
+}
+:root[data-theme="dark"] .ctrl-key-glow {
+  /* Same shape, softened further against the near-black section bg where
+     any hard edge reads much more strongly than it does on the light
+     surface. */
+  background: radial-gradient(circle, rgba(224, 164, 110, 0.4) 0%, rgba(224, 164, 110, 0) 60%);
+  filter: blur(28px);
+  opacity: 0.5;
 }
 @keyframes ctrlGlowPulse {
   0%, 100% { transform: translate(-50%, -50%) scale(0.85); opacity: 0.45; }
