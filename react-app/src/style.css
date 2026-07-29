@@ -923,12 +923,12 @@ main { padding-top: var(--header-h); }
 }
 .desk-hero-glow {
   position: absolute;
-  width: 55%;
+  width: 48%;
   aspect-ratio: 1;
   border-radius: 50%;
-  background: radial-gradient(circle, #6E473B 0%, #291C0E 60%, transparent 75%);
-  filter: blur(16px);
-  opacity: 0.6;
+  background: radial-gradient(circle, #B08463 0%, #6E473B 45%, #291C0E 72%, transparent 85%);
+  filter: blur(6px);
+  opacity: 0.85;
 }
 .desk-hero-ring {
   position: absolute;
@@ -936,9 +936,9 @@ main { padding-top: var(--header-h); }
   border-style: solid;
   animation: deskRingSpin linear infinite, deskRingPulse ease-in-out infinite;
 }
-.desk-hero-ring-1 { width: 42%; aspect-ratio: 1; border-width: 1.5px; border-color: rgba(110, 71, 59, 0.45); animation-duration: 16s, 4s; }
-.desk-hero-ring-2 { width: 62%; aspect-ratio: 1; border-width: 1px; border-color: rgba(41, 28, 14, 0.35); animation-duration: 24s, 5.5s; animation-direction: reverse, normal; }
-.desk-hero-ring-3 { width: 82%; aspect-ratio: 1; border-width: 1px; border-color: rgba(110, 71, 59, 0.22); animation-duration: 34s, 7s; }
+.desk-hero-ring-1 { width: 42%; aspect-ratio: 1; border-width: 2.5px; border-color: #6E473B; animation-duration: 16s, 4s; }
+.desk-hero-ring-2 { width: 62%; aspect-ratio: 1; border-width: 2px; border-color: #291C0E; animation-duration: 24s, 5.5s; animation-direction: reverse, normal; }
+.desk-hero-ring-3 { width: 82%; aspect-ratio: 1; border-width: 1.5px; border-color: #6E473B; opacity: 0.7; animation-duration: 34s, 7s; }
 @keyframes deskRingSpin {
   from { rotate: 0deg; }
   to { rotate: 360deg; }
