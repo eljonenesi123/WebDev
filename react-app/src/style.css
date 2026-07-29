@@ -917,60 +917,31 @@ main { padding-top: var(--header-h); }
   gap: 0.9cqh;
   padding: 0 3cqw;
   overflow: hidden;
-  /* Cool blue/purple/teal gradient mesh, painted as this element's own
-     background — not separate positioned child divs (a background can
-     never paint outside its own box, so it's inherently clipped to
-     whatever radius/overflow this element has; a child-div version
-     leaked past the screen's rounded corners since filtered/transformed
-     children aren't reliably clipped by an ancestor's border-radius
-     everywhere). One rule for both site themes on purpose: this mock is a
-     fixed "photo" of a website, not a themed part of the page, so there's
-     no [data-theme="dark"] override — the opaque background-color below
-     means nothing site-side ever shows through either theme. Same proven
-     four-layer geometry/animation as before, just recolored: two purple
-     corner blobs (kept, already cool-toned), teal in place of the old
-     amber blob, blue in place of the old coral blob. */
+  /* Exact values as specified — do not adjust colors/percentages/timing.
+     Fixed background-color/image for both site themes on purpose (no
+     [data-theme="dark"] override): this mock is a fixed "photo" of a
+     website, not a themed part of the page. */
+  background-color: #1a1330;
   background-image:
-    radial-gradient(circle, rgba(43, 35, 80, 0.97) 0%, rgba(43, 35, 80, 0.65) 32%, transparent 55%),
-    radial-gradient(circle, rgba(43, 35, 80, 0.85) 0%, rgba(43, 35, 80, 0.45) 30%, transparent 50%),
-    radial-gradient(circle, rgba(45, 156, 152, 0.95) 0%, rgba(45, 156, 152, 0.55) 55%, transparent 82%),
-    radial-gradient(circle, rgba(66, 122, 201, 0.9) 0%, rgba(66, 122, 201, 0.5) 55%, transparent 82%);
+    radial-gradient(circle at 20% 30%, #f5a95e 0%, #f5a95e00 60%),
+    radial-gradient(circle at 75% 20%, #e8746b 0%, #e8746b00 65%),
+    radial-gradient(circle at 50% 80%, #2b2350 0%, #2b235000 70%),
+    radial-gradient(circle at 85% 75%, #f0c987 0%, #f0c98700 55%);
+  background-size: 200% 200%;
   background-repeat: no-repeat;
-  /* Indigo shrunk further still (was 75%/60%) to a tight corner tint;
-     amber/coral enlarged and their falloff pushed further out (was
-     95%/100% size, 50% mid-stop) so their near-full-opacity cores now
-     actually cover most of the box instead of fading before reaching the
-     center — the earlier version left the fixed navy base-color showing
-     through as the dominant tone almost everywhere except right at each
-     blob's own core. */
-  background-size: 55% 55%, 45% 45%, 130% 130%, 135% 135%;
-  background-position: 94% 6%, 2% 98%, 25% 45%, 68% 58%;
-  /* Fixed, not var(--bg): the mock is its own self-contained scene — the
-     space the gradient sits on top of shouldn't be the SITE's light/dark
-     background leaking through in either theme. */
-  background-color: #14152b;
-  /* Combined with mockTextIn (the entrance fade every .desk-screen direct
-     child gets) in one shorthand, not left to the sibling ".desk-screen >
-     *" rule alone: that rule and this one share the same specificity, and
-     this one comes later in the file, so declaring just deskMeshDrift here
-     alone would silently win the whole `animation` shorthand and drop
-     mockTextIn — leaving this element stuck at that rule's static
-     opacity:0 forever (deskMeshDrift never animates opacity, so nothing
-     would bring it back to 1). Both listed together so the fade-in still
-     plays. */
-  animation: mockTextIn 0.6s ease both, deskMeshDrift 22s ease-in-out infinite;
+  animation: heroDrift 20s ease-in-out infinite;
+  /* Not part of the specified block — .desk-screen > * gives every direct
+     child opacity:0 + a mockTextIn entrance animation, and this element's
+     own `animation` property fully overrides that (same property, later
+     rule wins), which would otherwise leave it stuck invisible forever
+     since heroDrift never touches opacity. Plain static opacity, no
+     animation, so it doesn't touch the heroDrift timing above. */
+  opacity: 1;
 }
-@keyframes deskMeshDrift {
-  /* One shared timeline drives all four layers' background-position at
-     once (CSS has no way to give each background layer its own
-     independent animation-duration), but each layer's own delta — how far
-     and in which direction its position moves between steps — differs, so
-     the four blobs still read as drifting independently rather than
-     sliding in lockstep. */
-  0%, 100% { background-position: 94% 6%, 2% 98%, 25% 45%, 68% 58%; }
-  25% { background-position: 88% 12%, 8% 92%, 32% 38%, 60% 65%; }
-  50% { background-position: 98% 2%, 0% 100%, 20% 52%, 74% 50%; }
-  75% { background-position: 92% 9%, 6% 94%, 28% 40%, 64% 62%; }
+@keyframes heroDrift {
+  0%   { background-position: 0% 0%, 100% 0%, 50% 100%, 100% 100%; }
+  50%  { background-position: 30% 40%, 70% 30%, 40% 70%, 80% 60%; }
+  100% { background-position: 0% 0%, 100% 0%, 50% 100%, 100% 100%; }
 }
 .desk-hero.is-paused {
   animation-play-state: paused;
@@ -979,30 +950,16 @@ main { padding-top: var(--header-h); }
   .desk-hero { animation: none; }
 }
 
-/* Dark scrim behind the text block only, sitting between the animated
-   mesh (this element's own background, effectively the bottom paint
-   layer) and the text (z-index:1 below). An ellipse rather than a full-box
-   tint so it only darkens the area the heading/subtext/buttons actually
-   occupy, not the whole screen — the mesh should still read at full
-   vibrance everywhere else. Needed because the mesh drifts continuously,
-   so contrast can't rely on any one fixed color always sitting behind the
-   text; a static darkening layer here works regardless of which part of
-   the animation is currently underneath. */
-.desk-hero::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  /* ellipse Wx Hy are RADII (half-extents), not the full ellipse size — an
-     earlier "60% 65%" was actually ~120%/130% across and blanketed nearly
-     the whole box instead of just sitting behind the text block. Sized
-     down to genuinely hug the heading/subtext/button column only. */
-  background: radial-gradient(ellipse 34% 40% at 50% 50%, rgba(8, 6, 18, 0.5) 0%, rgba(8, 6, 18, 0.22) 60%, transparent 85%);
-  pointer-events: none;
-}
-.desk-hero > * {
+.desk-hero-content {
   position: relative;
   z-index: 1;
+}
+.desk-hero-content::before {
+  content: '';
+  position: absolute;
+  inset: -10%;
+  background: radial-gradient(circle, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0) 70%);
+  z-index: -1;
 }
 .desk-hero .hero-title {
   font-size: 2.5cqw;
