@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "../i18n";
 import { asset } from "../asset";
 import HeroTitle from "./HeroTitle";
@@ -48,9 +49,25 @@ function WhatsAppFavicon() {
 
 export default function DeskMock() {
   const { t } = useTranslation();
+  const mockRef = useRef(null);
+  const [inView, setInView] = useState(true);
+
+  // Same pause-when-offscreen pattern used for the globe — the rings/glow
+  // animate continuously, no reason to keep them running once scrolled
+  // well past.
+  useEffect(() => {
+    const el = mockRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setInView(entry.isIntersecting),
+      { threshold: 0.1 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   return (
-    <div className="desk-mock">
+    <div className="desk-mock" ref={mockRef}>
       <img className="desk-img" src={asset("/assets/hero-desk.webp")} alt="" loading="eager" />
 
       <div className="desk-screen">
@@ -95,7 +112,13 @@ export default function DeskMock() {
           </span>
         </div>
 
-        <div className="desk-hero">
+        <div className={"desk-hero" + (inView ? "" : " is-paused")}>
+          <div className="desk-hero-rings" aria-hidden="true">
+            <span className="desk-hero-glow" />
+            <span className="desk-hero-ring desk-hero-ring-1" />
+            <span className="desk-hero-ring desk-hero-ring-2" />
+            <span className="desk-hero-ring desk-hero-ring-3" />
+          </div>
           <HeroTitle text={t("hero.title", "A website that makes clients trust your brand.")} />
           <p className="desk-hero-sub">{t("hero.point1", "Custom design, not a template")}</p>
 
