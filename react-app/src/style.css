@@ -916,67 +916,23 @@ main { padding-top: var(--header-h); }
   text-align: center;
   gap: 0.9cqh;
   padding: 0 3cqw;
+  /* Corner-clipping fix kept: without this, content could visually spill
+     past .desk-screen's own rounded corners. */
   overflow: hidden;
-  /* Exact values as specified — do not adjust colors/percentages/timing.
-     Fixed background-color/image for both site themes on purpose (no
-     [data-theme="dark"] override): this mock is a fixed "photo" of a
-     website, not a themed part of the page. */
-  background-color: #1a1330;
-  background-image:
-    radial-gradient(circle at 20% 30%, #f5a95e 0%, #f5a95e00 60%),
-    radial-gradient(circle at 75% 20%, #e8746b 0%, #e8746b00 65%),
-    radial-gradient(circle at 50% 80%, #2b2350 0%, #2b235000 70%),
-    radial-gradient(circle at 85% 75%, #f0c987 0%, #f0c98700 55%);
-  background-size: 200% 200%;
-  background-repeat: no-repeat;
-  animation: heroDrift 20s ease-in-out infinite;
-  /* Not part of the specified block — .desk-screen > * gives every direct
-     child opacity:0 + a mockTextIn entrance animation, and this element's
-     own `animation` property fully overrides that (same property, later
-     rule wins), which would otherwise leave it stuck invisible forever
-     since heroDrift never touches opacity. Plain static opacity, no
-     animation, so it doesn't touch the heroDrift timing above. */
-  opacity: 1;
-}
-@keyframes heroDrift {
-  0%   { background-position: 0% 0%, 100% 0%, 50% 100%, 100% 100%; }
-  50%  { background-position: 30% 40%, 70% 30%, 40% 70%, 80% 60%; }
-  100% { background-position: 0% 0%, 100% 0%, 50% 100%, 100% 100%; }
-}
-.desk-hero.is-paused {
-  animation-play-state: paused;
-}
-@media (prefers-reduced-motion: reduce) {
-  .desk-hero { animation: none; }
-}
-
-.desk-hero-content {
-  position: relative;
-  z-index: 1;
-}
-.desk-hero-content::before {
-  content: '';
-  position: absolute;
-  inset: -10%;
-  background: radial-gradient(circle, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0) 70%);
-  z-index: -1;
+  border-radius: inherit;
+  background: var(--bg);
 }
 .desk-hero .hero-title {
   font-size: 2.5cqw;
   font-weight: 800;
   line-height: 1.22;
-  /* Fixed light value, not var(--text): that flips to near-black in light
-     mode, which is illegible now that .desk-hero always sits on the fixed
-     dark background-color above regardless of site theme. */
-  color: #f2efe8;
-  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.55);
+  color: var(--text);
   margin-bottom: 0;
 }
 .desk-hero-sub {
   font-family: "JetBrains Mono", monospace;
   font-size: 1.05cqw;
-  color: #d8d4cb;
-  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.6);
+  color: var(--text-dim);
 }
 
 .desk-cta-row {
@@ -1013,11 +969,8 @@ main { padding-top: var(--header-h); }
 }
 .mock-btn:hover::before { left: 130%; }
 .mock-btn-primary {
-  /* Solid dark fill reads clearly against both the orange and purple ends
-     of the gradient — tested against a plain white fill, which washed out
-     over the lighter orange region. */
-  background: #171717;
-  color: #f2efe8;
+  background: var(--text);
+  color: var(--bg);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
 }
 .mock-btn-primary::before {
@@ -1027,29 +980,18 @@ main { padding-top: var(--header-h); }
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
 }
 .mock-btn-line {
-  /* Frosted glass, not a var(--text)-bordered outline: the old border used
-     the SITE's light/dark text color, which in light mode landed as a
-     near-white line on the light gradient blobs and effectively vanished.
-     A fixed white-tinted glass + blur reads against both the dark and
-     light ends of the mesh, independent of site theme, and reads as a
-     deliberate second style next to the solid dark primary rather than a
-     duplicate. */
-  background: rgba(255, 255, 255, 0.16);
-  backdrop-filter: blur(10px) saturate(180%);
-  -webkit-backdrop-filter: blur(10px) saturate(180%);
-  border: 1.5px solid rgba(255, 255, 255, 0.65);
-  color: #fff;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+  background: rgba(128, 128, 128, 0.08);
+  border: 1.5px solid var(--text);
+  color: var(--text);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
   transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease, border-color 0.25s ease;
 }
 .mock-btn-line::before {
   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
 }
 .mock-btn-line:hover {
-  background: rgba(255, 255, 255, 0.28);
-  border-color: #fff;
-  box-shadow: 0 6px 20px rgba(76, 110, 245, 0.4), 0 0 20px rgba(20, 184, 166, 0.25);
+  background: rgba(128, 128, 128, 0.16);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
 }
 
 /* Below ~900px, width is capped at 100vw (edge-to-edge, can't grow wider

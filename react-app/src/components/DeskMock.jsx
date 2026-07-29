@@ -113,18 +113,16 @@ export default function DeskMock() {
         </div>
 
         <div className={"desk-hero" + (inView ? "" : " is-paused")}>
-          <div className="desk-hero-content">
-            <HeroTitle text={t("hero.title", "A website that makes clients trust your brand.")} />
-            <p className="desk-hero-sub">{t("hero.point1", "Custom design, not a template")}</p>
+          <HeroTitle text={t("hero.title", "A website that makes clients trust your brand.")} />
+          <p className="desk-hero-sub">{t("hero.point1", "Custom design, not a template")}</p>
 
-            <div className="desk-cta-row">
-              <a href="#contact" className="mock-btn mock-btn-primary">
-                {t("hero.cta1", "Get in touch")}
-              </a>
-              <a href="#work" className="mock-btn mock-btn-line">
-                {t("hero.cta2", "See my work")}
-              </a>
-            </div>
+          <div className="desk-cta-row">
+            <a href="#contact" className="mock-btn mock-btn-primary">
+              {t("hero.cta1", "Get in touch")}
+            </a>
+            <a href="#work" className="mock-btn mock-btn-line">
+              {t("hero.cta2", "See my work")}
+            </a>
           </div>
         </div>
       </div>
