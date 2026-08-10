@@ -717,14 +717,25 @@ main { padding-top: var(--header-h); }
   position: absolute;
   left: 28.91%;
   top: 9.54%;
-  width: 41.99%;
-  height: 49.71%;
+  /* Width/height overshoot the measured 41.99%/49.71% screen bounds by a
+     hair on purpose: at the exact measured size, sub-pixel antialiasing
+     between this box's cream fill and the source photo left a 1px seam of
+     the underlying placeholder screen color visible along the right/bottom
+     edges (top/left lined up fine — object-fit:contain scaling rounds
+     differently per edge). The extra sliver lands on the black bezel,
+     which is visually a no-op. */
+  width: 42.15%;
+  height: 50.2%;
   overflow: hidden;
-  /* The photo's actual screen area curves slightly at the corners inside
-     the bezel; this box is a plain rectangle measured against it, so
-     without a matching radius, anything painted edge-to-edge here (like
-     the gradient mesh) shows square corners poking past that curve. */
-  border-radius: 1.4cqw;
+  /* The photo's screen corners are much closer to square than the previous
+     1.4cqw radius assumed — that larger radius rounded the cream overlay
+     away from the true corner, leaving a sliver of the source image's
+     teal/green placeholder screen visible poking through underneath (most
+     visible as a bright teal triangle at each corner, reading like a
+     leftover debug color since teal appears nowhere else in the theme).
+     A much smaller radius keeps just enough softening for the gradient
+     mesh below without uncovering that placeholder corner. */
+  border-radius: 0.3cqw;
   /* overflow:hidden + border-radius alone doesn't reliably clip a
      descendant that has its own filter:blur() (a long-standing Chromium/
      Safari bug — the blurred child's expanded paint bounds can render past
@@ -733,7 +744,7 @@ main { padding-top: var(--header-h); }
      clip, not a paint-bounds heuristic, so it clips filtered children
      correctly; kept alongside overflow:hidden rather than replacing it,
      since clip-path alone doesn't establish a scroll/containment boundary. */
-  clip-path: inset(0 round 1.4cqw);
+  clip-path: inset(0 round 0.3cqw);
   display: flex;
   flex-direction: column;
   /* This whole mock represents a fixed website design being shown off —
@@ -743,6 +754,11 @@ main { padding-top: var(--header-h); }
      covers the browser-bar/nav rows; .desk-hero below paints its own
      gradient over the remaining content area specifically. */
   background: #faf6ec;
+  /* Thin low-opacity frame reading as intentional definition against the
+     bezel, and as a safety margin hiding any last sub-pixel fringe of the
+     source photo's placeholder screen color at the edges/corners — kept to
+     the theme's neutral cream rather than any accent color. */
+  box-shadow: 0 0 0 1px rgba(243, 236, 220, 0.18) inset;
 }
 .desk-screen > * {
   opacity: 0;
@@ -1058,7 +1074,9 @@ main { padding-top: var(--header-h); }
      which risks clipping them on real (non-standard) phone widths even
      if they technically survive at exactly 390px. This is the tightest
      crop with a comfortable, verified margin around them. */
-  .desk-screen { left: 3.71%; width: 92.14%; }
+  /* Widened by the same small overshoot as the desktop rule above, to clear
+     the source photo's placeholder-screen edge on the right side here too. */
+  .desk-screen { left: 3.71%; width: 92.5%; }
   /* .desk-screen's own box is a fixed % of a now much shorter mock (the
      full uncropped image leaves far less height per pixel of width than
      the old tighter crop did) — with the buttons below given a guaranteed
@@ -1913,6 +1931,11 @@ main, .site-footer {
   display: flex;
   width: 400%;
   transition: transform 1.6s cubic-bezier(0.65, 0, 0.35, 1);
+  /* Promotes this to its own compositor layer up front instead of on the
+     first transform change, so the slide switch doesn't pay for layer
+     creation and a full repaint of the (large) laptop/ipad photos on the
+     same frame it starts animating. */
+  will-change: transform;
 }
 .work-carousel.pos-0 { transform: translateX(0%); }
 .work-carousel.pos-1 { transform: translateX(-25%); }
@@ -2098,11 +2121,20 @@ main, .site-footer {
    other 3 slides always exist in the DOM, just off-screen). */
 .device-frame {
   position: relative;
-  transition: transform 0.5s ease, filter 0.9s ease, opacity 0.9s ease;
+  /* filter (blur/saturate) used to be in this transition alongside opacity —
+     animating filter forces the browser to re-rasterize the full laptop/
+     ipad photo (plus its own drop-shadow filter) every frame, at the same
+     moment the parent .work-carousel is also mid-transform. That combo was
+     the main jank source when switching Work slides. opacity alone is
+     compositor-only (no repaint), so the dim/focus effect now rides on that
+     exclusively; filter still flips instantly with the class for a touch of
+     definition, just without being animated. */
+  transition: transform 0.5s ease, opacity 0.9s ease;
   opacity: 0.4;
-  filter: blur(1.5px) saturate(0.7);
+  filter: saturate(0.85);
+  will-change: opacity;
 }
-.work-slide.is-active .device-frame { opacity: 1; filter: blur(0) saturate(1); }
+.work-slide.is-active .device-frame { opacity: 1; filter: saturate(1); }
 .device-frame::after {
   content: "";
   position: absolute;
