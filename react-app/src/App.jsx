@@ -724,7 +724,6 @@ function Footer({ onOpenCookieSettings }) {
         <div className="footer-col footer-brand-col">
           <span className="footer-brand">
             <span className="brand-mark footer-mark" aria-hidden="true">EE</span>
-            Eljon Enesi
           </span>
           <p>Web developer building sites and small web apps for businesses, coaches, and independent projects.</p>
           <div className="footer-stats">
@@ -776,19 +775,19 @@ function Footer({ onOpenCookieSettings }) {
 
       <div className="footer-marquee" aria-hidden="true">
         <div className="footer-marquee-track">
-          <span>ELJON ENESI&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;</span>
-          <span>ELJON ENESI&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;</span>
-          <span>ELJON ENESI&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;</span>
-          <span>ELJON ENESI&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;</span>
-          <span>ELJON ENESI&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;</span>
-          <span>ELJON ENESI&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;</span>
-          <span>ELJON ENESI&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;</span>
-          <span>ELJON ENESI&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;</span>
+          <span>WEB DEVELOPER&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;</span>
+          <span>WEB DEVELOPER&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;</span>
+          <span>WEB DEVELOPER&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;</span>
+          <span>WEB DEVELOPER&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;</span>
+          <span>WEB DEVELOPER&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;</span>
+          <span>WEB DEVELOPER&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;</span>
+          <span>WEB DEVELOPER&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;</span>
+          <span>WEB DEVELOPER&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;</span>
         </div>
       </div>
 
       <div className="footer-bottom">
-        <span>{t("footer.loc", "Eljon Enesi")}</span>
+        <span>{t("footer.loc", "© 2026 — All rights reserved")}</span>
         <div className="footer-legal-links">
           <a href={asset("/terms.html")} target="_blank" rel="noopener">Terms</a>
           <a href={asset("/privacy.html")} target="_blank" rel="noopener">Privacy</a>

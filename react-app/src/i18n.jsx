@@ -69,7 +69,7 @@ export const translations = {
     "contact.msg": "What do you need built?",
     "contact.send": "Send message",
     "contact.alt": "Or reach me directly",
-    "footer.loc": "Eljon Enesi"
+    "footer.loc": "© 2026 — All rights reserved"
   },
 
   sq: {
@@ -129,7 +129,7 @@ export const translations = {
     "contact.msg": "Çfarë ju duhet të ndërtohet?",
     "contact.send": "Dërgo mesazhin",
     "contact.alt": "Ose më kontaktoni direkt",
-    "footer.loc": "Eljon Enesi"
+    "footer.loc": "© 2026 — Të gjitha të drejtat e rezervuara"
   },
 
   de: {
@@ -189,7 +189,7 @@ export const translations = {
     "contact.msg": "Was soll gebaut werden?",
     "contact.send": "Nachricht senden",
     "contact.alt": "Oder erreiche mich direkt",
-    "footer.loc": "Eljon Enesi"
+    "footer.loc": "© 2026 — Alle Rechte vorbehalten"
   }
 };
 

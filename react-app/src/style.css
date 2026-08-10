@@ -3365,6 +3365,7 @@ main, .site-footer {
   .footer-top { grid-template-columns: 1fr 1fr; gap: 2rem; }
   .footer-brand-col { grid-column: 1 / -1; }
   .footer-bottom { flex-direction: row; }
+  .footer-socials a, .back-to-top { width: 44px; height: 44px; }
 }
 
 /* ---------- MOBILE ---------- */
