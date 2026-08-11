@@ -140,6 +140,14 @@ body {
   position: absolute;
   fill: var(--text);
   opacity: 0.05;
+  /* These are flat SVG blob/circle paths with a crisp vector edge and no
+     softening of their own — wherever one happens to sit behind a section's
+     own content (e.g. ambient-shape-3 lands right behind the Ctrl key), that
+     hard boundary reads as a jagged/clipped edge, most visible in dark mode
+     against the near-black background. Blurred, these read as the diffuse
+     ambient tint they were meant to be instead of a silhouette with a
+     visible outline. */
+  filter: blur(70px);
 }
 .ambient-shape-1 {
   width: min(48vw, 620px);
@@ -1419,18 +1427,20 @@ main, .site-footer {
 /* One flat color across every section (a midpoint between the two shades
    the old alternating rhythm used) instead of alternating light/mid-grey
    bands — no more visible seams between sections as you scroll. The footer
-   still flips all the way to near-black as the closing "finale" band; it
-   has no filled buttons, so --accent can safely flip to white there too
-   without breaking any button-text pairing. */
+   gets a slightly darker tint of the same background (see .site-footer
+   below) plus a top border, rather than breaking from the page palette. */
 
 .site-footer {
-  --bg: #0A0A0A;
-  --text: #F2F0EB;
-  --text-dim: #A8A6A1;
-  --line: rgba(255, 255, 255, 0.15);
-  --surface: #1A1A1A;
-  --accent: #FFFFFF;
-  background: var(--bg);
+  /* Used to hard-override to near-black regardless of theme (a fixed
+     "finale" band) — that fought the rest of the page's cream/off-white
+     theme instead of following it, so left plain text/icons with poor
+     contrast once the background changed. Now this inherits --text/
+     --text-dim/--line/--accent straight from :root (or [data-theme="dark"]),
+     the same as every other section, and only the background gets a small
+     theme-relative darkening via color-mix so the footer still reads as
+     its own band without breaking from the page's palette. */
+  background: color-mix(in srgb, var(--bg) 92%, var(--text) 8%);
+  border-top: 1px solid var(--line);
 }
 
 /* ---------- HERO SKETCH BADGES ---------- */
@@ -3327,31 +3337,6 @@ main, .site-footer {
   margin: 0 0 0.2rem;
 }
 .footer-contact-line { color: var(--text-dim); }
-
-.footer-marquee {
-  overflow: hidden;
-  border-top: 1px solid var(--line);
-  padding: 1.4rem 0;
-}
-.footer-marquee-track {
-  display: flex;
-  width: max-content;
-  animation: footerMarqueeScroll 22s linear infinite;
-}
-.footer-marquee-track span {
-  font-family: var(--serif);
-  font-size: clamp(2.2rem, 6vw, 4.5rem);
-  font-weight: 700;
-  color: var(--text);
-  white-space: nowrap;
-}
-@keyframes footerMarqueeScroll {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .footer-marquee-track { animation: none; }
-}
 
 .footer-bottom {
   display: flex;

@@ -773,19 +773,6 @@ function Footer({ onOpenCookieSettings }) {
         </div>
       </div>
 
-      <div className="footer-marquee" aria-hidden="true">
-        <div className="footer-marquee-track">
-          <span>WEB DEVELOPER&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;</span>
-          <span>WEB DEVELOPER&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;</span>
-          <span>WEB DEVELOPER&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;</span>
-          <span>WEB DEVELOPER&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;</span>
-          <span>WEB DEVELOPER&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;</span>
-          <span>WEB DEVELOPER&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;</span>
-          <span>WEB DEVELOPER&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;</span>
-          <span>WEB DEVELOPER&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;</span>
-        </div>
-      </div>
-
       <div className="footer-bottom">
         <span>{t("footer.loc", "© 2026 — All rights reserved")}</span>
         <div className="footer-legal-links">
