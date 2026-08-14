@@ -257,9 +257,6 @@ export default function WorkCarousel() {
   return (
     <section className="work" id="work">
       <h2 className="section-title">{t("work.title", "Work")}</h2>
-      <p className="work-sub">
-        {t("work.sub", "Six projects, shown the way they actually run. Swipe or tap through — design, code, and deployment, end to end.")}
-      </p>
 
       <div
         className="work-coverflow-stage"
