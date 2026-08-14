@@ -1922,385 +1922,282 @@ main, .site-footer {
   .stats-grid { grid-template-columns: 1fr; max-width: 260px; }
 }
 
-/* ---------- WORK (horizontal mini-carousel) ---------- */
+/* ---------- WORK (coverflow phone carousel) ---------- */
 
 .work {
-  padding-left: 0;
-  padding-right: 0;
   position: relative;
   overflow: hidden;
-  /* A fresh accent for this section only (pill, CTA, dots, arrow hover all
-     read this variable already) — everything else on the site keeps the
-     brown accent, this section alone moves to black. Reads var(--text)
-     rather than a literal #0A0A0A so it flips to white automatically in
-     dark mode instead of turning invisible against the now-dark page. */
+  text-align: center;
+  /* A fresh accent for this section only (dots, arrow hover, tag, link
+     hover all read this variable already) — everything else on the site
+     keeps the brown accent, this section alone moves to black. Reads
+     var(--text) rather than a literal #0A0A0A so it flips to white
+     automatically in dark mode instead of turning invisible against the
+     now-dark page. */
   --accent: var(--text);
 }
-
-.work-carousel {
-  display: flex;
-  width: 400%;
-  transition: transform 1.6s cubic-bezier(0.65, 0, 0.35, 1);
-  /* Promotes this to its own compositor layer up front instead of on the
-     first transform change, so the slide switch doesn't pay for layer
-     creation and a full repaint of the (large) laptop/ipad photos on the
-     same frame it starts animating. */
-  will-change: transform;
-}
-.work-carousel.pos-0 { transform: translateX(0%); }
-.work-carousel.pos-1 { transform: translateX(-25%); }
-.work-carousel.pos-2 { transform: translateX(-50%); }
-.work-carousel.pos-3 { transform: translateX(-75%); }
-
-.work-slide {
-  width: 25%;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4.5rem;
-  padding: 0 6vw;
-  min-height: 60vh;
-  perspective: 1400px;
+.work .section-title { text-align: center; margin-bottom: 0.6rem; }
+.work-sub {
+  max-width: 460px;
+  margin: 0 auto 3rem;
+  color: var(--text-dim);
 }
 
-.work-slide-intro {
+.work-coverflow-stage {
   position: relative;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  text-align: left;
-  gap: 5vw;
+  width: 100%;
+  height: clamp(360px, 52vw, 480px);
+  margin: 0 auto;
+  perspective: 1200px;
+  touch-action: pan-y;
 }
-/* A bold solid-black blob behind the photo stack — the "cool background
-   shape" ask. Slow, subtle idle rotation (not the fan cards' own hover
-   motion) so it reads as ambient rather than distracting. */
-.work-intro-blob {
-  position: absolute;
-  top: 50%;
-  left: 62%;
-  width: min(46vw, 620px);
-  height: min(46vw, 620px);
-  transform: translate(-50%, -50%);
-  fill: var(--text);
-  opacity: 0.92;
-  z-index: 0;
-  animation: introBlobSpin 40s linear infinite;
-}
-@keyframes introBlobSpin {
-  from { transform: translate(-50%, -50%) rotate(0deg); }
-  to { transform: translate(-50%, -50%) rotate(360deg); }
-}
-.work-intro-col { position: relative; z-index: 1; max-width: 420px; flex-shrink: 0; }
-.work-intro-text { font-size: 1.02rem; margin-top: 1.1rem; }
-.work-intro-count {
-  display: inline-block;
-  /* Same italic-serif treatment as the hero's "a better website" highlight —
-     an echo of that signature accent instead of the plain mono label this
-     used to be. */
-  font-family: var(--serif);
-  font-style: italic;
-  font-size: 0.8rem;
-  font-weight: 700;
-  /* --bg instead of a literal white — stays the correct contrast against
-     --accent (now var(--text)) whichever way that flips with the theme. */
-  color: var(--bg);
-  background: var(--accent);
-  letter-spacing: 0.01em;
-  text-transform: uppercase;
-  padding: 0.4rem 0.9rem;
-  border-radius: 20px;
-  opacity: 0;
-  animation: sketchIn 0.6s ease 0.1s both;
-}
-.work-nav-hint {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-top: 1.8rem;
-  font-family: var(--serif);
-  font-style: italic;
-  font-weight: 700;
-  font-size: 1.05rem;
-  color: var(--bg);
-  background: var(--accent);
-  border: 1px solid var(--accent);
-  border-radius: 30px;
-  padding: 0.8rem 1.5rem;
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-.work-nav-hint span { transition: transform 0.2s ease; }
-.work-nav-hint:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(10, 10, 10, 0.35); }
-.work-nav-hint:hover span { transform: translateX(3px); }
 
-/* A fanned photo stack on the intro slide — plain CSS transforms, not a
-   three.js scene (that was heavy and laggy even lazy-loaded). Each card
-   fans out from a neutral stack on entrance, then drifts with the cursor
-   at a different depth per card for a cheap, GPU-only parallax. */
-.work-photo-stack-wrap {
-  position: relative;
-  z-index: 1;
-  width: min(62vw, 640px);
-  height: 520px;
-  flex-shrink: 0;
-  opacity: 0;
-  animation: introCardIn 0.6s ease 0.1s both;
-}
-.photo-stack-tilt {
-  position: absolute;
-  inset: 0;
-  transform-style: preserve-3d;
-  transition: transform 0.15s ease-out;
-  will-change: transform;
-}
-.photo-stack {
-  position: absolute;
-  inset: 0;
-}
-/* Outer element: position in the fan + one-time entrance animation only.
-   Kept separate from the inner element below so this animation's frozen
-   final frame (fill-mode: both) never has to fight a later :hover
-   transform on the very same property. */
-.photo-stack-card {
+/* Each phone is its own bezel: a rounded outer frame (this element) with a
+   little padding standing in for the bezel thickness, and an inner
+   .phone-mock-screen that clips the screenshot. Position/scale/opacity per
+   slide come from the .cf-* classes below, computed from that slide's
+   offset from the active one — center = cf-0, one step either side peeks
+   in at reduced scale/opacity (the coverflow effect), two-or-more steps
+   away is fully transparent and non-interactive. */
+/* .phone-mock is a position-only slot: it owns the coverflow placement
+   (translate/scale/rotateY from .cf-*, transitioning on slide change) and
+   nothing visual. Every visible part of the phone — bezel, side buttons,
+   screen, island — lives on/inside .phone-mock-tilt below, so the hover
+   tilt rotates the whole physical object as one rigid piece instead of
+   splitting the frame from its content into two independently-moving
+   layers (that was the bug: the bezel used to live here, un-rotated, while
+   only the screen tilted inside it). */
+.phone-mock {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 44%;
-  aspect-ratio: 7 / 9;
-  opacity: 0;
-  transform:
-    translate(-50%, -50%)
-    translate(calc((var(--i) - 1.5) * 15%), var(--lift))
-    rotate(var(--rot));
-  animation: stackCardIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-delay: calc(var(--i) * 0.12s + 0.1s);
-  z-index: var(--i);
+  width: clamp(148px, 27vw, 208px);
+  /* Was 9/19.5 (a modern iPhone's true ratio) — but the actual screenshots
+     run ~0.46-0.60 (width/height), so that ratio forced more side-cropping
+     than necessary on the wider ones (StayFit was losing ~24% off its
+     sides). 1/2 is a closer match to the real spread: it still reads as a
+     phone, and redistributes the crop it does need toward the bottom edge
+     (object-position: top, below) instead of the sides, which matters more
+     for hero images with an off-center subject. */
+  aspect-ratio: 1 / 2;
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: default;
+  /* Perspective for .phone-mock-tilt's hover rotateX/rotateY below — set on
+     this non-rotating parent so the child's tilt gets consistent depth
+     regardless of this element's own coverflow rotateY/scale from .cf-*.
+     Kept low (700px, well under the 1000px+ that reads as "flat" on an
+     element this small) so a 20+deg rotateY actually shows visible depth
+     instead of a flat-looking lean. */
+  perspective: 700px;
+  transition: transform 0.65s cubic-bezier(0.65, 0, 0.35, 1), opacity 0.5s ease;
+  will-change: transform, opacity;
 }
-@keyframes stackCardIn {
-  from {
-    opacity: 0;
-    transform: translate(-50%, -50%) translate(0, 40px) rotate(0deg) scale(0.85);
-  }
-  to {
-    opacity: 1;
-    transform:
-      translate(-50%, -50%)
-      translate(calc((var(--i) - 1.5) * 15%), var(--lift))
-      rotate(var(--rot));
-  }
-}
-/* Inner element: the only one that ever gets a plain (non-animation)
-   transform, so its :hover transition always applies cleanly. */
-.photo-stack-card-inner {
+.phone-mock.cf-1, .phone-mock.cf-n1 { cursor: pointer; }
+.phone-mock:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+
+/* The whole physical phone — bezel, side buttons, screen, and island are
+   all inside/on this one element, so the hover tilt (rotateX/rotateY, set
+   as CSS vars by the pointermove handler in WorkCarousel.jsx, reset to 0
+   on pointerleave) moves them together as a single rigid unit. Fully
+   separate from .phone-mock's own coverflow transform above — different
+   element, different `transform` property — so the two never fight over
+   the same property or interrupt each other's transition. */
+.phone-mock-tilt {
+  display: block;
+  position: relative;
   width: 100%;
   height: 100%;
-  border-radius: 14px;
+  box-sizing: border-box;
+  /* Bezel thickness. The screen's radius (2rem, below) is this outer
+     radius (2.6rem) minus this padding, so the two rounded corners stay
+     concentric instead of leaving an uneven sliver of bezel at the curve. */
+  padding: 8px;
+  border-radius: 2.6rem;
+  background: linear-gradient(155deg, #4a4a50 0%, #1a1a1d 42%, #050506 100%);
+  box-shadow:
+    0 25px 55px rgba(0, 0, 0, 0.4),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.16),
+    inset 0 0 0 2px rgba(0, 0, 0, 0.7);
+  transform: rotateX(var(--tilt-rx, 0deg)) rotateY(var(--tilt-ry, 0deg));
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+/* Power button (right) + volume button (left) nubs — small edge details
+   that read as "an iPhone" rather than a generic rounded rectangle. On the
+   tilt element (not .phone-mock) so they rotate with the rest of the frame
+   instead of staying flat while the bezel around them tilts. */
+.phone-mock-tilt::before, .phone-mock-tilt::after {
+  content: "";
+  position: absolute;
+  background: linear-gradient(90deg, #050506, #1c1c1f);
+  border-radius: 1.5px;
+}
+.phone-mock-tilt::before { right: -2px; top: 21%; width: 2.5px; height: 9%; }
+.phone-mock-tilt::after { left: -2px; top: 15%; width: 2.5px; height: 13%; }
+
+.phone-mock-screen {
+  display: block;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 2rem;
   overflow: hidden;
-  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.22), 0 4px 10px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease;
+  background: var(--surface);
 }
-.photo-stack-card:hover .photo-stack-card-inner {
-  transform: translateY(-14px) scale(1.06);
-  box-shadow: 0 28px 55px rgba(0, 0, 0, 0.28), 0 6px 14px rgba(0, 0, 0, 0.12);
-}
-.photo-stack-card:hover { z-index: 10; }
-.photo-stack-card-inner img {
+.phone-mock-screen img {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  display: block;
-}
-@keyframes introCardIn {
-  from { opacity: 0; transform: translateY(16px) scale(0.94); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-.work-slide-text {
-  max-width: 420px;
-  flex-shrink: 0;
-  opacity: 0;
-  transform: translateY(16px);
-  transition: opacity 0.8s ease, transform 0.8s ease;
-}
-.work-slide.is-active .work-slide-text { opacity: 1; transform: translateY(0); }
-.work-slide-text h3 { font-family: var(--serif); font-size: 2rem; font-weight: 700; color: var(--text); margin: 0.4rem 0 0.9rem; }
-
-/* Device frames share a hover lift + ambient glow, and defer to focus when
-   their slide is the active one in the carousel (dim/blur otherwise — the
-   other 3 slides always exist in the DOM, just off-screen). */
-.device-frame {
-  position: relative;
-  /* filter (blur/saturate) used to be in this transition alongside opacity —
-     animating filter forces the browser to re-rasterize the full laptop/
-     ipad photo (plus its own drop-shadow filter) every frame, at the same
-     moment the parent .work-carousel is also mid-transform. That combo was
-     the main jank source when switching Work slides. opacity alone is
-     compositor-only (no repaint), so the dim/focus effect now rides on that
-     exclusively; filter still flips instantly with the class for a touch of
-     definition, just without being animated. */
-  transition: transform 0.5s ease, opacity 0.9s ease;
-  opacity: 0.4;
-  filter: saturate(0.85);
-  will-change: opacity;
-}
-.work-slide.is-active .device-frame { opacity: 1; filter: saturate(1); }
-.device-frame::after {
-  content: "";
-  position: absolute;
-  inset: -12%;
-  background: radial-gradient(closest-side, rgba(0, 0, 0, 0.25), transparent 72%);
-  opacity: 0;
-  transition: opacity 0.4s ease;
-  z-index: -1;
-  pointer-events: none;
-  filter: blur(18px);
-}
-.device-frame:hover { transform: translateY(-8px) scale(1.015); }
-.device-frame:hover::after { opacity: 1; }
-
-.device-laptop-tilt {
-  flex-shrink: 0;
-  width: min(48vw, 640px);
-  transform-style: preserve-3d;
-  transition: transform 0.15s ease-out;
-  will-change: transform;
-}
-.device-laptop {
-  position: relative;
-  display: block;
-  cursor: pointer;
-}
-.device-laptop-photo {
-  display: block;
-  width: 100%;
-  height: auto;
+  object-position: top center;
   pointer-events: none;
   -webkit-user-drag: none;
-  /* Separate element from .device-frame/.device-laptop so this drop-shadow
-     doesn't collide with the blur()/saturate() filter those apply for the
-     is-active dim/focus transition — filter doesn't merge across rules on
-     the same element, so the two would otherwise fight for the property. */
-  filter: drop-shadow(0 30px 40px rgba(0, 0, 0, 0.3));
 }
-/* The real photo's screen isn't a perfect rectangle (shot at a slight
-   upward angle, so it's a shallow trapezoid) — bounds and clip-path below
-   were measured directly off assets/laptop.png's alpha channel + a couple
-   of cropped zoom-ins, not eyeballed, so the video sits exactly on the
-   glass instead of overhanging the bezel. */
-.device-laptop-screen-clip {
-  position: absolute;
-  left: 22.7%;
-  top: 22.1%;
-  width: 55.2%;
-  height: 34.6%;
-  clip-path: polygon(3.7% 1%, 97.5% 1%, 100% 100%, 0% 100%);
-  overflow: hidden;
-}
-.device-laptop-screen-clip video { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top; }
-.device-laptop-sheen {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: linear-gradient(115deg, transparent 32%, rgba(255, 255, 255, 0.12) 46%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.12) 54%, transparent 68%);
-  background-size: 260% 260%;
-  background-position: 130% 0%;
-  animation: laptopSheen 7s ease-in-out infinite;
-}
-@keyframes laptopSheen {
-  0%, 18% { background-position: 130% 0%; }
-  55%, 70% { background-position: -30% 0%; }
-  100% { background-position: -30% 0%; }
-}
-
-.device-ipad-tilt {
-  flex-shrink: 0;
-  /* ~35% larger than the old min(40vw, 460px) — the tablet mockup read as
-     small relative to the empty space around it. .work-slide's gap/padding
-     already leaves plenty of room at typical desktop widths, so this only
-     needed a straight scale-up, not a layout rework. */
-  width: min(54vw, 620px);
-  transform-style: preserve-3d;
-  transition: transform 0.15s ease-out;
-  will-change: transform;
-}
-.device-ipad {
-  position: relative;
-  display: block;
-  cursor: pointer;
-}
-.device-ipad-photo {
-  display: block;
-  width: 100%;
+/* The 4 screenshots that are desktop-shaped (~1.6:1 landscape) fill by width
+   instead of "cover"-cropping into the 9:19.5 screen, which left only a
+   narrow, unreadable center sliver visible. height:auto keeps the whole
+   page legible at full width, sized to its own real aspect ratio — the
+   img's box now exactly hugs the visible picture (unlike object-fit:contain
+   at 100%/100%, whose box stays full-size with transparent padding), so the
+   shadow below wraps the actual image, not empty space. The screen's own
+   background fills the leftover height below it as the letterbox. */
+.phone-mock-screen img.is-contain {
   height: auto;
-  pointer-events: none;
-  -webkit-user-drag: none;
-  filter: drop-shadow(0 25px 35px rgba(0, 0, 0, 0.3));
+  border-radius: 0 0 0.6rem 0.6rem;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.22);
 }
-/* Bounds measured off assets/ipad.png directly (screen isn't a full-bleed
-   rectangle — there's a bezel margin), same approach as the laptop photo. */
-.device-ipad-screen-clip {
-  position: absolute;
-  left: 28%;
-  top: 27.9%;
-  width: 46.5%;
-  height: 42%;
-  overflow: hidden;
-}
-.device-ipad-screen-clip video { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center top; }
 
-.device-browser {
-  flex-shrink: 0;
-  width: min(48vw, 640px);
-  display: block;
-  cursor: pointer;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  overflow: hidden;
-  background: #0d0d10;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.4);
-}
-.device-browser-bar {
+/* Status bar overlay — sits above the screenshot (not baked into the image
+   itself), so it stays crisp and identical across slides. .is-light/.is-dark
+   is picked per project from that screenshot's own top-band brightness (see
+   PROJECTS in WorkCarousel.jsx), since this sits directly on real screenshot
+   pixels; the gradient scrim behind it is a safety margin for legibility
+   against busy content near the average. */
+.phone-status-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 11%;
+  min-height: 24px;
+  z-index: 2;
   display: flex;
   align-items: center;
-  gap: 0.7rem;
-  padding: 0.7rem 0.9rem;
-  background: rgba(26, 26, 30, 0.75);
-  backdrop-filter: blur(8px);
-  border-bottom: 1px solid var(--line);
+  justify-content: space-between;
+  padding: 0 7%;
+  font-family: var(--sans);
+  font-size: 0.64rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  pointer-events: none;
 }
-.device-browser-dots { display: flex; gap: 0.4rem; flex-shrink: 0; }
-.device-browser-dots i {
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: #3a3a40;
-  display: block;
-}
-.device-browser-dots i:nth-child(1) { background: #e5605a; }
-.device-browser-dots i:nth-child(2) { background: #e5b95a; }
-.device-browser-dots i:nth-child(3) { background: #5ac97a; }
-.device-browser-url {
-  font-family: var(--mono);
-  font-size: 0.72rem;
-  color: #9a9aa0;
-  background: #101013;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 5px;
-  padding: 0.25rem 0.7rem;
-  flex: 1;
-}
-.device-browser-screen { aspect-ratio: 16 / 10; overflow: hidden; }
-.device-browser-screen img, .device-browser-screen video { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top; }
-
-.work-dots {
+/* These screenshots are real page captures, not app splash screens — some
+   (e.g. Kafeneja) have their own nav/logo sitting right at the true top, so
+   a soft top-fading scrim wasn't enough to keep the overlay legible; it let
+   real text/icons show through and visually collide with "9:41". A solid
+   translucent bar (plus a slight blur where supported) reliably obscures
+   whatever's behind it regardless of what a given screenshot has up there. */
+.phone-status-bar::before {
+  content: "";
   position: absolute;
-  bottom: 2rem;
+  inset: 0;
+  z-index: -1;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+}
+.phone-status-bar.is-dark::before {
+  background: rgba(255, 255, 255, 0.72);
+}
+.phone-status-bar.is-light { color: #fff; }
+.phone-status-bar.is-dark { color: #0a0a0a; }
+.phone-status-time { line-height: 1; }
+.phone-status-icons { display: flex; align-items: center; gap: 0.22rem; line-height: 1; }
+.phone-status-icons svg { display: block; height: 0.5rem; width: auto; }
+.status-icon-signal, .status-icon-battery { fill: currentColor; }
+
+.phone-mock-island {
+  position: absolute;
+  top: 3%;
   left: 50%;
   transform: translateX(-50%);
+  width: 30%;
+  height: 3.6%;
+  min-height: 11px;
+  background: #000;
+  border-radius: 20px;
+  z-index: 4;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.cf-0 { transform: translate(-50%, -50%) translateX(0%) scale(1) rotateY(0deg); opacity: 1; z-index: 5; }
+.cf-1 { transform: translate(-50%, -50%) translateX(64%) scale(0.76) rotateY(-24deg); opacity: 0.5; z-index: 4; }
+.cf-n1 { transform: translate(-50%, -50%) translateX(-64%) scale(0.76) rotateY(24deg); opacity: 0.5; z-index: 4; }
+.cf-2 { transform: translate(-50%, -50%) translateX(112%) scale(0.6) rotateY(-30deg); opacity: 0; z-index: 3; pointer-events: none; }
+.cf-n2 { transform: translate(-50%, -50%) translateX(-112%) scale(0.6) rotateY(30deg); opacity: 0; z-index: 3; pointer-events: none; }
+
+.work-controls {
   display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.1rem;
+  margin: 2rem auto 0;
+}
+.work-arrow, .work-play-pause {
+  position: relative;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--text-dim);
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+.work-arrow:hover, .work-play-pause:hover { border-color: var(--accent); color: var(--accent); }
+.work-play-pause svg { width: 14px; height: 14px; fill: currentColor; }
+
+/* Re-keyed on the active project's id in JSX, so React remounts this block
+   on every slide change instead of just diffing text in place — that's
+   what makes the little fade/rise below actually replay each time. */
+.work-caption {
+  max-width: 480px;
+  margin: 2rem auto 0;
+  text-align: center;
+  animation: workCaptionIn 0.5s ease both;
+}
+@keyframes workCaptionIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.work-caption h3 { font-family: var(--serif); font-size: 1.7rem; font-weight: 700; color: var(--text); margin: 0.4rem 0 0.7rem; }
+.work-caption .project-desc { margin-left: auto; margin-right: auto; }
+.work-caption .project-links { justify-content: center; }
+.project-links-soon {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  opacity: 0.7;
+  font-style: italic;
+}
+
+.work-dots {
+  position: relative;
+  bottom: auto;
+  left: auto;
+  transform: none;
+  margin: 1.6rem auto 0;
+  display: flex;
+  justify-content: center;
   gap: 0.6rem;
-  z-index: 5;
 }
 .work-dots button {
   position: relative;
@@ -2320,27 +2217,6 @@ main, .site-footer {
   inset: -18px;
 }
 .work-dots button.active { background: var(--accent); transform: scale(1.3); }
-
-.work-arrow {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  border: 1px solid var(--line);
-  background: var(--surface);
-  color: var(--text-dim);
-  font-size: 1.1rem;
-  cursor: pointer;
-  touch-action: manipulation;
-  transition: border-color 0.2s ease, color 0.2s ease;
-  z-index: 5;
-}
-.work-arrow:hover { border-color: var(--accent); color: var(--accent); }
-.work-arrow-prev { left: 2vw; }
-.work-arrow-next { right: 2vw; }
-.work-arrow:disabled { opacity: 0.25; cursor: default; pointer-events: none; }
 
 .project-tag {
   font-family: var(--mono);
@@ -2372,80 +2248,12 @@ main, .site-footer {
 }
 .project-links a:hover { border-color: var(--accent); color: var(--accent); }
 
-.testimonial {
-  position: relative;
-  margin: 1.4rem 0 0;
-  padding-left: 2.4rem;
-  border-left: 2px solid var(--accent);
-}
-.testimonial-label {
-  position: absolute;
-  left: 0.5rem;
-  top: 0.1rem;
-  bottom: 0.1rem;
-  display: flex;
-  align-items: flex-end;
-  writing-mode: vertical-rl;
-  transform: rotate(180deg);
-  font-family: var(--mono);
-  font-size: 0.62rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--text-dim);
-  white-space: nowrap;
-}
-.testimonial p {
-  font-family: var(--serif);
-  font-size: 1.05rem;
-  font-style: italic;
-  font-weight: 500;
-  color: var(--text);
-  margin: 0 0 0.4rem;
-}
-.testimonial cite {
-  font-family: var(--mono);
-  font-size: 0.72rem;
-  color: var(--text-dim);
-  font-style: normal;
-}
-
 @media (max-width: 900px) {
-  /* .work-slide (below) already carries its own full 4rem/6vw/2rem padding
-     once it's forced to fill 100dvh — .work's own padding from the shared
-     full-height-section rule would double up on top of that and push the
-     section taller than one viewport, leaving a dead zone below the fold
-     that could swallow taps on the carousel arrow. */
-  .work { padding: 0; }
-  .work-carousel {
-    width: 400%;
-    height: 100vh;
-    height: 100dvh;
-  }
-  .work-slide {
-    flex-direction: column;
-    padding: 4rem 6vw 2rem;
-    gap: 1.2rem;
-    height: 100vh;
-    height: 100dvh;
-    align-items: center;
-    justify-content: center;
-    overflow-y: auto;
-  }
-  .work-slide-text { max-width: 100%; text-align: center; order: 2; }
-  .work-slide-text .project-links { justify-content: center; }
-  .device-frame, .device-laptop-tilt, .device-ipad-tilt { order: 1; }
-  .work-intro-col { max-width: 100%; text-align: center; }
-  .work-intro-blob { top: 58%; left: 50%; width: min(80vw, 480px); height: min(80vw, 480px); opacity: 0.85; }
-  .work-photo-stack-wrap { width: 76vw; height: 62vw; max-height: 320px; margin: 0 auto; }
-  .photo-stack-card { width: 48%; }
-  .device-laptop-tilt { width: 70vw; }
-  .device-ipad-tilt { width: min(76vw, 380px); }
-  .device-browser { width: 60vw; }
-  .work-arrow { width: 44px; height: 44px; font-size: 1rem; top: auto; bottom: 1rem; transform: none; }
-  .work-arrow-prev { left: 1rem; }
-  .work-arrow-next { right: 1rem; }
-  .work-dots { bottom: 1.1rem; }
+  .work-coverflow-stage { height: clamp(300px, 66vw, 400px); }
+  .phone-mock { width: clamp(122px, 34vw, 168px); }
+  .cf-1 { transform: translate(-50%, -50%) translateX(56%) scale(0.72) rotateY(-22deg); }
+  .cf-n1 { transform: translate(-50%, -50%) translateX(-56%) scale(0.72) rotateY(22deg); }
+  .work-controls { margin-top: 1.6rem; }
 }
 
 /* ---------- SKILLS ---------- */
@@ -3391,11 +3199,7 @@ main, .site-footer {
   .hero { flex-direction: column; align-items: stretch; }
   .hero-text { max-width: 100%; flex-shrink: 1; }
   .menu-panel { min-width: 160px; }
-  .hero, .skills, .services, .process, .estimator-section, .globe-section, .faq, .contact, .why-stats { padding: 3rem 6vw; }
-  /* .work stays padding:0 here too (see the 900px block above) — its
-     carousel already fills 100dvh with its own padding, so this section's
-     own padding would double up and push it taller than one viewport. */
-  .work { padding: 0; }
+  .hero, .work, .skills, .services, .process, .estimator-section, .globe-section, .faq, .contact, .why-stats { padding: 3rem 6vw; }
   /* The shared .hero rule just above resets padding-top to 3rem via its
      shorthand, silently overriding the much smaller value set earlier
      (@media max-width:900px) for .hero-mock-only specifically, since both
@@ -3425,12 +3229,7 @@ main, .site-footer {
      dominating a narrow screen — scale them down specifically for mobile
      rather than touching the (fine) desktop values. */
   .section-title { font-size: clamp(1.4rem, 6vw, 1.8rem); margin-bottom: 1.6rem; }
-  .work-slide-text h3 { font-size: 1.3rem; margin: 0.3rem 0 0.6rem; }
-  .work-intro-panel { padding: 1.8rem 1.3rem; margin-top: 1.4rem; }
-  .work-intro-text { font-size: 0.92rem; }
-  .testimonial { padding-left: 0.8rem; margin-top: 1rem; }
-  .testimonial p { font-size: 0.85rem; }
-  .testimonial-label { display: none; }
+  .work-caption h3 { font-size: 1.3rem; margin: 0.3rem 0 0.6rem; }
 }
 /* ---------- COOKIE BANNER ---------- */
 
