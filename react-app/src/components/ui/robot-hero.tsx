@@ -948,6 +948,17 @@ export function RobotHero({
         @media (prefers-reduced-motion: reduce) {
           .hero-rise-in { animation: none; opacity: 1; transform: none; }
         }
+        /* Laptop widths (roughly 760-1600px) were confirmed to already look
+           right at the base pt-16 — only phones and wide desktop monitors
+           were reported as sitting too close to the top, so those two get
+           extra top padding instead of raising the base value (which would
+           have pushed the already-correct laptop case down too). */
+        @media (max-width: 760px) {
+          .robot-hero { padding-top: 6rem; }
+        }
+        @media (min-width: 1600px) {
+          .robot-hero { padding-top: 8rem; }
+        }
       `}</style>
       {/* Plain in-flow text column — badge, headline, subline, CTAs — sits
           above the robot's own box (see below) simply by being the earlier
