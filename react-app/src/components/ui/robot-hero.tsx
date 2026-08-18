@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState, useEffect, Suspense, Component } from "react";
-import type { ReactNode } from "react";
+import type { ReactNode, CSSProperties } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Environment, ContactShadows, Html } from "@react-three/drei";
 import * as THREE from "three";
@@ -929,7 +929,32 @@ export function RobotHero({
       // of the site uses, so it stays legible in both themes rather than
       // becoming cream-on-cream in light mode.
       className={cn("relative w-full flex flex-col items-center overflow-hidden pt-16 pb-0", className)}
+      // The robot's own screen color, reused as the hero's one accent — so
+      // "the mint from the mascot's helmet" is never a second color choice
+      // to keep in sync, it's the same prop that already drives the 3D
+      // scene. Exposed as a custom property so the plain-CSS rules in the
+      // <style> tag below (badge dot, CTA glow, ambient wash) can all
+      // reference it without threading the prop through each one by hand.
+      style={{ ["--hero-mint" as string]: pantallaColor } as CSSProperties}
     >
+      {/* A soft, wide color wash behind the whole column — mint fading to
+          nothing well before the section edges. On a wide desktop viewport
+          the text/robot column is narrow relative to the section, which
+          previously left a flat, empty stretch of plain background on
+          either side; this doesn't add new content there (a literal
+          secondary graphic read as clutter next to a single-mascot hero),
+          it just gives that space some of the same depth/color the rest of
+          the hero has instead of sitting flat. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute left-1/2 top-0 -translate-x-1/2 z-0"
+        style={{
+          width: "min(1600px, 150vw)",
+          height: "88%",
+          background: "radial-gradient(ellipse 50% 55% at 50% 26%, color-mix(in srgb, var(--hero-mint) 11%, transparent), transparent 70%)",
+          filter: "blur(14px)",
+        }}
+      />
       {/* One-time entrance animation (transform+opacity only, GPU-composited,
           finishes in under a second and then costs nothing) — staggered
           per element so the text reads as a deliberate sequence rather than
@@ -959,6 +984,43 @@ export function RobotHero({
         @media (min-width: 1600px) {
           .robot-hero { padding-top: 8rem; }
         }
+        /* Wide desktop only — the robot's box (base clamp defined inline
+           below) plateaus early relative to how much horizontal room a
+           real monitor actually has, which read as the mascot being small
+           and off-center in a lot of empty space rather than the
+           composition's anchor. Steeper growth + a taller ceiling past
+           1600px makes it the dominant, centered element the option-1 fix
+           calls for, without touching the laptop range that was already
+           right. */
+        @media (min-width: 1600px) {
+          .hero-robot-box { height: clamp(500px, 38vw, 860px) !important; }
+        }
+        .hero-badge-dot {
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background: var(--hero-mint);
+          box-shadow: 0 0 0 3px color-mix(in srgb, var(--hero-mint) 25%, transparent), 0 0 10px 1px color-mix(in srgb, var(--hero-mint) 70%, transparent);
+        }
+        .hero-cta-primary {
+          box-shadow:
+            0 0 0 1px color-mix(in srgb, var(--hero-mint) 30%, transparent),
+            0 10px 30px -8px color-mix(in srgb, var(--hero-mint) 60%, transparent);
+          transition: box-shadow 240ms ease, transform 240ms ease;
+        }
+        .hero-cta-primary:hover {
+          box-shadow:
+            0 0 0 1px color-mix(in srgb, var(--hero-mint) 50%, transparent),
+            0 14px 40px -6px color-mix(in srgb, var(--hero-mint) 80%, transparent);
+        }
+        .hero-cta-secondary {
+          transition: border-color 240ms ease, color 240ms ease, transform 240ms ease, box-shadow 240ms ease;
+        }
+        .hero-cta-secondary:hover {
+          border-color: var(--hero-mint);
+          color: color-mix(in srgb, var(--hero-mint) 70%, var(--text));
+          box-shadow: 0 10px 30px -10px color-mix(in srgb, var(--hero-mint) 45%, transparent);
+        }
       `}</style>
       {/* Plain in-flow text column — badge, headline, subline, CTAs — sits
           above the robot's own box (see below) simply by being the earlier
@@ -968,19 +1030,26 @@ export function RobotHero({
       <div className="relative z-20 flex flex-col items-center text-center px-6">
         {badgeText && (
           <span
-            className="hero-rise-in pointer-events-auto rounded-full px-4 py-1.5 font-mono text-xs font-bold tracking-wide mb-6"
-            style={{ background: "color-mix(in srgb, var(--text) 6%, transparent)", color: "var(--text)", border: "1px solid var(--line)", animationDelay: "0ms" }}
+            className="hero-rise-in pointer-events-auto inline-flex items-center gap-2 rounded-full px-4 py-1.5 font-mono text-[0.65rem] font-medium uppercase tracking-[0.18em] mb-7"
+            style={{
+              background: "color-mix(in srgb, var(--text) 6%, transparent)",
+              color: "var(--text-dim)",
+              border: "1px solid color-mix(in srgb, var(--hero-mint) 30%, var(--line))",
+              boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
+              animationDelay: "0ms",
+            }}
           >
+            <span className="hero-badge-dot" aria-hidden="true" />
             {badgeText}
           </span>
         )}
         <h2
-          className="hero-rise-in font-sans font-black max-w-4xl"
+          className="hero-rise-in font-sans font-black max-w-4xl relative"
           style={{
             color: "var(--text)",
-            fontSize: "clamp(2.4rem, 5.6vw, 4.2rem)",
-            lineHeight: 1.04,
-            letterSpacing: "-0.02em",
+            fontSize: "clamp(2.8rem, 7vw, 5.2rem)",
+            lineHeight: 1.02,
+            letterSpacing: "-0.025em",
             // Soft halo in the page's own background color, not a literal
             // drop-shadow — reinforces --bg locally behind the letterforms
             // so the headline stays readable as the ambient blob layer
@@ -1006,14 +1075,14 @@ export function RobotHero({
         <div className="hero-rise-in mt-9 flex flex-wrap gap-4 justify-center pointer-events-auto" style={{ animationDelay: "270ms" }}>
           <a
             href={primaryCta.href}
-            className="rounded-full px-7 py-3 font-mono text-sm font-bold transition-transform hover:-translate-y-0.5"
+            className="hero-cta-primary rounded-full px-7 py-3 font-mono text-sm font-bold transition-transform hover:-translate-y-0.5"
             style={{ background: "var(--text)", color: "var(--bg)" }}
           >
             {primaryCta.label}
           </a>
           <a
             href={secondaryCta.href}
-            className="rounded-full px-7 py-3 font-mono text-sm font-bold border-2 transition-transform hover:-translate-y-0.5"
+            className="hero-cta-secondary rounded-full px-7 py-3 font-mono text-sm font-bold border-2 hover:-translate-y-0.5"
             style={{ borderColor: "var(--text)", color: "var(--text)" }}
           >
             {secondaryCta.label}
@@ -1034,7 +1103,7 @@ export function RobotHero({
           ~1533px, so it read as tiny on an actual desktop monitor even
           though it looked right on a laptop. Negative margin-top pulls the
           box up against the buttons instead of leaving flow spacing above it. */}
-      <div className="relative z-10 w-full -mt-4" style={{ height: "clamp(320px, 30vw, 680px)" }}>
+      <div className="hero-robot-box relative z-10 w-full -mt-4" style={{ height: "clamp(320px, 30vw, 680px)" }}>
         <Canvas
           shadows
           camera={{ position: [0, 0.2, 6], fov: 40 }}
