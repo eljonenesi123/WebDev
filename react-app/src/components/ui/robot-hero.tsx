@@ -55,79 +55,39 @@ function ResponsiveGroup({
   scale = 1,
   positionX = 0,
   positionY = 0,
-  isMobile = false,
 }: {
   children: React.ReactNode;
   scale?: number;
   positionX?: number;
   positionY?: number;
-  isMobile?: boolean;
 }) {
-  const { viewport, size } = useThree();
-  // For a fixed-FOV perspective camera, the vertical world-space extent the
-  // camera can see is constant (2 * distance * tan(fov/2)) — it does NOT
-  // shrink just because the canvas is short in pixels. What DOES change on
-  // a short/wide canvas is viewport.width (world units), which grows with
-  // aspect ratio — and since scale is derived from viewport.width, the
-  // robot actually gets *bigger* on a short/wide browser window at the
-  // exact moment it has less headroom to work with. That combination —
-  // bigger robot, same fixed vertical budget, pushed further down by a
-  // positionY that also scales with `s` — is what pushed it (and its
-  // shadow) outside the camera's frustum and made it look clipped. There's
-  // no equivalent "shrink on short viewports" signal in viewport.height
-  // (it's ~constant), so this uses size.height — the canvas's actual pixel
-  // height — directly instead.
-  // The text block above the robot (badge + 2-line headline + subline +
-  // buttons) is vertically centered in the same box and its own height
-  // barely changes with viewport height (font sizes key off vw, not vh) —
-  // so on a short canvas the *margin* left over for the robot below it
-  // shrinks much faster than the canvas height itself does. A gentle
-  // reduction wasn't enough (verified empirically at 650-700px canvas
-  // heights, not just reasoned about): the robot needs to shrink hard and
-  // fast as height drops, with a floor so it never disappears entirely.
-  const heightFactor = Math.max(0.42, Math.min(1, (size.height - 580) / 228));
-  // "Mobile" here is the same 760px CSS breakpoint the rest of the site
-  // uses (passed down from a DOM matchMedia check in RobotHero), not a
-  // Three.js viewport-aspect guess. An aspect-based guess (viewport.width
-  // under some world-unit threshold) doesn't actually track window CSS
-  // width 1:1 — display scaling, browser zoom, and the canvas's own
-  // resize-observer timing can all shift it, and when it misfires on a
-  // wide desktop window the "mobile" scale-down and extra downward push
-  // below fire together, which is exactly what produced a robot that
-  // was both shrunk and still overlapping the CTAs. Driving this off the
-  // same CSS breakpoint the layout itself uses guarantees the two agree.
-  // The aspect-driven `viewport.width / 3.5` term already shrinks the robot
-  // plenty on a narrow phone canvas on its own — an extra flat multiplier
-  // here on top of that was compounding into a robot that read as much
-  // smaller than intended, not just "clear of the buttons".
-  const s = Math.min(1.0, viewport.width / 3.5) * heightFactor * scale;
-  // On narrow/portrait screens the button row wraps taller relative to the
-  // robot's own (already smaller, via `s`) scale than it does on desktop,
-  // so the same positionY that clears the buttons on desktop lands the
-  // robot's head right behind them on mobile.
-  // Applied *after* the `s` multiplication (not baked into positionY before
-  // it) so a short canvas — where heightFactor has already shrunk `s` —
-  // doesn't also shrink the extra push meant to compensate for that same
-  // shortness. Scaling both by `s` was cancelling the drop out on exactly
-  // the viewports it was meant to fix (verified against the reported
-  // overlap with the CTA row, not just reasoned about).
-  // heightFactor's shrink isn't only a mobile-phone thing — a completely
-  // ordinary 1366x768 laptop window lands well under the 808px canvas
-  // height heightFactor treats as "full size" (header eats ~90px of it),
-  // so a *wide* desktop window can end up just as squeezed as a phone,
-  // while `isMobile` (a CSS-width breakpoint) stays false for it the whole
-  // time. Compensating drop by how much heightFactor has shrunk — not just
-  // by the mobile flag — is what actually matches the two cases that were
-  // reported broken (a narrow phone and an ordinary laptop, not just narrow
-  // screens).
-  const extraDrop = (1 - heightFactor) * 2.4 + (isMobile ? 1.0 : 0);
+  const { viewport } = useThree();
+  // Three rewrites of this tried to compute a "safe" scale/position from
+  // the canvas's pixel height (heightFactor) plus a CSS-breakpoint guess
+  // for "mobile", stacked on top of the robot sharing a full 100dvh box
+  // with the text above it. Every one of those broke on some real device —
+  // the height-based shrink and the mobile flag could independently
+  // misfire relative to each other, and because text + robot occupied the
+  // *same* box, "enough room below the text" depended on exactly how tall
+  // the window was, which varies wildly across real laptops/phones in ways
+  // no small set of test viewports reliably covers.
+  // The actual fix is architectural, not a better heuristic: the robot now
+  // lives in its own dedicated box *below* the text (see the CSS `height:
+  // clamp(...)` on the canvas wrapper below), on every breakpoint, not just
+  // mobile. Its box is never less than 420px tall on any device, so there's
+  // no "too short, shrink hard" case left to compensate for — scale only
+  // needs to track the box's *width* (via viewport.width, which already
+  // reflects the canvas's actual aspect ratio) to stay proportional, and
+  // position only needs to center the robot in its own box, not dodge
+  // something above it.
+  const s = Math.min(1.15, Math.max(0.75, viewport.width / 3.2)) * scale;
   // positionX/positionY are in the same normalized units as the
   // cursor-follow lerp target in RobotPrototype (state.pointer.x *
   // viewport.width/3.5), so an offset here shifts the robot's *idle*
   // resting position off-center while cursor-follow keeps working the same
   // way relative to that new rest point — the robot still tracks the
   // pointer, just around a different anchor instead of true center.
-  return <group scale={s} position={[positionX * s, positionY * s - extraDrop, 0]}>{children}</group>;
+  return <group scale={s} position={[positionX * s, positionY * s, 0]}>{children}</group>;
 }
 
 function GlassCapsule({
@@ -896,19 +856,6 @@ export function RobotHero({
   const containerRef = useRef<HTMLElement>(null);
   const [assistantStage, setAssistantStage] = useState<AssistantStage>("prompt");
 
-  // Same 760px breakpoint the rest of the site's CSS uses (see the
-  // .robot-hero / .hero-content media queries below) — kept in sync via a
-  // matchMedia listener rather than derived from the Three.js scene, so the
-  // robot's "mobile" sizing/position can't disagree with the DOM layout's.
-  const [isMobile, setIsMobile] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 760px)");
-    setIsMobile(mq.matches);
-    const onChange = (e: MediaQueryListEvent) => setIsMobile(e.matches);
-    mq.addEventListener("change", onChange);
-    return () => mq.removeEventListener("change", onChange);
-  }, []);
-
   const handleRobotActivate = () => {
     setAssistantStage((stage) => (stage === "prompt" ? "nav" : stage));
   };
@@ -969,8 +916,7 @@ export function RobotHero({
       // hex to the same var(--text)/var(--bg)/var(--line) tokens the rest
       // of the site uses, so it stays legible in both themes rather than
       // becoming cream-on-cream in light mode.
-      className={cn("relative w-full min-h-[600px] overflow-hidden", className)}
-      style={{ height: "calc(100dvh - var(--header-h))" }}
+      className={cn("relative w-full flex flex-col items-center overflow-hidden pt-16 pb-8", className)}
     >
       {/* One-time entrance animation (transform+opacity only, GPU-composited,
           finishes in under a second and then costs nothing) — staggered
@@ -990,25 +936,13 @@ export function RobotHero({
         @media (prefers-reduced-motion: reduce) {
           .hero-rise-in { animation: none; opacity: 1; transform: none; }
         }
-        /* Fixed 100dvh-minus-header height is fine on desktop, where the
-           text block is short relative to the viewport. On phones the
-           headline wraps to 3 lines and eats most of that budget, leaving
-           the robot no room to sit below the CTAs without overlapping them
-           — so below the site's mobile breakpoint the section grows past
-           the viewport instead of the robot being squeezed to fit inside it. */
-        @media (max-width: 760px) {
-          .robot-hero { height: auto !important; min-height: 780px; padding-bottom: 64px; }
-          .hero-content { position: static !important; transform: none !important; min-height: 420px; padding-top: 48px; }
-        }
       `}</style>
-      {/* Centered content column — badge, headline, subline, CTAs — sits
-          above the robot (z-20 vs the canvas's z-10) so the robot reads as
-          peeking out from behind it wherever the two overlap, rather than
-          the text sitting on top of an opaque card. Switches to static/flow
-          positioning on mobile (see the media query above) since the robot
-          there is no longer occupying the same box — it flows in below,
-          inside the section's now-auto height. */}
-      <div className="hero-content absolute inset-0 z-20 flex flex-col items-center justify-center text-center px-6 pointer-events-none" style={{ transform: "translateY(-6vh)" }}>
+      {/* Plain in-flow text column — badge, headline, subline, CTAs — sits
+          above the robot's own box (see below) simply by being the earlier
+          sibling in the DOM, not via any absolute-position/height math. No
+          overlap with the robot is possible regardless of viewport size,
+          since the two no longer share the same box at all. */}
+      <div className="relative z-20 flex flex-col items-center text-center px-6">
         {badgeText && (
           <span
             className="hero-rise-in pointer-events-auto rounded-full px-4 py-1.5 font-mono text-xs font-bold tracking-wide mb-6"
@@ -1065,7 +999,14 @@ export function RobotHero({
       </div>
 
 
-      <div className="absolute inset-0 z-10">
+      {/* The robot's own dedicated box, always below the text above it in
+          document flow. Height is a clamp — never under 420px (comfortably
+          more than the robot + its shadow need on any device) and never
+          over 620px (so it doesn't dominate a tall desktop viewport) — kept
+          in a fixed, generous range on purpose so ResponsiveGroup's scale
+          math (see its definition above) never has to compensate for a
+          too-short box the way the old shared-100dvh-box layout did. */}
+      <div className="relative z-10 w-full mt-4" style={{ height: "clamp(420px, 44vw, 620px)" }}>
         <Canvas
           shadows
           camera={{ position: [0, 0.2, 6], fov: 40 }}
@@ -1119,7 +1060,7 @@ export function RobotHero({
             </Suspense>
           </EnvironmentErrorBoundary>
 
-          <ResponsiveGroup scale={scale} positionY={-1.55} isMobile={isMobile}>
+          <ResponsiveGroup scale={scale} positionY={-0.25}>
             {/* resolution/blur cut roughly in half from the reference
                 (1024->512, 1.7->1.2) — this shadow re-renders every frame
                 (it has to, to track the robot's cursor-follow motion, so
