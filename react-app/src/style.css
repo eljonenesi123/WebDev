@@ -1856,7 +1856,12 @@ main, .site-footer {
 .ctrl-brand-sub strong { color: var(--text); font-weight: 700; }
 
 @media (max-width: 700px) {
-  .ctrl-brand { gap: 2rem; padding: 2.5rem 8vw; }
+  /* min-height:100dvh (set above, unscoped) puts a full screen's worth of
+     empty space between the hero robot and this section's own centered
+     title on mobile — the title only reaches vertical center once the
+     whole viewport height has scrolled past, which reads as a dead gap
+     rather than the next section starting. Sized to content instead. */
+  .ctrl-brand { gap: 2rem; padding: 2.5rem 8vw; min-height: auto; }
   .ctrl-key-stage { width: min(82vw, 340px); }
 }
 

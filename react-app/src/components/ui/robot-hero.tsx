@@ -1013,14 +1013,17 @@ export function RobotHero({
 
       {/* The robot's own dedicated box, always below the text above it in
           document flow. Height is a clamp — never under 320px (comfortably
-          more than the robot + its shadow need on any device) and never
-          over 460px (a taller box than that just left dead air above the
-          robot, since the camera's fixed vertical frustum means the robot
-          itself doesn't grow with a taller box — it just gets more empty
-          space around it, which was the "gap between the CTAs and the
-          robot" being reported). Negative margin-top pulls the box up
-          against the buttons instead of leaving flow spacing on top of it. */}
-      <div className="relative z-10 w-full -mt-4" style={{ height: "clamp(320px, 30vw, 460px)" }}>
+          more than the robot + its shadow need on any device), and grows
+          linearly with viewport width up to 680px. The robot's own render
+          scale (see ResponsiveGroup above) saturates at its ceiling almost
+          immediately on any wide-aspect box, so this box's *pixel* height
+          is what actually determines how big the robot reads on screen —
+          capping it too low (460px, an earlier version of this) made the
+          robot plateau to the same absolute size on any monitor wider than
+          ~1533px, so it read as tiny on an actual desktop monitor even
+          though it looked right on a laptop. Negative margin-top pulls the
+          box up against the buttons instead of leaving flow spacing above it. */}
+      <div className="relative z-10 w-full -mt-4" style={{ height: "clamp(320px, 30vw, 680px)" }}>
         <Canvas
           shadows
           camera={{ position: [0, 0.2, 6], fov: 40 }}
