@@ -511,14 +511,26 @@ function RobotPrototype({
     alturaCabeza: 0.6,
   };
 
+  // Touch input only ever produces a pointermove while a finger is actually
+  // dragging across the canvas (no passive hover the way a mouse gives you
+  // for free), so the same motion amplitude that reads as a nice subtle
+  // parallax under a mouse barely registers as "reacting to me" on a phone.
+  // Coarse-pointer devices get a visibly bigger, snappier response — more
+  // swing per unit of finger movement, and faster lerp speeds so it catches
+  // up within the short window a touch-drag actually lasts.
+  const isCoarsePointer = useMemo(
+    () => typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches,
+    [],
+  );
+
   const config = {
-    moveSpeed: 0.35,
-    bodyRotSpeed: 10.0,
-    headRotSpeed: 20.0,
+    moveSpeed: isCoarsePointer ? 0.65 : 0.35,
+    bodyRotSpeed: isCoarsePointer ? 16.0 : 10.0,
+    headRotSpeed: isCoarsePointer ? 28.0 : 20.0,
     bodyTiltX: 0.0,
-    bodyTiltY: 0.95,
-    headLookX: 0.3,
-    headLookY: 1.8,
+    bodyTiltY: isCoarsePointer ? 1.5 : 0.95,
+    headLookX: isCoarsePointer ? 0.5 : 0.3,
+    headLookY: isCoarsePointer ? 2.7 : 1.8,
   };
 
   useFrame((state, delta) => {
@@ -916,7 +928,7 @@ export function RobotHero({
       // hex to the same var(--text)/var(--bg)/var(--line) tokens the rest
       // of the site uses, so it stays legible in both themes rather than
       // becoming cream-on-cream in light mode.
-      className={cn("relative w-full flex flex-col items-center overflow-hidden pt-16 pb-8", className)}
+      className={cn("relative w-full flex flex-col items-center overflow-hidden pt-16 pb-0", className)}
     >
       {/* One-time entrance animation (transform+opacity only, GPU-composited,
           finishes in under a second and then costs nothing) — staggered
@@ -1000,13 +1012,15 @@ export function RobotHero({
 
 
       {/* The robot's own dedicated box, always below the text above it in
-          document flow. Height is a clamp — never under 420px (comfortably
+          document flow. Height is a clamp — never under 320px (comfortably
           more than the robot + its shadow need on any device) and never
-          over 620px (so it doesn't dominate a tall desktop viewport) — kept
-          in a fixed, generous range on purpose so ResponsiveGroup's scale
-          math (see its definition above) never has to compensate for a
-          too-short box the way the old shared-100dvh-box layout did. */}
-      <div className="relative z-10 w-full mt-4" style={{ height: "clamp(420px, 44vw, 620px)" }}>
+          over 460px (a taller box than that just left dead air above the
+          robot, since the camera's fixed vertical frustum means the robot
+          itself doesn't grow with a taller box — it just gets more empty
+          space around it, which was the "gap between the CTAs and the
+          robot" being reported). Negative margin-top pulls the box up
+          against the buttons instead of leaving flow spacing on top of it. */}
+      <div className="relative z-10 w-full -mt-4" style={{ height: "clamp(320px, 30vw, 460px)" }}>
         <Canvas
           shadows
           camera={{ position: [0, 0.2, 6], fov: 40 }}
@@ -1060,7 +1074,7 @@ export function RobotHero({
             </Suspense>
           </EnvironmentErrorBoundary>
 
-          <ResponsiveGroup scale={scale} positionY={-0.25}>
+          <ResponsiveGroup scale={scale} positionY={0.35}>
             {/* resolution/blur cut roughly in half from the reference
                 (1024->512, 1.7->1.2) — this shadow re-renders every frame
                 (it has to, to track the robot's cursor-follow motion, so
