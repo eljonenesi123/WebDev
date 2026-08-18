@@ -55,11 +55,13 @@ function ResponsiveGroup({
   scale = 1,
   positionX = 0,
   positionY = 0,
+  isMobile = false,
 }: {
   children: React.ReactNode;
   scale?: number;
   positionX?: number;
   positionY?: number;
+  isMobile?: boolean;
 }) {
   const { viewport, size } = useThree();
   // For a fixed-FOV perspective camera, the vertical world-space extent the
@@ -84,23 +86,41 @@ function ResponsiveGroup({
   // heights, not just reasoned about): the robot needs to shrink hard and
   // fast as height drops, with a floor so it never disappears entirely.
   const heightFactor = Math.max(0.42, Math.min(1, (size.height - 580) / 228));
-  const isMobile = viewport.width < 2.5;
-  const s = Math.min(1.0, viewport.width / 3.5) * heightFactor * scale * (isMobile ? 0.82 : 1);
+  // "Mobile" here is the same 760px CSS breakpoint the rest of the site
+  // uses (passed down from a DOM matchMedia check in RobotHero), not a
+  // Three.js viewport-aspect guess. An aspect-based guess (viewport.width
+  // under some world-unit threshold) doesn't actually track window CSS
+  // width 1:1 — display scaling, browser zoom, and the canvas's own
+  // resize-observer timing can all shift it, and when it misfires on a
+  // wide desktop window the "mobile" scale-down and extra downward push
+  // below fire together, which is exactly what produced a robot that
+  // was both shrunk and still overlapping the CTAs. Driving this off the
+  // same CSS breakpoint the layout itself uses guarantees the two agree.
+  // The aspect-driven `viewport.width / 3.5` term already shrinks the robot
+  // plenty on a narrow phone canvas on its own — an extra flat multiplier
+  // here on top of that was compounding into a robot that read as much
+  // smaller than intended, not just "clear of the buttons".
+  const s = Math.min(1.0, viewport.width / 3.5) * heightFactor * scale;
   // On narrow/portrait screens the button row wraps taller relative to the
   // robot's own (already smaller, via `s`) scale than it does on desktop,
   // so the same positionY that clears the buttons on desktop lands the
-  // robot's head right behind them on mobile. viewport.width (Three world
-  // units, tracks aspect ratio) is a reliable enough signal for "narrow"
-  // without needing a resize listener on the DOM side. This is a distinct
-  // case from heightFactor above: portrait phones are narrow *and tall*, so
-  // heightFactor stays ~1 there and the two adjustments don't fight.
+  // robot's head right behind them on mobile.
   // Applied *after* the `s` multiplication (not baked into positionY before
-  // it) so a short mobile canvas — where heightFactor has already shrunk
-  // `s` — doesn't also shrink the extra push meant to compensate for that
-  // same shortness. Scaling both by `s` was cancelling the drop out on
-  // exactly the viewports it was meant to fix (verified against the
-  // reported overlap with the CTA row, not just reasoned about).
-  const extraDrop = isMobile ? 1.55 : 0;
+  // it) so a short canvas — where heightFactor has already shrunk `s` —
+  // doesn't also shrink the extra push meant to compensate for that same
+  // shortness. Scaling both by `s` was cancelling the drop out on exactly
+  // the viewports it was meant to fix (verified against the reported
+  // overlap with the CTA row, not just reasoned about).
+  // heightFactor's shrink isn't only a mobile-phone thing — a completely
+  // ordinary 1366x768 laptop window lands well under the 808px canvas
+  // height heightFactor treats as "full size" (header eats ~90px of it),
+  // so a *wide* desktop window can end up just as squeezed as a phone,
+  // while `isMobile` (a CSS-width breakpoint) stays false for it the whole
+  // time. Compensating drop by how much heightFactor has shrunk — not just
+  // by the mobile flag — is what actually matches the two cases that were
+  // reported broken (a narrow phone and an ordinary laptop, not just narrow
+  // screens).
+  const extraDrop = (1 - heightFactor) * 2.4 + (isMobile ? 1.0 : 0);
   // positionX/positionY are in the same normalized units as the
   // cursor-follow lerp target in RobotPrototype (state.pointer.x *
   // viewport.width/3.5), so an offset here shifts the robot's *idle*
@@ -876,6 +896,19 @@ export function RobotHero({
   const containerRef = useRef<HTMLElement>(null);
   const [assistantStage, setAssistantStage] = useState<AssistantStage>("prompt");
 
+  // Same 760px breakpoint the rest of the site's CSS uses (see the
+  // .robot-hero / .hero-content media queries below) — kept in sync via a
+  // matchMedia listener rather than derived from the Three.js scene, so the
+  // robot's "mobile" sizing/position can't disagree with the DOM layout's.
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 760px)");
+    setIsMobile(mq.matches);
+    const onChange = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
+
   const handleRobotActivate = () => {
     setAssistantStage((stage) => (stage === "prompt" ? "nav" : stage));
   };
@@ -1086,7 +1119,7 @@ export function RobotHero({
             </Suspense>
           </EnvironmentErrorBoundary>
 
-          <ResponsiveGroup scale={scale} positionY={-1.55}>
+          <ResponsiveGroup scale={scale} positionY={-1.55} isMobile={isMobile}>
             {/* resolution/blur cut roughly in half from the reference
                 (1024->512, 1.7->1.2) — this shadow re-renders every frame
                 (it has to, to track the robot's cursor-follow motion, so
