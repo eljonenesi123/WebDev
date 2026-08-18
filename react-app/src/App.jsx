@@ -8,7 +8,7 @@ import { trackEvent } from "./analytics";
 import { asset } from "./asset";
 
 import CookieBanner from "./components/CookieBanner";
-import DeskMock from "./components/DeskMock";
+import { RobotHero } from "@/components/ui/robot-hero";
 import CtrlBrand from "./components/CtrlBrand";
 import WhyStats from "./components/WhyStats";
 import WorkCarousel from "./components/WorkCarousel";
@@ -176,177 +176,6 @@ function Header({ lang, setLang, menuOpen, setMenuOpen, theme, setTheme }) {
   );
 }
 
-// --- Side "elevator" nav: 01-08, wired up to the wheel/keyboard section-snap effect below via data-target. ---
-function SideNav() {
-  const targets = [".hero", ".why-stats", ".work", ".skills", ".process", ".services", ".estimator-section", ".globe-section", ".faq", ".contact"];
-  return (
-    <nav className="side-nav" aria-label="Section navigation">
-      {targets.map((target, i) => (
-        <button key={target} type="button" data-target={target}>
-          {String(i + 1).padStart(2, "0")}
-        </button>
-      ))}
-    </nav>
-  );
-}
-
-// Fixed hand-drawn "keep scrolling" cue, bottom-right on every section,
-// labeled with whichever section comes next. Hides once the last section
-// (Contact) is reached since there's nothing further down to point at.
-const SCROLL_CUE_SECTIONS = [".hero", ".why-stats", ".work", ".skills", ".process", ".services", ".estimator-section", ".globe-section", ".faq", ".contact"];
-const SCROLL_CUE_LABELS = ["Why This Matters", "Work", "Skills", "Process", "Services", "Estimator", "Global Reach", "FAQ", "Contact"];
-
-function ScrollCue() {
-  const [hidden, setHidden] = useState(false);
-  const [suppressForWork, setSuppressForWork] = useState(false);
-  const [nextLabel, setNextLabel] = useState(SCROLL_CUE_LABELS[0]);
-
-  useEffect(() => {
-    const last = document.querySelector(".contact");
-    if (!last) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => setHidden(entry.isIntersecting),
-      { threshold: 0 }
-    );
-    observer.observe(last);
-    return () => observer.disconnect();
-  }, []);
-
-  // The carousel can advance by tap alone, with no page scroll at all — react
-  // to that immediately instead of waiting for the next scroll/resize tick.
-  useEffect(() => {
-    const carousel = document.getElementById("work-carousel");
-    const workSection = document.querySelector(".work");
-    if (!carousel || !workSection) return;
-    function check() {
-      const r = workSection.getBoundingClientRect();
-      const workFillsScreen = r.top <= window.innerHeight * 0.1 && r.bottom >= window.innerHeight * 0.9;
-      const onLastSlide = carousel.getAttribute("data-on-last-slide") === "true";
-      setSuppressForWork(workFillsScreen && !onLastSlide);
-    }
-    const observer = new MutationObserver(check);
-    observer.observe(carousel, { attributes: true, attributeFilter: ["data-on-last-slide"] });
-    check();
-    return () => observer.disconnect();
-  }, []);
-
-  // Track which section is currently closest to the top of the viewport so
-  // the label always names the one right after it. Also, while the Work
-  // carousel fills the screen and isn't on its last slide yet, suppress this
-  // cue entirely — it's fixed bottom-right on every section, the same corner
-  // as the carousel's own next-slide arrow, and a "scroll to Skills" hint is
-  // both visually colliding with and semantically premature over "next
-  // project" until the carousel is actually done.
-  useEffect(() => {
-    const els = SCROLL_CUE_SECTIONS.map((s) => document.querySelector(s)).filter(Boolean);
-    const workSection = document.querySelector(".work");
-    if (!els.length) return;
-    let raf = null;
-    function update() {
-      raf = null;
-      let closest = 0;
-      let closestDist = Infinity;
-      els.forEach((el, i) => {
-        const dist = Math.abs(el.getBoundingClientRect().top);
-        if (dist < closestDist) {
-          closestDist = dist;
-          closest = i;
-        }
-      });
-      setNextLabel(SCROLL_CUE_LABELS[closest] || "");
-
-      if (workSection) {
-        const r = workSection.getBoundingClientRect();
-        const workFillsScreen = r.top <= window.innerHeight * 0.1 && r.bottom >= window.innerHeight * 0.9;
-        const carousel = document.getElementById("work-carousel");
-        const onLastSlide = carousel ? carousel.getAttribute("data-on-last-slide") === "true" : true;
-        setSuppressForWork(workFillsScreen && !onLastSlide);
-      }
-    }
-    function onScroll() {
-      if (raf) return;
-      raf = requestAnimationFrame(update);
-    }
-    update();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-      if (raf) cancelAnimationFrame(raf);
-    };
-  }, []);
-
-  return (
-    <div className={"scroll-cue" + (hidden || suppressForWork ? " is-hidden" : "")}>
-      <span className="scroll-cue-label">{nextLabel}</span>
-      <button
-        type="button"
-        className="scroll-cue-btn"
-        aria-label={`Scroll to ${nextLabel}`}
-        onClick={() => {
-          // Snap to the next section's actual top — a fixed 0.9-viewport
-          // scroll used to strand the view between two sections (mobile has
-          // no scroll-snap to correct it).
-          const els = SCROLL_CUE_SECTIONS.map((s) => document.querySelector(s)).filter(Boolean);
-          let closest = 0;
-          let closestDist = Infinity;
-          els.forEach((el, i) => {
-            const dist = Math.abs(el.getBoundingClientRect().top);
-            if (dist < closestDist) {
-              closestDist = dist;
-              closest = i;
-            }
-          });
-          const next = els[closest + 1];
-          // scrollTo with a computed Y rather than scrollIntoView — the
-          // latter consistently landed ~26px short here. Pulled up further
-          // by the fixed header's height so its target isn't left partially
-          // hidden underneath it.
-          if (next) {
-            const headerH = document.querySelector(".topbar")?.offsetHeight || 0;
-            window.scrollTo({
-              top: next.getBoundingClientRect().top + window.scrollY - headerH,
-              behavior: "smooth",
-            });
-          }
-        }}
-      >
-        <svg className="scroll-cue-arrow" viewBox="0 0 40 60" aria-hidden="true">
-          <filter id="pencilRoughCue" x="-60%" y="-20%" width="220%" height="140%">
-            <feTurbulence type="fractalNoise" baseFrequency="0.05 0.09" numOctaves="2" seed="9" result="n" />
-            <feDisplacementMap in="SourceGraphic" in2="n" scale="3" />
-          </filter>
-          <g fill="none" stroke="currentColor" strokeLinecap="round" filter="url(#pencilRoughCue)">
-            <path d="M20,3 L20,36" strokeWidth="3.6" />
-            <path d="M21.5,3 L21.5,36" strokeWidth="1.5" opacity="0.5" />
-          </g>
-          <path d="M7,29 L20,52 L33,29 C27,33.5 20,36 20,36 C20,36 13,33.5 7,29 Z" fill="currentColor" filter="url(#pencilRoughCue)" />
-        </svg>
-      </button>
-    </div>
-  );
-}
-
-function Hero() {
-  return (
-    <section className="hero hero-mock-only">
-      <div className="hero-hook">
-        <p className="hero-hook-line">Your brand deserves</p>
-        <p className="hero-hook-mark-wrap">
-          <span className="hero-hook-mark" aria-hidden="true"></span>
-          <span className="hero-hook-mark-text">a better website</span>
-          <span className="hero-hook-dot hero-hook-dot-tl" aria-hidden="true"></span>
-          <span className="hero-hook-dot hero-hook-dot-br" aria-hidden="true"></span>
-        </p>
-        <p className="hero-hook-sub">And this is where that begins.</p>
-      </div>
-      <div className="hero-visual">
-        <DeskMock />
-      </div>
-    </section>
-  );
-}
 
 // Monochrome by default (single-color, currentColor) — the badge itself
 // supplies the brand color as a hover/tap-only fill, so these no longer bake
@@ -960,13 +789,8 @@ export default function App() {
       });
 
       document
-        .querySelectorAll(".hero, .why-stats, .work, .skills, .services, .process, .estimator-section, .globe-section, .faq, .contact")
+        .querySelectorAll(".robot-hero, .why-stats, .work, .skills, .services, .process, .estimator-section, .globe-section, .faq, .contact")
         .forEach((section) => {
-          // .hero-title deliberately excluded — it's only ever the embedded
-          // mock-website headline inside the desk-mock screen (DeskMock.jsx),
-          // not a standalone section heading, and picking it up here left a
-          // stray scroll-linked transform on it that overlapped the subline
-          // in that tight, small-scale layout.
           const inner = section.querySelector(".stats-grid, .work-grid, .price-card-single, .process-list, .contact-grid");
           if (!inner) return;
           gsap.fromTo(
@@ -979,55 +803,6 @@ export default function App() {
             }
           );
         });
-    }
-
-    // Side "elevator" nav: clicking a number smooth-scrolls to that section
-    // (a discrete, user-initiated jump — not scroll-jacking, the same as
-    // clicking any other in-page anchor link). Which button is "active" is
-    // tracked passively via IntersectionObserver, independent of any of
-    // this — normal page scroll is never intercepted or overridden.
-    {
-      const sections = Array.from(
-        document.querySelectorAll(".hero, .why-stats, .work, .skills, .services, .process, .estimator-section, .globe-section, .faq, .contact")
-      );
-      const navButtons = Array.from(document.querySelectorAll(".side-nav button"));
-
-      function scrollToSection(index) {
-        // GSAP's ScrollToPlugin used to align the target under the fixed
-        // header automatically; a plain scrollTo needs that offset applied
-        // by hand (index 0 doesn't: main's own padding-top already reserves
-        // that space, so y:0 already lands right below the header).
-        const headerH = document.querySelector(".topbar")?.offsetHeight || 0;
-        const targetY =
-          index === 0 ? 0 : sections[index].getBoundingClientRect().top + window.scrollY - headerH;
-        window.scrollTo({ top: targetY, behavior: "smooth" });
-      }
-
-      const navClickHandlers = navButtons.map((btn, i) => {
-        const handler = () => scrollToSection(i);
-        btn.addEventListener("click", handler);
-        return handler;
-      });
-
-      const navObserver = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (!entry.isIntersecting) return;
-            const i = sections.indexOf(entry.target);
-            if (i === -1) return;
-            navButtons.forEach((b, bi) => b.classList.toggle("active", bi === i));
-          });
-        },
-        // Fires when a section crosses the vertical center of the
-        // viewport — a shrunk root, not a scroll listener.
-        { rootMargin: "-50% 0px -50% 0px", threshold: 0 }
-      );
-      sections.forEach((sec) => navObserver.observe(sec));
-
-      cleanups.push(() => {
-        navButtons.forEach((btn, i) => btn.removeEventListener("click", navClickHandlers[i]));
-        navObserver.disconnect();
-      });
     }
 
     return () => {
@@ -1047,11 +822,9 @@ export default function App() {
       <div className="grain-overlay" aria-hidden="true"></div>
 
       <Header lang={lang} setLang={setLang} menuOpen={menuOpen} setMenuOpen={setMenuOpen} theme={theme} setTheme={setTheme} />
-      <SideNav />
-      <ScrollCue />
 
       <main id="top">
-        <Hero />
+        <RobotHero badgeText="Take your brand to the next level" className="robot-hero" />
         <CtrlBrand />
         <WhyStats />
         <WorkCarousel />

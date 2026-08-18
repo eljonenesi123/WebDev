@@ -510,6 +510,11 @@ main { padding-top: var(--header-h); }
   text-align: left;
   gap: 3rem;
   position: relative;
+  /* Fixed dark frame, not var(--bg) — deliberately doesn't follow the
+     site's light/dark toggle (reuses the toggle's own dark-mode values as
+     hardcoded constants), so the cream monitor screen always reads as a
+     bright, lit window against a dark backdrop regardless of theme. */
+  background: #15130f;
 }
 
 @media (max-width: 1000px) {
@@ -561,12 +566,19 @@ main { padding-top: var(--header-h); }
   opacity: 0;
   animation: heroHookIn 0.8s ease 0.1s both;
 }
+/* .hero-hook-line/-sub and the mark's bar+cutout below are all hardcoded
+   to the same fixed light-on-dark values as .hero's own background, for
+   the same reason: this block doesn't follow the site's toggle. The mark
+   swaps to a cream bar with a dark cutout (was the reverse, dark bar/cream
+   cutout, when the surrounding page was cream) — that keeps it reading as
+   "text punched through, showing the backdrop behind it" either way, and
+   makes the one cream accent in the dark hero echo the monitor screen. */
 .hero-hook-line {
   font-family: var(--sans);
   font-weight: 800;
   font-size: clamp(1.9rem, 4.4vw, 3rem);
   line-height: 1.15;
-  color: var(--text);
+  color: #f2efe8;
 }
 .hero-hook-mark-wrap {
   position: relative;
@@ -577,7 +589,7 @@ main { padding-top: var(--header-h); }
 .hero-hook-mark {
   position: absolute;
   inset: 6% 0;
-  background: var(--text);
+  background: #f3ecdc;
   transform-origin: left center;
   transform: scaleX(0);
   animation: hookMarkIn 0.65s cubic-bezier(0.65, 0, 0.35, 1) 0.7s forwards;
@@ -589,7 +601,7 @@ main { padding-top: var(--header-h); }
   font-weight: 700;
   font-size: clamp(1.9rem, 4.4vw, 3rem);
   line-height: 1.15;
-  color: var(--bg);
+  color: #15130f;
   padding: 0 0.15em;
 }
 .hero-hook-dot {
@@ -597,7 +609,7 @@ main { padding-top: var(--header-h); }
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background: var(--text);
+  background: #f3ecdc;
   opacity: 0;
   animation: hookDotIn 0.4s ease 1.25s forwards;
 }
@@ -606,7 +618,7 @@ main { padding-top: var(--header-h); }
 .hero-hook-sub {
   font-family: var(--mono);
   font-size: 0.92rem;
-  color: var(--text-dim);
+  color: #aba79d;
   margin-top: 1rem;
 }
 @keyframes heroHookIn {
@@ -691,7 +703,7 @@ main { padding-top: var(--header-h); }
      flush against the viewport edge as intended. */
   align-self: flex-start;
   aspect-ratio: 1536 / 692;
-  filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.3));
+  filter: drop-shadow(0 20px 40px rgba(41, 28, 14, 0.35));
   animation: deskFloat 7s ease-in-out infinite, deskFadeIn 0.8s ease both;
   /* Overlay text below sizes itself off this box (cqw/cqh) so it scales
      with the box's own rendered width at any viewport size, rather than
@@ -944,19 +956,26 @@ main { padding-top: var(--header-h); }
      past .desk-screen's own rounded corners. */
   overflow: hidden;
   border-radius: inherit;
-  background: var(--bg);
+  /* Hardcoded, not var(--bg) — like the rest of .desk-screen's chrome,
+     this is a fixed color for the mock design being shown off, not
+     something that should flip with the site's own toggle. Sampled
+     directly from the warm wood-desk tone visible around the monitor in
+     the (untouched) outer background, so the screen's own accent reads as
+     pulled from the same photo it sits inside rather than an unrelated
+     color. */
+  background: #a1763f;
 }
 .desk-hero .hero-title {
   font-size: 2.5cqw;
   font-weight: 800;
   line-height: 1.22;
-  color: var(--text);
+  color: #0a0a0a;
   margin-bottom: 0;
 }
 .desk-hero-sub {
   font-family: "JetBrains Mono", monospace;
   font-size: 1.05cqw;
-  color: var(--text-dim);
+  color: #4a4a4a;
 }
 
 .desk-cta-row {
@@ -993,8 +1012,8 @@ main { padding-top: var(--header-h); }
 }
 .mock-btn:hover::before { left: 130%; }
 .mock-btn-primary {
-  background: var(--text);
-  color: var(--bg);
+  background: #0a0a0a;
+  color: #f3ecdc;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
 }
 .mock-btn-primary::before {
@@ -1005,8 +1024,8 @@ main { padding-top: var(--header-h); }
 }
 .mock-btn-line {
   background: rgba(128, 128, 128, 0.08);
-  border: 1.5px solid var(--text);
-  color: var(--text);
+  border: 1.5px solid #0a0a0a;
+  color: #0a0a0a;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
   transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease, border-color 0.25s ease;
 }
@@ -1130,6 +1149,95 @@ main { padding-top: var(--header-h); }
   .hero-hook-line, .hero-hook-mark-text { font-size: clamp(1.5rem, 3.4vw, 2.2rem); }
   .hero-hook-sub { margin-top: 0.4rem; font-size: 0.8rem; }
   .hero-mock-only { padding-top: 1.2rem; padding-bottom: 0.6rem; }
+}
+
+/* ---------- HERO STAGE GLOW + CONTEXT-MENU DECO ---------- */
+
+/* desk-stage-glow sits between .desk-img and .desk-screen in the DOM (see
+   DeskMock.jsx) — .desk-img has no transparency (solid photo, white
+   backdrop above the monitor, wood desk below), so a glow placed behind it
+   would be fully hidden; placed in front of *only the photo* but still
+   underneath .desk-screen's own opaque fill, it warms the bezel/backdrop/
+   desk for a "staged lighting" product-shot feel without ever touching the
+   actual mock-website content rendered in the screen on top. Fixed warm-
+   brown values (matching .ambient-shape-2/-3's hardcoded tint) rather than
+   var(--accent) — the photo itself doesn't follow the site's light/dark
+   toggle, so the glow shouldn't either. */
+.desk-stage-glow {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    radial-gradient(60% 50% at 50% 6%, rgba(184, 107, 66, 0.4), transparent 72%),
+    radial-gradient(75% 42% at 50% 100%, rgba(41, 28, 14, 0.4), transparent 78%);
+  mix-blend-mode: multiply;
+}
+
+/* Decorative only (aria-hidden, no pointer events) — a small fake right-
+   click menu staged INSIDE .desk-hero's own content (last child there, see
+   DeskMock.jsx), so it reads as a menu over the page content — not over
+   the tabs/address bar, which is what a real right-click menu would never
+   overlap either (right-clicking browser chrome opens the browser's own
+   native menu, not a page's). Anchored bottom-right against .desk-hero's
+   box specifically, with enough bottom clearance to clear the CTA row,
+   the one hard constraint. Sized with clamp(px, cqw, px) rather than plain
+   cqw, same as .desk-tab-favicon/.desk-tab-label above — plain cqw shrinks
+   in step with .desk-mock's total width, which on the mobile crop is a
+   much wider box relative to .desk-hero's, and renders unreadably small
+   without a px floor. Hardcoded cream/black/gray, like the rest of
+   .desk-screen's chrome, not var(--...) — this represents a fixed page
+   being shown off, not something that follows the site's own toggle. */
+.desk-ctx-menu {
+  position: absolute;
+  bottom: 20%;
+  right: 3%;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0px, 0.15cqh, 1.5px);
+  background: #faf6ec;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: clamp(3px, 0.4cqw, 6px);
+  padding: clamp(2px, 0.3cqw, 4px);
+  min-width: clamp(46px, 8cqw, 92px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.28);
+  transform: rotate(-3deg);
+  pointer-events: none;
+  opacity: 0;
+  animation: deskCtxMenuIn 0.5s ease 0.85s forwards;
+}
+@keyframes deskCtxMenuIn {
+  from { opacity: 0; transform: rotate(-3deg) translateY(6px) scale(0.92); }
+  to { opacity: 1; transform: rotate(-3deg) translateY(0) scale(1); }
+}
+.desk-ctx-item {
+  position: relative;
+  font-family: "JetBrains Mono", monospace;
+  font-size: clamp(0.38rem, 0.5cqw, 0.56rem);
+  font-weight: 600;
+  color: #4a4a4a;
+  padding: clamp(1px, 0.22cqw, 3px) clamp(2px, 0.4cqw, 5px);
+  border-radius: clamp(2px, 0.3cqw, 4px);
+  white-space: nowrap;
+}
+.desk-ctx-item-active {
+  background: #0a0a0a;
+  color: #f3ecdc;
+}
+/* The cursor glyph is nested inside the active item (position:relative)
+   rather than positioned against the whole menu, so it tracks that item
+   specifically regardless of which one ends up highlighted. Tip lands near
+   the item's top-left, body extending up/right of it — how a real OS
+   pointer renders "resting on" a hovered row. */
+.desk-ctx-cursor {
+  position: absolute;
+  top: -50%;
+  left: 55%;
+  width: clamp(8px, 1.1cqw, 14px);
+  height: clamp(8px, 1.1cqw, 14px);
+  transform: rotate(-8deg);
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.4));
+  pointer-events: none;
 }
 
 .float-shape {

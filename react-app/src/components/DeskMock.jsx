@@ -47,6 +47,42 @@ function WhatsAppFavicon() {
   );
 }
 
+// Decorative right-click-menu detail, staged inside the mock browser's page
+// content (not real UI — aria-hidden, no pointer-events). The cursor glyph
+// nested in the active item is what sells it as "mid-click" rather than a
+// static list.
+const DESK_CTX_ITEMS = ["View", "Focus Mode", "Sort by", "Refresh", "New"];
+
+function CursorIcon() {
+  return (
+    <svg className="desk-ctx-cursor" viewBox="0 0 24 24" aria-hidden="true">
+      <path
+        d="M4 3L4 19L8.2 15.2L11 21L13.5 19.8L10.8 14L17 14Z"
+        fill="#0a0a0a"
+        stroke="#f3ecdc"
+        strokeWidth="1.3"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function DeskCtxMenu() {
+  return (
+    <div className="desk-ctx-menu" aria-hidden="true">
+      {DESK_CTX_ITEMS.map((item) => (
+        <span
+          key={item}
+          className={item === "Focus Mode" ? "desk-ctx-item desk-ctx-item-active" : "desk-ctx-item"}
+        >
+          {item}
+          {item === "Focus Mode" && <CursorIcon />}
+        </span>
+      ))}
+    </div>
+  );
+}
+
 export default function DeskMock() {
   const { t } = useTranslation();
   const mockRef = useRef(null);
@@ -69,6 +105,7 @@ export default function DeskMock() {
   return (
     <div className="desk-mock" ref={mockRef}>
       <img className="desk-img" src={asset("/assets/hero-desk.webp")} alt="" loading="eager" />
+      <div className="desk-stage-glow" aria-hidden="true"></div>
 
       <div className="desk-screen">
         <div className="desk-browserbar" aria-hidden="true">
@@ -121,9 +158,11 @@ export default function DeskMock() {
               {t("hero.cta1", "Get in touch")}
             </a>
             <a href="#work" className="mock-btn mock-btn-line">
-              {t("hero.cta2", "See my work")}
+              {t("hero.cta2", "See our work")}
             </a>
           </div>
+
+          <DeskCtxMenu />
         </div>
       </div>
     </div>

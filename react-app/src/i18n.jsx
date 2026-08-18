@@ -25,7 +25,7 @@ export const translations = {
     "hero.point2": "Fast load times, built to convert",
     "hero.point3": "A site you'll actually be proud to share",
     "hero.cta1": "Get in touch",
-    "hero.cta2": "See my work",
+    "hero.cta2": "See our work",
     "work.title": "Work",
     "work.p1.tag": "Movie & TV picker",
     "work.p1.desc": "A tool for groups who can't agree on what to watch. Spin a wheel, describe a mood, or swipe through picks together. Includes four built-in games, works offline as an installable app, and is available in three languages.",

@@ -1,0 +1,10 @@
+/* Scoped Tailwind import — theme (design tokens) + utilities only.
+   Deliberately skips the "preflight" base layer: that's Tailwind's CSS
+   reset (h1/h2/h3/p/a/etc.), and this project's own style.css already has
+   a hand-tuned base/reset for all of those, applied site-wide. Importing
+   preflight here would silently override that reset the moment any
+   component using Tailwind utility classes mounts, breaking every other
+   section of the site rather than staying scoped to the components that
+   actually opt into Tailwind. */
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
