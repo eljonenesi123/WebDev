@@ -84,7 +84,8 @@ function ResponsiveGroup({
   // heights, not just reasoned about): the robot needs to shrink hard and
   // fast as height drops, with a floor so it never disappears entirely.
   const heightFactor = Math.max(0.42, Math.min(1, (size.height - 580) / 228));
-  const s = Math.min(1.0, viewport.width / 3.5) * heightFactor * scale;
+  const isMobile = viewport.width < 2.5;
+  const s = Math.min(1.0, viewport.width / 3.5) * heightFactor * scale * (isMobile ? 0.82 : 1);
   // On narrow/portrait screens the button row wraps taller relative to the
   // robot's own (already smaller, via `s`) scale than it does on desktop,
   // so the same positionY that clears the buttons on desktop lands the
@@ -93,20 +94,20 @@ function ResponsiveGroup({
   // without needing a resize listener on the DOM side. This is a distinct
   // case from heightFactor above: portrait phones are narrow *and tall*, so
   // heightFactor stays ~1 there and the two adjustments don't fight.
-  const extraDrop = viewport.width < 2.5 ? 0.95 : 0;
+  // Applied *after* the `s` multiplication (not baked into positionY before
+  // it) so a short mobile canvas — where heightFactor has already shrunk
+  // `s` — doesn't also shrink the extra push meant to compensate for that
+  // same shortness. Scaling both by `s` was cancelling the drop out on
+  // exactly the viewports it was meant to fix (verified against the
+  // reported overlap with the CTA row, not just reasoned about).
+  const extraDrop = isMobile ? 1.55 : 0;
   // positionX/positionY are in the same normalized units as the
   // cursor-follow lerp target in RobotPrototype (state.pointer.x *
   // viewport.width/3.5), so an offset here shifts the robot's *idle*
   // resting position off-center while cursor-follow keeps working the same
   // way relative to that new rest point — the robot still tracks the
   // pointer, just around a different anchor instead of true center.
-  // positionY is only multiplied by `s` here, not by heightFactor a second
-  // time — s already has heightFactor baked in, so positionY*heightFactor*s
-  // was squaring the pull-up effect and overshot on the very short cases
-  // (pulled the robot up into the headline instead of settling in the gap
-  // below the subline). A single compounding, via `s` alone, was the right
-  // amount once actually checked against the render.
-  return <group scale={s} position={[positionX * s, (positionY - extraDrop) * s, 0]}>{children}</group>;
+  return <group scale={s} position={[positionX * s, positionY * s - extraDrop, 0]}>{children}</group>;
 }
 
 function GlassCapsule({
@@ -956,12 +957,25 @@ export function RobotHero({
         @media (prefers-reduced-motion: reduce) {
           .hero-rise-in { animation: none; opacity: 1; transform: none; }
         }
+        /* Fixed 100dvh-minus-header height is fine on desktop, where the
+           text block is short relative to the viewport. On phones the
+           headline wraps to 3 lines and eats most of that budget, leaving
+           the robot no room to sit below the CTAs without overlapping them
+           — so below the site's mobile breakpoint the section grows past
+           the viewport instead of the robot being squeezed to fit inside it. */
+        @media (max-width: 760px) {
+          .robot-hero { height: auto !important; min-height: 780px; padding-bottom: 64px; }
+          .hero-content { position: static !important; transform: none !important; min-height: 420px; padding-top: 48px; }
+        }
       `}</style>
       {/* Centered content column — badge, headline, subline, CTAs — sits
           above the robot (z-20 vs the canvas's z-10) so the robot reads as
           peeking out from behind it wherever the two overlap, rather than
-          the text sitting on top of an opaque card. */}
-      <div className="absolute inset-0 z-20 flex flex-col items-center justify-center text-center px-6 pointer-events-none" style={{ transform: "translateY(-6vh)" }}>
+          the text sitting on top of an opaque card. Switches to static/flow
+          positioning on mobile (see the media query above) since the robot
+          there is no longer occupying the same box — it flows in below,
+          inside the section's now-auto height. */}
+      <div className="hero-content absolute inset-0 z-20 flex flex-col items-center justify-center text-center px-6 pointer-events-none" style={{ transform: "translateY(-6vh)" }}>
         {badgeText && (
           <span
             className="hero-rise-in pointer-events-auto rounded-full px-4 py-1.5 font-mono text-xs font-bold tracking-wide mb-6"
