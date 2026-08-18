@@ -954,7 +954,7 @@ export function RobotHero({
            extra top padding instead of raising the base value (which would
            have pushed the already-correct laptop case down too). */
         @media (max-width: 760px) {
-          .robot-hero { padding-top: 6rem; }
+          .robot-hero { padding-top: 7.5rem; padding-bottom: 3rem; }
         }
         @media (min-width: 1600px) {
           .robot-hero { padding-top: 8rem; }

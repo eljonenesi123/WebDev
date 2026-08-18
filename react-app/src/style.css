@@ -1656,8 +1656,13 @@ main, .site-footer {
    would otherwise fight the photo once the site is in dark mode. */
 
 .ctrl-brand {
-  min-height: 100vh;
-  min-height: 100dvh;
+  /* Used to be a full min-height:100dvh screen, matching the hero above it
+     being the same. Now that the hero is sized to its own content instead
+     of forcing a full screen (see robot-hero.tsx), a full-screen section
+     directly after a short one left a large dead gap between the hero's
+     last element and this section's own vertically-centered title —
+     reported on desktop after the hero was shortened. Sized to content
+     instead, consistent with the hero. */
   display: flex;
   flex-direction: column;
   align-items: center;
