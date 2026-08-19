@@ -328,69 +328,14 @@ const ADDONS = [
 
 function Services() {
   const { t } = useTranslation();
-  const [tier, setTier] = useState(0);
 
-  const TIERS = [
-    {
-      tag: t("services.p1.tag", "Landing page"),
-      price: "€100 – 150",
-      desc: t("services.p1.desc", "A single, focused page — for a business, event, or launch. Fast to build, fast to load."),
-      items: [
-        t("services.p1.i1", "Custom design, no templates"),
-        t("services.p1.i2", "Mobile-first, responsive layout"),
-        t("services.p1.i3", "Basic SEO setup"),
-      ],
-      eta: "~3–5 days",
-      example: "https://eljonenesi123.github.io/CV/",
-    },
-    {
-      tag: t("services.p2.tag", "Multi-page business site"),
-      price: "€150+",
-      desc: t("services.p2.desc", "Several pages, a contact form, and content structured the way your visitors actually browse."),
-      items: [
-        t("services.p2.i1", "Everything in Landing page"),
-        t("services.p2.i2", "Contact form & content pages"),
-        t("services.p2.i3", "Multi-language support"),
-      ],
-      eta: "~1–2 weeks",
-      example: "https://eljonenesi123.github.io/TopLevelPerformance/",
-      popular: true,
-    },
-    {
-      tag: t("services.p3.tag", "E-commerce store"),
-      price: "€500+",
-      desc: t("services.p3.desc", "A full online store — product catalog, cart, and checkout — built so customers can browse and buy without friction."),
-      items: [
-        t("services.p3.i1", "Product catalog & cart"),
-        t("services.p3.i2", "Secure checkout & payments"),
-        t("services.p3.i3", "Order & inventory basics"),
-      ],
-      eta: "~2–4 weeks",
-    },
-    {
-      tag: t("services.p4.tag", "Custom web app"),
-      price: "€700+",
-      desc: t("services.p4.desc", "Booking systems, calculators, dashboards — anything interactive beyond a static page."),
-      items: [
-        t("services.p4.i1", "Frontend + backend as needed"),
-        t("services.p4.i2", "API integrations"),
-        t("services.p4.i3", "Scoped after a short call"),
-      ],
-      eta: "~3–6 weeks",
-    },
-    {
-      tag: t("services.p5.tag", "Redesign existing site"),
-      price: "€150+",
-      desc: t("services.p5.desc", "A rebuild of a site you already have — same content, modern design and performance, or a fresh direction entirely."),
-      items: [
-        t("services.p5.i1", "Audit of your current site"),
-        t("services.p5.i2", "Modern design & faster load times"),
-        t("services.p5.i3", "Content migrated for you"),
-      ],
-      eta: "~1–2 weeks",
-    },
+  const DESIGN_TIERS = [
+    { label: "services.p1.tag", fallback: "Landing page", price: "€100 – 150" },
+    { label: "services.p2.tag", fallback: "Multi-page business site", price: "€150+" },
+    { label: "services.p3.tag", fallback: "E-commerce store", price: "€500+" },
+    { label: "services.p4.tag", fallback: "Custom web app", price: "€700+" },
+    { label: "services.p5.tag", fallback: "Redesign existing site", price: "€150+" },
   ];
-  const current = TIERS[tier];
 
   return (
     <section className="services" id="services">
@@ -398,103 +343,74 @@ function Services() {
       <p className="services-sub">{t("services.sub", "Prices vary by scope. This is a starting point.")}</p>
 
       <div className="services-layout">
-        <div className="services-pricing">
-          <div className="tier-toggle" role="tablist">
-            {TIERS.map((tr, i) => (
-              <button
-                key={tr.tag}
-                type="button"
-                role="tab"
-                aria-selected={tier === i}
-                className={"tier-toggle-btn" + (tier === i ? " is-active" : "")}
-                onClick={() => setTier(i)}
-              >
-                {tr.tag}
-              </button>
-            ))}
+        <div className="pricing-card">
+          <div className="pricing-groups">
+            <div className="pricing-col">
+              <div className="pricing-group">
+                <h3 className="pricing-group-title">{t("services.designBuild", "Design and build")}</h3>
+                <ul className="pricing-rows">
+                  {DESIGN_TIERS.map((item) => (
+                    <li key={item.label}>
+                      <span>{t(item.label, item.fallback)}</span>
+                      <span>{item.price}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            <div className="pricing-col">
+              <div className="pricing-group">
+                <h3 className="pricing-group-title">{t("services.maintenance.title", "Maintenance (monthly)")}</h3>
+                <ul className="pricing-rows">
+                  {MAINTENANCE_PLANS.map((item) => (
+                    <li key={item.label}>
+                      <span>{t(item.label, item.fallback)}</span>
+                      <span>{item.price}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="pricing-group">
+                <h3 className="pricing-group-title">{t("services.addons.title", "Add-ons")}</h3>
+                <ul className="pricing-rows">
+                  {ADDONS.map((item) => (
+                    <li key={item.label}>
+                      <span>{t(item.label, item.fallback)}</span>
+                      <span>{item.price}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="pricing-group">
+                <h3 className="pricing-group-title">{t("services.payment.title", "Payment terms")}</h3>
+                <ul className="pricing-rows">
+                  <li>
+                    <span>{t("services.payment.deposit", "Deposit")}</span>
+                    <span>{t("services.payment.depositValue", "50% upfront, 50% on delivery")}</span>
+                  </li>
+                  <li>
+                    <span>{t("services.payment.maintenance", "Maintenance")}</span>
+                    <span>{t("services.payment.maintenanceValue", "paid upfront, monthly")}</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
           </div>
 
-          <div className={"price-card-single" + (current.popular ? " price-card-featured" : "")}>
-            {current.popular && <span className="price-badge">Popular</span>}
-            <div key={tier} className="price-fade">
-              <p className="price-from">{t("services.startingAt", "Starting at")}</p>
-              <p className="price-amount">{current.price}</p>
-              <p className="price-desc">{current.desc}</p>
-              <ul className="price-list">
-                {current.items.map((it) => (
-                  <li key={it}>{it}</li>
-                ))}
-              </ul>
-              <p className="price-eta">{current.eta}</p>
-            </div>
+          <div className="pricing-cta-row">
             <a
               href="#contact"
-              className="btn-primary price-cta"
-              onClick={() => trackEvent("quote_click", { tier: current.tag })}
+              className="btn-primary"
+              onClick={() => trackEvent("quote_click", { tier: "services_table" })}
             >
               {t("services.cta", "Get a quote")}
             </a>
-            {current.example && (
-              <a href={current.example} target="_blank" rel="noopener" className="price-example-link">
-                {t("services.example", "See an example ↗")}
-              </a>
-            )}
-          </div>
-
-          <div className="services-annotation" aria-hidden="true">
-            <svg className="services-annotation-arrow" viewBox="0 0 200 130">
-              <filter id="pencilRoughSvc" x="-30%" y="-30%" width="160%" height="160%">
-                <feTurbulence type="fractalNoise" baseFrequency="0.025 0.06" numOctaves="2" seed="4" result="n" />
-                <feDisplacementMap in="SourceGraphic" in2="n" scale="6" />
-              </filter>
-              <g fill="none" stroke="#000" strokeLinecap="round" filter="url(#pencilRoughSvc)">
-                <path d="M182,12 C144,4 76,18 33,66 C19,81 13,92 10,105" strokeWidth="3.4" />
-                <path d="M180,18 C142,12 78,26 36,70 C23,84 17,94 13,106" strokeWidth="1.6" opacity="0.55" />
-              </g>
-              <path
-                d="M0,84 C7,93 12,104 15,118 C21,109 30,100 40,95 C27,93 12,89 0,84 Z"
-                fill="#000"
-                filter="url(#pencilRoughSvc)"
-              />
-            </svg>
-            <p className="sketch-text services-annotation-text">
-              Try switching
-              <br />
-              <strong>the tiers →</strong>
-            </p>
+            <a href="#work" className="pricing-examples-link">
+              {t("services.seeWork", "See examples of our work ↗")}
+            </a>
           </div>
         </div>
-
-        <div className="services-extra">
-          <div className="services-extra-col">
-            <h3 className="services-extra-title">{t("services.maintenance.title", "Maintenance (monthly)")}</h3>
-            <ul className="services-extra-list">
-              {MAINTENANCE_PLANS.map((item) => (
-                <li key={item.label}>
-                  <span>{t(item.label, item.fallback)}</span>
-                  <span>{item.price}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="services-extra-col">
-            <h3 className="services-extra-title">{t("services.addons.title", "Add-ons")}</h3>
-            <ul className="services-extra-list">
-              {ADDONS.map((item) => (
-                <li key={item.label}>
-                  <span>{t(item.label, item.fallback)}</span>
-                  <span>{item.price}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-
-        <p className="services-payment-terms">
-          <strong>{t("services.payment.title", "Payment terms")}:</strong>{" "}
-          {t("services.payment.deposit", "Deposit")} — {t("services.payment.depositValue", "50% upfront, 50% on delivery")}.{" "}
-          {t("services.payment.maintenance", "Maintenance")} — {t("services.payment.maintenanceValue", "paid upfront, monthly")}.
-        </p>
       </div>
     </section>
   );
@@ -825,7 +741,7 @@ export default function App() {
       }
 
       revealGroup(".skill-item", { stagger: 0.06 });
-      revealGroup(".tier-toggle, .price-card-single", { stagger: 0.12 });
+      revealGroup(".pricing-card", { stagger: 0.12 });
       revealGroup(".process-step", { stagger: 0.1 });
 
       gsap.utils.toArray(".section-title").forEach((el) => {
@@ -845,7 +761,7 @@ export default function App() {
       document
         .querySelectorAll(".robot-hero, .why-stats, .work, .skills, .services, .process, .estimator-section, .globe-section, .faq, .contact")
         .forEach((section) => {
-          const inner = section.querySelector(".stats-grid, .work-grid, .price-card-single, .process-list, .contact-grid");
+          const inner = section.querySelector(".stats-grid, .work-grid, .pricing-card, .process-list, .contact-grid");
           if (!inner) return;
           gsap.fromTo(
             inner,

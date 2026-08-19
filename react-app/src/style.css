@@ -2391,228 +2391,101 @@ main, .site-footer {
 .services-sub { max-width: 560px; margin: 0 auto 2.5rem; text-align: center; }
 
 .services-layout { width: 100%; }
-.services-pricing { position: relative; width: 100%; max-width: 600px; margin: 0 auto; }
 
-.services-annotation {
-  position: absolute;
-  left: 100%;
-  top: 3.4rem;
-  margin-left: 2rem;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  width: 180px;
-  color: var(--text);
-}
-.services-annotation-arrow { width: 110px; height: 70px; margin-bottom: 0.3rem; }
-.services-annotation-text { color: inherit; font-size: 1.15rem; line-height: 1.35; }
-.services-annotation-text strong { color: var(--text); font-weight: 400; }
-
-@media (max-width: 900px) {
-  .services-annotation { display: none; }
-}
-
-/* Segmented toggle switching which tier the single card below shows. Five
-   tiers of very different label lengths ("Landing page" vs "Redesign
-   existing site") don't fit the old two-tab sliding-thumb technique (a
-   single element whose width/position assumed exactly two equal-width
-   tabs) — wraps instead, with each button carrying its own active
-   background rather than one shared element chasing an active index. */
-.tier-toggle {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 1.1rem;
-  padding: 0.4rem;
-  margin-bottom: 1.8rem;
+/* One compact card holding the whole price sheet — replaced an earlier
+   interactive tier-toggle + single big price card (one tier visible at a
+   time, with a separate two-column extras block and its own annotation
+   arrow below) that read as too much vertical real estate for what's
+   fundamentally a short reference list. Everything now fits in one
+   two-column scan: build tiers on the left (the longer list), maintenance
+   + add-ons + payment stacked on the right (three short ones), so the
+   whole card's height is set by the taller side, not the sum of both. */
+.pricing-card {
   width: 100%;
-}
-.tier-toggle-btn {
-  flex: 1 1 auto;
-  padding: 0.65rem 0.9rem;
-  border: none;
-  background: transparent;
-  font-family: var(--mono);
-  font-size: 0.82rem;
-  color: var(--text-dim);
-  cursor: pointer;
-  border-radius: 0.7rem;
-  transition: color 0.2s ease, background 0.2s ease;
-  white-space: nowrap;
-}
-.tier-toggle-btn:hover { color: var(--text); }
-.tier-toggle-btn.is-active { color: var(--bg); background: var(--accent); }
-
-.price-card-single {
-  position: relative;
-  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
   border: 1px solid var(--line);
   border-radius: 10px;
-  padding: 2.6rem 2.4rem;
+  padding: 2rem 2.2rem;
   background: var(--surface);
-  transition: border-color 0.3s ease;
-}
-.price-card-single.price-card-featured { border-color: var(--accent); }
-
-.price-badge {
-  position: absolute;
-  top: -0.65rem;
-  right: 1.4rem;
-  font-family: var(--mono);
-  font-size: 0.65rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--bg);
-  background: var(--accent);
-  padding: 0.25rem 0.55rem;
-  border-radius: 3px;
 }
 
-@keyframes tierFadeIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.price-fade { animation: tierFadeIn 0.35s ease both; }
-
-.price-amount {
-  font-family: var(--mono);
-  font-size: clamp(2rem, 5.5vw, 3rem);
-  font-weight: 700;
-  color: var(--text);
-  margin-bottom: 1rem;
-}
-.price-desc { margin-bottom: 1.3rem; font-size: 1.02rem; }
-
-.price-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.65rem;
-}
-.price-list li {
-  font-family: var(--mono);
-  font-size: 0.85rem;
-  color: var(--text-dim);
-  padding-left: 1.1rem;
-  position: relative;
-}
-.price-list li::before {
-  content: "✓";
-  position: absolute;
-  left: 0;
-  color: #7ec98f;
-  font-weight: 700;
-}
-
-.price-from {
-  font-family: var(--mono);
-  font-size: 0.7rem;
-  color: var(--text-dim);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-bottom: 0.3rem;
-}
-
-.price-eta {
-  font-family: var(--mono);
-  font-size: 0.75rem;
-  color: var(--text-dim);
-  margin-top: 1.1rem;
-  padding-top: 1.1rem;
-  border-top: 1px solid var(--line);
-}
-
-.price-cta {
-  display: block;
-  margin-top: 1rem;
-  text-align: center;
-}
-
-.price-example-link {
-  display: block;
-  margin-top: 0.7rem;
-  font-family: var(--mono);
-  font-size: 0.78rem;
-  color: var(--text-dim);
-  text-align: center;
-}
-.price-example-link:hover { color: var(--accent); }
-
-/* Maintenance plans + add-ons, below the main tier card — a plain two-
-   column list rather than another card-with-toggle, since these are flat
-   add-ons rather than mutually-exclusive tiers a visitor picks between. */
-.services-extra {
+.pricing-groups {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.6rem 2.4rem;
-  width: 100%;
-  max-width: 600px;
-  margin: 2rem auto 0;
-  text-align: left;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.8rem 2.6rem;
 }
-.services-extra-title {
+
+.pricing-col {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.pricing-group-title {
   font-family: var(--sans);
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   font-weight: 700;
   color: var(--text);
-  margin: 0 0 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin: 0 0 0.7rem;
 }
-.services-extra-list {
+
+.pricing-rows {
   list-style: none;
   padding: 0;
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
+  gap: 0.5rem;
 }
-.services-extra-list li {
+.pricing-rows li {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   gap: 0.8rem;
   font-family: var(--mono);
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   color: var(--text-dim);
   border-bottom: 1px dotted var(--line);
-  padding-bottom: 0.5rem;
+  padding-bottom: 0.45rem;
 }
-.services-extra-list li span:last-child {
+.pricing-rows li span:first-child { line-height: 1.3; }
+.pricing-rows li span:last-child {
   color: var(--text);
   font-weight: 600;
   white-space: nowrap;
 }
 
-.services-payment-terms {
-  width: 100%;
-  max-width: 600px;
-  margin: 1.6rem auto 0;
-  padding-top: 1.2rem;
+.pricing-cta-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.4rem;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+  padding-top: 1.6rem;
   border-top: 1px solid var(--line);
-  font-family: var(--mono);
-  font-size: 0.8rem;
-  color: var(--text-dim);
-  text-align: left;
 }
-.services-payment-terms strong { color: var(--text); }
+.pricing-examples-link {
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  color: var(--text-dim);
+}
+.pricing-examples-link:hover { color: var(--accent); }
 
-@media (max-width: 560px) {
-  .services-extra { grid-template-columns: 1fr; gap: 1.4rem; }
+@media (max-width: 700px) {
+  .pricing-card { padding: 1.6rem 1.4rem; }
+  .pricing-groups { grid-template-columns: 1fr; gap: 1.6rem; }
 }
 
 @media (max-height: 900px) and (min-width: 901px) {
-  .service-list { gap: 1.4rem 2.5rem; }
   .services-sub { margin-bottom: 1.4rem; }
-  .price-card-single { padding: 1.5rem 2rem; }
-  .price-amount { font-size: 2.4rem; margin-bottom: 0.5rem; }
-  .price-desc { margin-bottom: 0.7rem; }
-  .price-list { gap: 0.4rem; }
-  .price-eta { margin-top: 0.6rem; padding-top: 0.6rem; }
-  .price-cta { margin-top: 0.6rem; }
-  .price-example-link { margin-top: 0.4rem; }
+  .pricing-card { padding: 1.4rem 1.8rem; }
+  .pricing-groups { gap: 1.2rem 2rem; }
+  .pricing-col { gap: 1rem; }
+  .pricing-cta-row { margin-top: 1.2rem; padding-top: 1rem; }
 }
 
 .estimator-section { text-align: center; }
@@ -3256,7 +3129,7 @@ main, .site-footer {
      still centers the hook+visual pair as a whole within the viewport. */
   .hero-visual { flex: none; justify-content: flex-start; }
   .service-list { grid-template-columns: 1fr; gap: 2rem; }
-  .tier-toggle, .price-card-single { max-width: 100%; }
+  .pricing-card { max-width: 100%; }
   .topbar { padding: 1.2rem 6vw; }
   .lang-switch { gap: 0.4rem; }
 
