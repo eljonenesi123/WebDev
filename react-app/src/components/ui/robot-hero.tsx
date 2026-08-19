@@ -771,7 +771,7 @@ function RobotPrototype({
 
 export interface RobotHeroProps {
   badgeText?: string;
-  headline?: string;
+  headline?: React.ReactNode;
   subline?: string;
   primaryCta?: { label: string; href: string };
   secondaryCta?: { label: string; href: string };
@@ -855,7 +855,7 @@ function RobotSpeechBubble({ stage }: { stage: AssistantStage }) {
 
 export function RobotHero({
   badgeText,
-  headline = "We build websites that actually work.",
+  headline = "Bridging Ideas, Building Websites",
   subline = "Design, build, and support after launch.",
   primaryCta = { label: "Get in touch", href: "#contact" },
   secondaryCta = { label: "See our work", href: "#work" },
@@ -1046,10 +1046,10 @@ export function RobotHero({
           </span>
         )}
         <h2
-          className="hero-rise-in font-sans font-black max-w-4xl relative"
+          className="hero-rise-in font-sans font-black max-w-4xl lg:max-w-none lg:whitespace-nowrap relative"
           style={{
             color: "var(--text)",
-            fontSize: "clamp(2.8rem, 7vw, 5.2rem)",
+            fontSize: "clamp(2.8rem, 6vw, 4.4rem)",
             lineHeight: 1.02,
             letterSpacing: "-0.025em",
             // Soft halo in the page's own background color, not a literal

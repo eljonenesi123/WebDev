@@ -74,10 +74,13 @@ function LoadingSplash() {
 }
 
 // --- Topbar: brand, desktop nav, language switch, mobile menu toggle+panel. ---
+const NAV_SECTION_IDS = ["work", "skills", "process", "services", "faq", "contact"];
+
 function Header({ lang, setLang, menuOpen, setMenuOpen, theme, setTheme }) {
   const { t } = useTranslation();
   const panelRef = useRef(null);
   const toggleRef = useRef(null);
+  const [activeSection, setActiveSection] = useState(null);
 
   useEffect(() => {
     function onDocClick(e) {
@@ -97,6 +100,23 @@ function Header({ lang, setLang, menuOpen, setMenuOpen, theme, setTheme }) {
     };
   }, [menuOpen, setMenuOpen]);
 
+  useEffect(() => {
+    const sections = NAV_SECTION_IDS.map((id) => document.getElementById(id)).filter(Boolean);
+    if (!sections.length) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.filter((e) => e.isIntersecting);
+        if (visible.length) {
+          visible.sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+          setActiveSection(visible[0].target.id);
+        }
+      },
+      { rootMargin: "-45% 0px -45% 0px", threshold: [0, 0.25, 0.5, 0.75, 1] }
+    );
+    sections.forEach((s) => observer.observe(s));
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <header className="topbar">
       <a href="#top" className="brand">
@@ -105,12 +125,12 @@ function Header({ lang, setLang, menuOpen, setMenuOpen, theme, setTheme }) {
       </a>
 
       <nav className="topnav">
-        <a href="#work">{t("nav.work", "Work")}</a>
-        <a href="#skills">{t("nav.skills", "Skills")}</a>
-        <a href="#process">{t("nav.process", "Process")}</a>
-        <a href="#services">{t("nav.services", "Services")}</a>
-        <a href="#faq">{t("nav.faq", "FAQ")}</a>
-        <a href="#contact">{t("nav.contact", "Contact")}</a>
+        <a href="#work" className={activeSection === "work" ? "active" : ""}>{t("nav.work", "Work")}</a>
+        <a href="#skills" className={activeSection === "skills" ? "active" : ""}>{t("nav.skills", "Skills")}</a>
+        <a href="#process" className={activeSection === "process" ? "active" : ""}>{t("nav.process", "Process")}</a>
+        <a href="#services" className={activeSection === "services" ? "active" : ""}>{t("nav.services", "Services")}</a>
+        <a href="#faq" className={activeSection === "faq" ? "active" : ""}>{t("nav.faq", "FAQ")}</a>
+        <a href="#contact" className={activeSection === "contact" ? "active" : ""}>{t("nav.contact", "Contact")}</a>
       </nav>
 
       <div className="topbar-right">
@@ -572,11 +592,12 @@ export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const { visible: cookieVisible, accept, decline, openSettings } = useCookieConsent();
 
-  // Always light on a first visit — the visitor opts into dark via the
-  // toggle rather than the site following their OS-level preference.
+  // Always dark on a first visit (matches index.html's pre-paint script) —
+  // the visitor opts into light via the toggle rather than the site
+  // following their OS-level preference.
   const [theme, setTheme] = useState(() => {
     const saved = localStorage.getItem("theme");
-    return saved === "dark" ? "dark" : "light";
+    return saved === "light" ? "light" : "dark";
   });
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
@@ -779,7 +800,7 @@ export default function App() {
         <RobotHero
           key={lang}
           badgeText={t("hero.badge", "Take your brand to the next level")}
-          headline={t("hero.headline", "We build websites that actually work.")}
+          headline={<>{t("hero.headlinePart1", "Bridging Ideas,")} <span style={{ color: "var(--accent)" }}>{t("hero.headlinePart2", "Building Websites")}</span></>}
           subline={t("hero.subline", "Design, build, and support after launch.")}
           primaryCta={{ label: t("hero.cta1", "Get in touch"), href: "#contact" }}
           secondaryCta={{ label: t("hero.cta2", "See our work"), href: "#work" }}

@@ -305,14 +305,32 @@ main { padding-top: var(--header-h); }
 
 .topnav { display: flex; gap: 1.8rem; }
 .topnav a {
+  position: relative;
   font-family: var(--sans);
   font-size: 0.88rem;
   font-weight: 700;
   letter-spacing: -0.01em;
   color: var(--text-dim);
+  padding-bottom: 0.3rem;
   transition: color 0.15s ease;
 }
+.topnav a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.2s ease;
+}
 .topnav a:hover { color: var(--accent); }
+.topnav a:hover::after { transform: scaleX(1); }
+.topnav a.active { color: var(--text); }
+.topnav a.active::after { transform: scaleX(1); }
 @media (max-width: 1000px) {
   .topnav { display: none; }
 }
