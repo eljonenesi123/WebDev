@@ -328,6 +328,7 @@ const ADDONS = [
 
 function Services() {
   const { t } = useTranslation();
+  const [group, setGroup] = useState(0);
 
   const DESIGN_TIERS = [
     { label: "services.p1.tag", fallback: "Landing page", price: "€100 – 150" },
@@ -337,6 +338,22 @@ function Services() {
     { label: "services.p5.tag", fallback: "Redesign existing site", price: "€150+" },
   ];
 
+  const PAYMENT_TERMS = [
+    { label: "services.payment.deposit", fallback: "Deposit", valueLabel: "services.payment.depositValue", valueFallback: "50% upfront, 50% on delivery" },
+    { label: "services.payment.maintenance", fallback: "Maintenance", valueLabel: "services.payment.maintenanceValue", valueFallback: "paid upfront, monthly" },
+  ];
+
+  const GROUPS = [
+    { title: t("services.designBuild", "Design and build"), rows: DESIGN_TIERS },
+    { title: t("services.maintenance.title", "Maintenance (monthly)"), rows: MAINTENANCE_PLANS },
+    { title: t("services.addons.title", "Add-ons"), rows: ADDONS },
+    {
+      title: t("services.payment.title", "Payment terms"),
+      rows: PAYMENT_TERMS.map((item) => ({ label: item.label, fallback: item.fallback, price: t(item.valueLabel, item.valueFallback) })),
+    },
+  ];
+  const current = GROUPS[group];
+
   return (
     <section className="services" id="services">
       <h2 className="section-title">{t("services.title", "Services")}</h2>
@@ -344,58 +361,30 @@ function Services() {
 
       <div className="services-layout">
         <div className="pricing-card">
-          <div className="pricing-groups">
-            <div className="pricing-col">
-              <div className="pricing-group">
-                <h3 className="pricing-group-title">{t("services.designBuild", "Design and build")}</h3>
-                <ul className="pricing-rows">
-                  {DESIGN_TIERS.map((item) => (
-                    <li key={item.label}>
-                      <span>{t(item.label, item.fallback)}</span>
-                      <span>{item.price}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
+          <div className="pricing-group-toggle" role="tablist">
+            {GROUPS.map((g, i) => (
+              <button
+                key={g.title}
+                type="button"
+                role="tab"
+                aria-selected={group === i}
+                className={"pricing-group-btn" + (group === i ? " is-active" : "")}
+                onClick={() => setGroup(i)}
+              >
+                {g.title}
+              </button>
+            ))}
+          </div>
 
-            <div className="pricing-col">
-              <div className="pricing-group">
-                <h3 className="pricing-group-title">{t("services.maintenance.title", "Maintenance (monthly)")}</h3>
-                <ul className="pricing-rows">
-                  {MAINTENANCE_PLANS.map((item) => (
-                    <li key={item.label}>
-                      <span>{t(item.label, item.fallback)}</span>
-                      <span>{item.price}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className="pricing-group">
-                <h3 className="pricing-group-title">{t("services.addons.title", "Add-ons")}</h3>
-                <ul className="pricing-rows">
-                  {ADDONS.map((item) => (
-                    <li key={item.label}>
-                      <span>{t(item.label, item.fallback)}</span>
-                      <span>{item.price}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className="pricing-group">
-                <h3 className="pricing-group-title">{t("services.payment.title", "Payment terms")}</h3>
-                <ul className="pricing-rows">
-                  <li>
-                    <span>{t("services.payment.deposit", "Deposit")}</span>
-                    <span>{t("services.payment.depositValue", "50% upfront, 50% on delivery")}</span>
-                  </li>
-                  <li>
-                    <span>{t("services.payment.maintenance", "Maintenance")}</span>
-                    <span>{t("services.payment.maintenanceValue", "paid upfront, monthly")}</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
+          <div key={group} className="pricing-group">
+            <ul className="pricing-rows">
+              {current.rows.map((item) => (
+                <li key={item.label}>
+                  <span>{t(item.label, item.fallback)}</span>
+                  <span>{item.price}</span>
+                </li>
+              ))}
+            </ul>
           </div>
 
           <div className="pricing-cta-row">
