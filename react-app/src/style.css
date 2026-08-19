@@ -1687,168 +1687,39 @@ main, .site-footer {
 .ctrl-brand-bold { color: var(--text); }
 .ctrl-brand-light { color: var(--text-dim); font-weight: 500; }
 
-/* The key is a real cropped photo (its own 3D-rendered asset); the
-   figures are a hand-built SVG walk-cycle instead (see Walker below), so
-   this box just needs to give both a sensible shared layout, not
-   reproduce exact source-photo pixel coordinates the way it used to. */
-.ctrl-key-stage {
-  position: relative;
-  width: min(78vw, 460px);
-  aspect-ratio: 580 / 370;
-}
-
-/* Outer: slow "walk toward the key, fade out, snap back, fade in" loop —
-   moves the whole SVG group (all three walkers) together. */
-.ctrl-key-figures-drift {
-  position: absolute;
-  left: 66%;
-  top: 30%;
-  width: 46%;
-  pointer-events: none;
-  animation: ctrlFiguresDrift 6s ease-in-out infinite;
-}
-@keyframes ctrlFiguresDrift {
-  0% { transform: translateX(0); opacity: 1; }
-  62% { transform: translateX(-9%); opacity: 1; }
-  72% { opacity: 0; }
-  74% { transform: translateX(0); opacity: 0; }
-  86% { opacity: 1; }
-  100% { transform: translateX(0); opacity: 1; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .ctrl-key-figures-drift { animation: none; }
-}
-
-/* Three independent real Lottie walk-cycle instances (see CtrlBrand.jsx),
-   arranged in the same loose triangular cluster the original photo's
-   three figures used — front one closer to the key/lower, back two
-   staggered behind. Each is a plain sized box; lottie-web renders its own
-   SVG into it at runtime. */
-.ctrl-lottie-walkers {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  /* The source walk-cycle faces right; the key sits to the left of this
-     cluster and the drift loop moves it further left, so the whole group
-     is mirrored to face the direction it's actually walking. */
-  transform: scaleX(-1);
-}
-.ctrl-lottie-walker {
-  position: absolute;
-  width: 50%;
-  aspect-ratio: 1 / 1;
-}
-.ctrl-lottie-walker-1 { left: 2%; top: 4%; }
-.ctrl-lottie-walker-2 { left: 46%; top: 0%; }
-.ctrl-lottie-walker-3 { left: 24%; top: 34%; width: 54%; }
-
-.ctrl-key-pulse {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 59.6%;
-  /* Without its own stacking context, this button's z-index:-1 glow child
-     (below) isn't contained to painting behind just the key image — it
-     escapes to the nearest ancestor stacking context instead, where it can
-     land behind/interleave with unrelated layers (the page's ambient
-     background circles) instead of staying scoped to this button, reading
-     as a stray edge near whichever one it lines up with. isolation:isolate
-     forces a stacking context here so the glow only ever paints within
-     this button's own layer. */
-  isolation: isolate;
+/* The photo's black backdrop is cut to transparent (see CtrlBrand.jsx —
+   ctrl-hand-cutout.png), so the hand/keys float directly on the section's
+   own background in both themes. Just a plain, unstyled button wrapping
+   the image; drop-shadow (not box-shadow, since the button's own box no
+   longer has a filled background to cast a shadow from) grounds it. */
+.ctrl-hand-card {
+  display: block;
+  width: min(70vw, 360px);
   border: none;
   background: none;
   padding: 0;
   cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-  animation: ctrlKeyPulse 2.8s ease-in-out infinite;
+  filter: drop-shadow(0 18px 26px rgba(0, 0, 0, 0.25));
+  transition: transform 0.3s ease, filter 0.3s ease;
 }
-@keyframes ctrlKeyPulse {
-  0%, 100% { transform: scale(1); filter: drop-shadow(0 18px 26px rgba(0, 0, 0, 0.22)); }
-  50% { transform: scale(1.035); filter: drop-shadow(0 26px 38px rgba(0, 0, 0, 0.3)); }
+.ctrl-hand-card:hover {
+  transform: translateY(-4px);
+  filter: drop-shadow(0 24px 34px rgba(0, 0, 0, 0.3));
 }
-/* Light mode's shadow reads fine on the section's light bg but a black
-   key on a near-black dark-mode page needs its own stronger grounding
-   shadow plus a faint light rim so the silhouette itself stays legible —
-   same animation, just a dark-mode-only keyframes swap. */
-:root[data-theme="dark"] .ctrl-key-pulse {
-  animation-name: ctrlKeyPulseDark;
+:root[data-theme="dark"] .ctrl-hand-card {
+  filter: drop-shadow(0 18px 30px rgba(0, 0, 0, 0.6));
 }
-@keyframes ctrlKeyPulseDark {
-  0%, 100% {
-    transform: scale(1);
-    filter: drop-shadow(0 22px 34px rgba(0, 0, 0, 0.55)) drop-shadow(0 0 0 1px rgba(255, 255, 255, 0.12));
-  }
-  50% {
-    transform: scale(1.035);
-    filter: drop-shadow(0 30px 46px rgba(0, 0, 0, 0.65)) drop-shadow(0 0 8px rgba(255, 255, 255, 0.18));
-  }
+:root[data-theme="dark"] .ctrl-hand-card:hover {
+  filter: drop-shadow(0 24px 38px rgba(0, 0, 0, 0.65));
 }
-@media (prefers-reduced-motion: reduce) {
-  .ctrl-key-pulse { animation: none; }
-}
-
-/* "Press me" glow — a soft warm ring pulsing behind the key, offset from
-   the key's own scale pulse so the two read as independent layers rather
-   than one flat breathing motion. Sits behind the key image via z-index,
-   inside the same button so it's centered on it automatically. */
-.ctrl-key-glow {
-  position: absolute;
-  left: 46%;
-  top: 42%;
-  width: 115%;
-  /* Forced to a true 1:1 box instead of a second "115%" percentage (which
-     resolved against the key button's own auto height and rarely matched
-     its width) — border-radius:50% on a non-square box clips to an
-     ellipse, and closest-side then sizes the gradient off the shorter
-     axis, so the longer axis got cut off by that ellipse before the
-     gradient had faded out: the hard-edged halo in dark mode. A true
-     circle plus a bigger blur removes that edge entirely. */
-  aspect-ratio: 1 / 1;
-  transform: translate(-50%, -50%) scale(0.85);
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(224, 164, 110, 0.55) 0%, rgba(224, 164, 110, 0) 65%);
-  filter: blur(22px);
-  z-index: -1;
-  opacity: 0.55;
-  animation: ctrlGlowPulse 2.8s ease-in-out infinite;
-  pointer-events: none;
-}
-:root[data-theme="dark"] .ctrl-key-glow {
-  /* Same shape, softened further against the near-black section bg where
-     any hard edge reads much more strongly than it does on the light
-     surface. */
-  background: radial-gradient(circle, rgba(224, 164, 110, 0.4) 0%, rgba(224, 164, 110, 0) 60%);
-  filter: blur(28px);
-  opacity: 0.5;
-}
-@keyframes ctrlGlowPulse {
-  0%, 100% { transform: translate(-50%, -50%) scale(0.85); opacity: 0.45; }
-  50% { transform: translate(-50%, -50%) scale(1.15); opacity: 0.85; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .ctrl-key-glow { animation: none; }
-}
-
-/* Split onto its own inner element for the same reason .skill-item and
-   .work-slide-text split entrance-vs-interaction transforms elsewhere in
-   this file — an animation's transform on an element permanently wins
-   over a plain transition on that same element, even mid-cycle, so the
-   press needs a separate element from the one already running the idle
-   pulse keyframe. */
-.ctrl-key-press {
-  display: block;
-  transition: transform 0.15s ease;
-}
-.ctrl-key-press.is-pressed {
-  transform: scale(0.88) translateY(6%);
-}
-
-.ctrl-key-img {
+.ctrl-hand-img {
   display: block;
   width: 100%;
   height: auto;
   -webkit-user-drag: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ctrl-hand-card { transition: none; }
 }
 
 .ctrl-brand-sub {
@@ -1867,7 +1738,7 @@ main, .site-footer {
      whole viewport height has scrolled past, which reads as a dead gap
      rather than the next section starting. Sized to content instead. */
   .ctrl-brand { gap: 2rem; padding: 2.5rem 8vw; min-height: auto; }
-  .ctrl-key-stage { width: min(82vw, 340px); }
+  .ctrl-hand-card { width: min(85vw, 300px); }
 }
 
 /* ---------- WHY THIS MATTERS (stat cards) ---------- */
