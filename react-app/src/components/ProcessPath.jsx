@@ -7,8 +7,8 @@ import { useTranslation } from "../i18n";
 // through to the next section normally. Same behavior on mobile.
 const STEPS = [
   { h: "process.s1.h", hd: "Brief", p: "process.s1.p", pd: "You tell me what you need and who it's for. I ask questions until the scope, pages, and features are clear, then send you a fixed quote before anything starts.", side: "left" },
-  { h: "process.s2.h", hd: "Domain & hosting", p: "process.s2.p", pd: "You purchase your own domain name (I'll point you to a registrar and help pick one if needed) — this keeps it fully in your name and under your control. I handle connecting it to the finished site.", side: "right" },
-  { h: "process.s3.h", hd: "Build", p: "process.s3.p", pd: "I build it, and you see progress along the way — not just a reveal at the end.", side: "left" },
+  { h: "process.s2.h", hd: "Domain & hosting", p: "process.s2.p", pd: "You purchase your own domain name. I'll point you to a registrar and help pick one if needed, so it stays fully in your name and under your control. I handle connecting it to the finished site.", side: "right" },
+  { h: "process.s3.h", hd: "Build", p: "process.s3.p", pd: "I build it, and you see progress along the way instead of just a reveal at the end.", side: "left" },
   { h: "process.s4.h", hd: "Launch", p: "process.s4.p", pd: "Your site goes live on your domain. I stay reachable after launch for fixes and small changes.", side: "right" },
 ];
 const TOTAL = STEPS.length;
@@ -134,8 +134,8 @@ export default function ProcessPath() {
       <div className="process-path">
         <svg className="process-path-svg" viewBox="0 0 300 900" preserveAspectRatio="none" aria-hidden="true">
           <filter id="pencilRough" x="-50%" y="-5%" width="200%" height="110%">
-            <feTurbulence type="fractalNoise" baseFrequency="0.014 0.03" numOctaves="2" seed="7" result="n" />
-            <feDisplacementMap in="SourceGraphic" in2="n" scale="7" />
+            <feTurbulence type="fractalNoise" baseFrequency="0.025 0.06" numOctaves="2" seed="7" result="n" />
+            <feDisplacementMap in="SourceGraphic" in2="n" scale="4" />
           </filter>
           <path
             className="process-path-ghost"
@@ -161,8 +161,8 @@ export default function ProcessPath() {
         </svg>
         <svg className="process-path-svg-mobile" viewBox="0 0 40 1000" preserveAspectRatio="none" aria-hidden="true">
           <filter id="pencilRoughV" filterUnits="userSpaceOnUse" x="-20" y="-10" width="80" height="1020">
-            <feTurbulence type="fractalNoise" baseFrequency="0.014 0.03" numOctaves="2" seed="7" result="n" />
-            <feDisplacementMap in="SourceGraphic" in2="n" scale="7" />
+            <feTurbulence type="fractalNoise" baseFrequency="0.025 0.06" numOctaves="2" seed="7" result="n" />
+            <feDisplacementMap in="SourceGraphic" in2="n" scale="4" />
           </filter>
           <path className="process-path-ghost" d="M20,10 L20,990" />
           <path

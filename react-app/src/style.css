@@ -2705,7 +2705,7 @@ main, .site-footer {
   filter: url(#pencilRough);
   transition: stroke-dashoffset 0.6s ease;
 }
-.process-path-arrowhead { fill: #000; transition: opacity 0.3s ease 0.3s; }
+.process-path-arrowhead { fill: var(--text); transition: opacity 0.3s ease 0.3s; }
 .process-path-ghost {
   fill: none;
   stroke: var(--text-dim);
@@ -2715,7 +2715,7 @@ main, .site-footer {
   opacity: 0.5;
 }
 .process-path-start-dot {
-  fill: #000;
+  fill: var(--text);
   transform-box: fill-box;
   transform-origin: center;
   animation: processDotPulse 1.8s ease-in-out infinite;
