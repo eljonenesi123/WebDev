@@ -24,7 +24,7 @@ const PROJECTS = [
   {
     id: "jps",
     name: "JustPickSomething",
-    img: "/assets/JustPickSomething.png",
+    img: "/assets/JustPickSomething.webp",
     fit: "cover",
     statusBar: "light",
     tagKey: "work.p1.tag",
@@ -38,7 +38,7 @@ const PROJECTS = [
   {
     id: "top",
     name: "Top Level Performance",
-    img: "/assets/TopLevelPerformance.png",
+    img: "/assets/TopLevelPerformance.webp",
     fit: "cover",
     statusBar: "light",
     tagKey: "work.p2.tag",
@@ -52,7 +52,7 @@ const PROJECTS = [
   {
     id: "kafeneja",
     name: "Kafeneja",
-    img: "/assets/Kafeneja.png",
+    img: "/assets/Kafeneja.webp",
     fit: "cover",
     statusBar: "dark",
     tagKey: "work.p3.tag",

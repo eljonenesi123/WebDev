@@ -17,7 +17,7 @@ export default function CtrlBrand() {
         onClick={handlePress}
         aria-label="Press Ctrl — jump to Why This Matters"
       >
-        <img className="ctrl-hand-img" src={asset("/assets/ctrl-hand-cutout.png")} alt="A hand poised over Ctrl and Z keys" />
+        <img className="ctrl-hand-img" src={asset("/assets/ctrl-hand-cutout.webp")} alt="A hand poised over Ctrl and Z keys" />
       </button>
 
       <p className="ctrl-brand-sub">

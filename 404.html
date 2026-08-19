@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Page not found — Eljon Enesi</title>
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Fraunces:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/x-icon" href="/WebDev/assets/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="/WebDev/assets/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/WebDev/assets/favicon-32x32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/WebDev/assets/apple-touch-icon.png">
+<link rel="manifest" href="/WebDev/site.webmanifest">
+<meta name="theme-color" content="#0A0A0A">
+<style>
+  :root {
+    --bg: #E3E1DC; --surface: #EDEBE6; --line: rgba(0,0,0,0.15);
+    --text: #0A0A0A; --text-dim: #4A4A4A; --accent: #C6704B;
+    --mono: "JetBrains Mono", monospace; --sans: "Inter", sans-serif; --serif: "Fraunces", serif;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; background: var(--bg); color: var(--text);
+    font-family: var(--sans); font-weight: 500;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .wrap { max-width: 460px; margin: 0 auto; padding: 6vh 6vw; text-align: center; }
+  .mark {
+    width: 44px; height: 44px; margin: 0 auto 2rem; border-radius: 11px;
+    background: var(--text); color: var(--bg);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--serif); font-style: italic; font-weight: 700; font-size: 1.25rem;
+  }
+  .code {
+    font-family: var(--serif); font-style: italic; font-weight: 700;
+    font-size: clamp(4rem, 16vw, 6.5rem); line-height: 1; margin: 0;
+  }
+  h1 { font-family: var(--sans); font-weight: 600; font-size: 1.3rem; margin: 1rem 0 0.6rem; }
+  p { color: var(--text-dim); font-size: 0.95rem; line-height: 1.6; margin: 0 0 2.2rem; }
+  .home-link {
+    display: inline-block; font-family: var(--mono); font-size: 0.85rem; font-weight: 600;
+    color: var(--bg); background: var(--text); padding: 0.8rem 1.6rem; border-radius: 999px;
+    text-decoration: none;
+  }
+  .home-link:hover { background: var(--accent); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="mark">EE</div>
+  <p class="code">404</p>
+  <h1>That page doesn't exist</h1>
+  <p>The link might be old, or the page moved. Here's the way back.</p>
+  <a href="/WebDev/" class="home-link">← Back to home</a>
+</div>
+</body>
+</html>

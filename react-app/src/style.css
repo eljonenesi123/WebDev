@@ -1688,7 +1688,7 @@ main, .site-footer {
 .ctrl-brand-light { color: var(--text-dim); font-weight: 500; }
 
 /* The photo's black backdrop is cut to transparent (see CtrlBrand.jsx —
-   ctrl-hand-cutout.png), so the hand/keys float directly on the section's
+   ctrl-hand-cutout.webp), so the hand/keys float directly on the section's
    own background in both themes. Just a plain, unstyled button wrapping
    the image; drop-shadow (not box-shadow, since the button's own box no
    longer has a filled background to cast a shadow from) grounds it. */
