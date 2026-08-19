@@ -6,10 +6,10 @@ import { useTranslation } from "../i18n";
 // reveals the step beside it — only once fully drawn does scrolling fall
 // through to the next section normally. Same behavior on mobile.
 const STEPS = [
-  { h: "process.s1.h", hd: "Brief", p: "process.s1.p", pd: "You tell me what you need and who it's for. I ask questions until the scope, pages, and features are clear, then send you a fixed quote before anything starts.", side: "left" },
-  { h: "process.s2.h", hd: "Domain & hosting", p: "process.s2.p", pd: "You purchase your own domain name. I'll point you to a registrar and help pick one if needed, so it stays fully in your name and under your control. I handle connecting it to the finished site.", side: "right" },
-  { h: "process.s3.h", hd: "Build", p: "process.s3.p", pd: "I build it, and you see progress along the way instead of just a reveal at the end.", side: "left" },
-  { h: "process.s4.h", hd: "Launch", p: "process.s4.p", pd: "Your site goes live on your domain. I stay reachable after launch for fixes and small changes.", side: "right" },
+  { h: "process.s1.h", hd: "Brief", p: "process.s1.p", pd: "You tell us what you need and who it's for. We ask questions until the scope, pages, and features are clear, then send you a fixed quote before anything starts.", side: "left" },
+  { h: "process.s2.h", hd: "Domain & hosting", p: "process.s2.p", pd: "You purchase your own domain name. We'll point you to a registrar and help pick one if needed, so it stays fully in your name and under your control. We handle connecting it to the finished website.", side: "right" },
+  { h: "process.s3.h", hd: "Build", p: "process.s3.p", pd: "We build it, and you see progress along the way instead of just a reveal at the end.", side: "left" },
+  { h: "process.s4.h", hd: "Launch", p: "process.s4.p", pd: "Your website goes live on your domain. We stay reachable after launch for fixes and small changes.", side: "right" },
 ];
 const TOTAL = STEPS.length;
 const STEP_MS = 700;
@@ -174,7 +174,7 @@ export default function ProcessPath() {
         </svg>
         {step === 0 && (
           <p className="process-hint sketch-text">
-            Scroll to begin
+            {t("process.scrollHint", "Scroll to begin")}
             <br />
             <strong>↓</strong>
           </p>

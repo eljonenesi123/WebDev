@@ -31,21 +31,21 @@ export default function ContactForm() {
         form.reset();
         setStatus({
           textKey: "contact.successMsg",
-          textFallback: "Thanks. Your message is on its way. I'll reply within a day or two.",
+          textFallback: "Thanks. Your message is on its way. We'll reply within a day or two.",
           kind: "success",
         });
         trackEvent("form_submit_success");
       } else {
         setStatus({
           textKey: "contact.errorMsg",
-          textFallback: "Something went wrong sending that. Try again, or message me directly on WhatsApp.",
+          textFallback: "Something went wrong sending that. Try again, or message us directly on WhatsApp.",
           kind: "error",
         });
       }
     } catch {
       setStatus({
         textKey: "contact.networkErrorMsg",
-        textFallback: "Couldn't send that. Check your connection, or message me directly on WhatsApp.",
+        textFallback: "Couldn't send that. Check your connection, or message us directly on WhatsApp.",
         kind: "error",
       });
     } finally {

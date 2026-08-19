@@ -153,7 +153,7 @@ export default function Estimator() {
           <p className="receipt-note">
             {t(
               "estimator.note",
-              "Rough starting point, not a final price. I'll confirm the exact number once we talk about what you actually need."
+              "Rough starting point, not a final price. We'll confirm the exact number once we talk about what you actually need."
             )}
           </p>
           <a href="#contact" className="btn-line receipt-cta">

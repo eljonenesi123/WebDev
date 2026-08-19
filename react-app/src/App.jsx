@@ -278,11 +278,11 @@ function Skills() {
       <p className="skills-copy">
         {t(
           "skills.p1",
-          "I build with a focused set of tools I actually know well, rather than a long list I barely use. HTML, CSS, and JavaScript are the foundation of everything I ship. When a project needs more, like a CMS or a Node backend, I bring in exactly what fits and nothing more."
+          "We build with a focused set of tools we actually know well, rather than a long list we barely use. HTML, CSS, and JavaScript are the foundation of everything we ship. When a project needs more, like a CMS or a Node backend, we bring in exactly what fits and nothing more."
         )}
       </p>
       <p className="skills-copy">
-        {t("skills.p2Before", "For a fuller look at my background and experience, visit my")}{" "}
+        {t("skills.p2Before", "For a fuller look at our background and experience, visit our")}{" "}
         <a href="https://www.linkedin.com/in/eljonenesi/" target="_blank" rel="noopener" className="skills-link">
           LinkedIn
         </a>
@@ -410,10 +410,10 @@ function Services() {
 const FAQ_ITEMS = [
   { qKey: "faq.q1", qFallback: "How long does a website take to build?", aKey: "faq.a1", aFallback: "A landing page usually takes 3 to 5 days. Something with several pages or a contact form takes 1 to 2 weeks. It depends on how much content you already have ready." },
   { qKey: "faq.q2", qFallback: "Do you work with clients outside your own country?", aKey: "faq.a2", aFallback: "Yes. Everything is handled remotely, so location doesn't matter. Most of the process happens over WhatsApp or email anyway." },
-  { qKey: "faq.q3", qFallback: "Will my site work properly on phones?", aKey: "faq.a3", aFallback: "Yes. Every site I build starts from the mobile layout first, then scales up to desktop, not the other way around." },
-  { qKey: "faq.q4", qFallback: "Can you redesign a site I already have?", aKey: "faq.a4", aFallback: "Yes. I can rebuild it from scratch or work with what's already there, depending on what shape it's in." },
+  { qKey: "faq.q3", qFallback: "Will my site work properly on phones?", aKey: "faq.a3", aFallback: "Yes. Every website we build starts from the mobile layout first, then scales up to desktop, not the other way around." },
+  { qKey: "faq.q4", qFallback: "Can you redesign a site I already have?", aKey: "faq.a4", aFallback: "Yes. We can rebuild it from scratch or work with what's already there, depending on what shape it's in." },
   { qKey: "faq.q5", qFallback: "Who owns the code and the domain afterward?", aKey: "faq.a5", aFallback: "You do, fully. You buy your own domain, and you get the full source code once the project is done." },
-  { qKey: "faq.q6", qFallback: "What happens after the site goes live?", aKey: "faq.a6", aFallback: "I stay reachable for fixes and small changes. If you need something bigger added later, we just talk about it like a new small project." },
+  { qKey: "faq.q6", qFallback: "What happens after the site goes live?", aKey: "faq.a6", aFallback: "We stay reachable for fixes and small changes. If you need something bigger added later, we just talk about it like a new small project." },
   { qKey: "faq.q7", qFallback: "How much does a website cost?", aKey: "faq.a7", aFallback: "It starts at €100–150 for a landing page and €150+ for a multi-page business site. Exact pricing depends on scope, see the Services section above for details." },
 ];
 
@@ -472,7 +472,7 @@ function Contact() {
           <ContactSparkle className="contact-sparkle contact-sparkle-2" />
 
           <h2 className="section-title">{t("contact.title", "Let's build something")}</h2>
-          <p className="contact-sub">{t("contact.sub", "Tell me what you're trying to build. I'll reply within a day or two.")}</p>
+          <p className="contact-sub">{t("contact.sub", "Tell us what you're trying to build. We'll reply within a day or two.")}</p>
 
           <div className="contact-direct">
             <a href="mailto:eljonenesi9@gmail.com" className="contact-direct-link" onClick={socialClick("Email")}>
@@ -514,7 +514,7 @@ function Footer({ onOpenCookieSettings }) {
           <span className="footer-brand">
             <span className="brand-mark footer-mark" aria-hidden="true">EE</span>
           </span>
-          <p>{t("footer.bio", "Web developer building sites and small web apps for businesses, coaches, and independent projects.")}</p>
+          <p>{t("footer.bio", "We build websites and small web apps for businesses, coaches, and independent projects.")}</p>
           <div className="footer-stats">
             <div className="footer-stat">
               <span className="footer-stat-num">3+</span>
