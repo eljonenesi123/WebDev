@@ -45,6 +45,7 @@ function AmbientShapes() {
 // elsewhere on the site (og:description) — slides away upward after a beat
 // to reveal the real page, instead of just appearing.
 function LoadingSplash() {
+  const { t } = useTranslation();
   const [hiding, setHiding] = useState(false);
   const [removed, setRemoved] = useState(false);
 
@@ -66,8 +67,8 @@ function LoadingSplash() {
   return (
     <div className={"loading-splash" + (hiding ? " is-hiding" : "")} aria-hidden="true">
       <div className="loading-splash-mark">EE</div>
-      <p className="loading-splash-name">Eljon Enesi</p>
-      <p className="loading-splash-quote">Websites that work, load fast, and don't need explaining.</p>
+      <p className="loading-splash-name">{t("loading.name", "Eljon Enesi")}</p>
+      <p className="loading-splash-quote">{t("loading.quote", "Websites that work, load fast, and don't need explaining.")}</p>
     </div>
   );
 }
@@ -104,16 +105,16 @@ function Header({ lang, setLang, menuOpen, setMenuOpen, theme, setTheme }) {
       </a>
 
       <nav className="topnav">
-        <a href="#work">Work</a>
-        <a href="#skills">Skills</a>
-        <a href="#process">Process</a>
-        <a href="#services">Services</a>
-        <a href="#faq">FAQ</a>
-        <a href="#contact">Contact</a>
+        <a href="#work">{t("nav.work", "Work")}</a>
+        <a href="#skills">{t("nav.skills", "Skills")}</a>
+        <a href="#process">{t("nav.process", "Process")}</a>
+        <a href="#services">{t("nav.services", "Services")}</a>
+        <a href="#faq">{t("nav.faq", "FAQ")}</a>
+        <a href="#contact">{t("nav.contact", "Contact")}</a>
       </nav>
 
       <div className="topbar-right">
-        <div className="lang-switch" role="group" aria-label="Language">
+        <div className="lang-switch" role="group" aria-label={t("lang.label", "Language")}>
           {["en", "sq", "de"].map((code) => (
             <button
               key={code}
@@ -130,7 +131,7 @@ function Header({ lang, setLang, menuOpen, setMenuOpen, theme, setTheme }) {
         <button
           type="button"
           className="theme-toggle"
-          aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+          aria-label={theme === "dark" ? t("theme.toLight", "Switch to light mode") : t("theme.toDark", "Switch to dark mode")}
           onClick={() => setTheme((t) => (t === "dark" ? "light" : "dark"))}
         >
           {theme === "dark" ? (
@@ -149,7 +150,7 @@ function Header({ lang, setLang, menuOpen, setMenuOpen, theme, setTheme }) {
           ref={toggleRef}
           type="button"
           className={"menu-toggle" + (menuOpen ? " active" : "")}
-          aria-label="Open menu"
+          aria-label={t("menu.open", "Open menu")}
           aria-expanded={menuOpen}
           onClick={(e) => {
             e.stopPropagation();
@@ -167,9 +168,9 @@ function Header({ lang, setLang, menuOpen, setMenuOpen, theme, setTheme }) {
         <a href="#skills" onClick={() => setMenuOpen(false)}>{t("nav.skills", "Skills")}</a>
         <a href="#process" onClick={() => setMenuOpen(false)}>{t("nav.process", "Process")}</a>
         <a href="#services" onClick={() => setMenuOpen(false)}>{t("nav.services", "Services")}</a>
-        <a href="#estimator-section" onClick={() => setMenuOpen(false)}>Estimate</a>
-        <a href="#global-reach" onClick={() => setMenuOpen(false)}>Global Reach</a>
-        <a href="#faq" onClick={() => setMenuOpen(false)}>FAQ</a>
+        <a href="#estimator-section" onClick={() => setMenuOpen(false)}>{t("nav.estimate", "Estimate")}</a>
+        <a href="#global-reach" onClick={() => setMenuOpen(false)}>{t("nav.globalReach", "Global Reach")}</a>
+        <a href="#faq" onClick={() => setMenuOpen(false)}>{t("nav.faq", "FAQ")}</a>
         <a href="#contact" onClick={() => setMenuOpen(false)}>{t("nav.contact", "Contact")}</a>
       </nav>
     </header>
@@ -275,12 +276,13 @@ function Skills() {
     <section className="skills" id="skills">
       <h2 className="section-title">{t("skills.title", "Skills & Experience")}</h2>
       <p className="skills-copy">
-        I build with a focused set of tools I actually know well, rather than a long list I barely
-        use. HTML, CSS, and JavaScript are the foundation of everything I ship. When a project
-        needs more — a CMS, a Node backend — I bring in exactly what fits, nothing more.
+        {t(
+          "skills.p1",
+          "I build with a focused set of tools I actually know well, rather than a long list I barely use. HTML, CSS, and JavaScript are the foundation of everything I ship. When a project needs more, like a CMS or a Node backend, I bring in exactly what fits and nothing more."
+        )}
       </p>
       <p className="skills-copy">
-        For a fuller look at my background and experience, visit my{" "}
+        {t("skills.p2Before", "For a fuller look at my background and experience, visit my")}{" "}
         <a href="https://www.linkedin.com/in/eljonenesi/" target="_blank" rel="noopener" className="skills-link">
           LinkedIn
         </a>
@@ -315,8 +317,8 @@ function Skills() {
 }
 
 const MAINTENANCE_PLANS = [
-  { label: "services.maintenance.basic", fallback: "Basic — updates, backups, uptime", price: "€50/mo" },
-  { label: "services.maintenance.standard", fallback: "Standard — + small content edits", price: "€40/mo" },
+  { label: "services.maintenance.basic", fallback: "Basic: updates, backups, uptime", price: "€50/mo" },
+  { label: "services.maintenance.standard", fallback: "Standard: plus small content edits", price: "€40/mo" },
 ];
 
 const ADDONS = [
@@ -406,13 +408,13 @@ function Services() {
 }
 
 const FAQ_ITEMS = [
-  { q: "How long does a website take to build?", a: "A landing page usually takes 3 to 5 days. Something with several pages or a contact form takes 1 to 2 weeks. It depends on how much content you already have ready." },
-  { q: "Do you work with clients outside your own country?", a: "Yes. Everything is handled remotely, so location doesn't matter. Most of the process happens over WhatsApp or email anyway." },
-  { q: "Will my site work properly on phones?", a: "Yes. Every site I build starts from the mobile layout first, then scales up to desktop, not the other way around." },
-  { q: "Can you redesign a site I already have?", a: "Yes. I can rebuild it from scratch or work with what's already there, depending on what shape it's in." },
-  { q: "Who owns the code and the domain afterward?", a: "You do, fully. You buy your own domain, and you get the full source code once the project is done." },
-  { q: "What happens after the site goes live?", a: "I stay reachable for fixes and small changes. If you need something bigger added later, we just talk about it like a new small project." },
-  { q: "How much does a website cost?", a: "It starts at €100–150 for a landing page and €150+ for a multi-page business site. Exact pricing depends on scope, see the Services section above for details." },
+  { qKey: "faq.q1", qFallback: "How long does a website take to build?", aKey: "faq.a1", aFallback: "A landing page usually takes 3 to 5 days. Something with several pages or a contact form takes 1 to 2 weeks. It depends on how much content you already have ready." },
+  { qKey: "faq.q2", qFallback: "Do you work with clients outside your own country?", aKey: "faq.a2", aFallback: "Yes. Everything is handled remotely, so location doesn't matter. Most of the process happens over WhatsApp or email anyway." },
+  { qKey: "faq.q3", qFallback: "Will my site work properly on phones?", aKey: "faq.a3", aFallback: "Yes. Every site I build starts from the mobile layout first, then scales up to desktop, not the other way around." },
+  { qKey: "faq.q4", qFallback: "Can you redesign a site I already have?", aKey: "faq.a4", aFallback: "Yes. I can rebuild it from scratch or work with what's already there, depending on what shape it's in." },
+  { qKey: "faq.q5", qFallback: "Who owns the code and the domain afterward?", aKey: "faq.a5", aFallback: "You do, fully. You buy your own domain, and you get the full source code once the project is done." },
+  { qKey: "faq.q6", qFallback: "What happens after the site goes live?", aKey: "faq.a6", aFallback: "I stay reachable for fixes and small changes. If you need something bigger added later, we just talk about it like a new small project." },
+  { qKey: "faq.q7", qFallback: "How much does a website cost?", aKey: "faq.a7", aFallback: "It starts at €100–150 for a landing page and €150+ for a multi-page business site. Exact pricing depends on scope, see the Services section above for details." },
 ];
 
 function FaqChevron() {
@@ -424,9 +426,10 @@ function FaqChevron() {
 }
 
 function Faq() {
+  const { t } = useTranslation();
   return (
     <section className="faq" id="faq">
-      <h2 className="section-title">FAQ</h2>
+      <h2 className="section-title">{t("faq.title", "FAQ")}</h2>
       <div className="imessage-thread">
         <p className="imessage-date">Today</p>
         {/* All open by default so the answers are visible on load — the
@@ -436,12 +439,12 @@ function Faq() {
             itself changes between renders, not when it re-reads the
             current value), while the chevron/collapse toggle stays live. */}
         {FAQ_ITEMS.map((item) => (
-          <details className="imessage-pair" key={item.q} open>
+          <details className="imessage-pair" key={item.qKey} open>
             <summary className="imessage-bubble imessage-received">
-              <span className="imessage-bubble-text">{item.q}</span>
+              <span className="imessage-bubble-text">{t(item.qKey, item.qFallback)}</span>
               <FaqChevron />
             </summary>
-            <p className="imessage-bubble imessage-sent">{item.a}</p>
+            <p className="imessage-bubble imessage-sent">{t(item.aKey, item.aFallback)}</p>
           </details>
         ))}
       </div>
@@ -476,7 +479,7 @@ function Contact() {
               eljonenesi9@gmail.com
             </a>
             <a href="https://wa.me/355688944708" target="_blank" rel="noopener" className="contact-direct-link" onClick={socialClick("WhatsApp")}>
-              +355 68 894 4708 — WhatsApp
+              WhatsApp: +355 68 894 4708
             </a>
           </div>
 
@@ -511,19 +514,19 @@ function Footer({ onOpenCookieSettings }) {
           <span className="footer-brand">
             <span className="brand-mark footer-mark" aria-hidden="true">EE</span>
           </span>
-          <p>Web developer building sites and small web apps for businesses, coaches, and independent projects.</p>
+          <p>{t("footer.bio", "Web developer building sites and small web apps for businesses, coaches, and independent projects.")}</p>
           <div className="footer-stats">
             <div className="footer-stat">
               <span className="footer-stat-num">3+</span>
-              <span className="footer-stat-label">Years experience</span>
+              <span className="footer-stat-label">{t("footer.statYears", "Years experience")}</span>
             </div>
             <div className="footer-stat">
               <span className="footer-stat-num">10+</span>
-              <span className="footer-stat-label">Certifications</span>
+              <span className="footer-stat-label">{t("footer.statCerts", "Certifications")}</span>
             </div>
             <div className="footer-stat">
               <span className="footer-stat-num">3</span>
-              <span className="footer-stat-label">Live projects</span>
+              <span className="footer-stat-label">{t("footer.statProjects", "Live projects")}</span>
             </div>
           </div>
           <div className="footer-socials">
@@ -535,47 +538,47 @@ function Footer({ onOpenCookieSettings }) {
         </div>
 
         <div className="footer-col">
-          <p className="footer-heading">Menu</p>
-          <a href="#top">Home</a>
-          <a href="#work">Work</a>
-          <a href="#skills">Skills</a>
-          <a href="#services">Services</a>
-          <a href="#process">Process</a>
-          <a href="#faq">FAQ</a>
+          <p className="footer-heading">{t("footer.menuHeading", "Menu")}</p>
+          <a href="#top">{t("footer.menuHome", "Home")}</a>
+          <a href="#work">{t("nav.work", "Work")}</a>
+          <a href="#skills">{t("nav.skills", "Skills")}</a>
+          <a href="#services">{t("nav.services", "Services")}</a>
+          <a href="#process">{t("nav.process", "Process")}</a>
+          <a href="#faq">{t("nav.faq", "FAQ")}</a>
         </div>
 
         <div className="footer-col">
-          <p className="footer-heading">Services</p>
-          <a href="#services">Landing pages</a>
-          <a href="#services">Multi-page websites</a>
-          <a href="#services">E-commerce stores</a>
-          <a href="#services">Custom web apps</a>
-          <a href="#services">Redesigns</a>
-          <a href="#contact">Ongoing support</a>
+          <p className="footer-heading">{t("footer.servicesHeading", "Services")}</p>
+          <a href="#services">{t("footer.svcLanding", "Landing pages")}</a>
+          <a href="#services">{t("footer.svcMultipage", "Multi-page websites")}</a>
+          <a href="#services">{t("footer.svcEcommerce", "E-commerce stores")}</a>
+          <a href="#services">{t("footer.svcCustomApp", "Custom web apps")}</a>
+          <a href="#services">{t("footer.svcRedesign", "Redesigns")}</a>
+          <a href="#contact">{t("footer.svcSupport", "Ongoing support")}</a>
         </div>
 
         <div className="footer-col">
-          <p className="footer-heading">Contact</p>
+          <p className="footer-heading">{t("footer.contactHeading", "Contact")}</p>
           <a href="tel:+355688944708">+355 68 894 4708</a>
           <a href="mailto:eljonenesi9@gmail.com">eljonenesi9@gmail.com</a>
         </div>
       </div>
 
       <div className="footer-bottom">
-        <span>{t("footer.loc", "© 2026 — All rights reserved")}</span>
+        <span>{t("footer.loc", "© 2026. All rights reserved.")}</span>
         <div className="footer-legal-links">
-          <a href={asset("/terms.html")} target="_blank" rel="noopener">Terms</a>
-          <a href={asset("/privacy.html")} target="_blank" rel="noopener">Privacy</a>
-          <button type="button" onClick={onOpenCookieSettings}>Cookie settings</button>
+          <a href={asset("/terms.html")} target="_blank" rel="noopener">{t("footer.terms", "Terms")}</a>
+          <a href={asset("/privacy.html")} target="_blank" rel="noopener">{t("footer.privacy", "Privacy")}</a>
+          <button type="button" onClick={onOpenCookieSettings}>{t("footer.cookieSettings", "Cookie settings")}</button>
         </div>
-        <a href="#top" className="back-to-top" aria-label="Back to top">↑</a>
+        <a href="#top" className="back-to-top" aria-label={t("footer.backToTop", "Back to top")}>↑</a>
       </div>
     </footer>
   );
 }
 
 export default function App() {
-  const { lang, setLang } = useTranslation();
+  const { t, lang, setLang } = useTranslation();
   const [menuOpen, setMenuOpen] = useState(false);
   const { visible: cookieVisible, accept, decline, openSettings } = useCookieConsent();
 
@@ -783,7 +786,15 @@ export default function App() {
       <Header lang={lang} setLang={setLang} menuOpen={menuOpen} setMenuOpen={setMenuOpen} theme={theme} setTheme={setTheme} />
 
       <main id="top">
-        <RobotHero badgeText="Take your brand to the next level" className="robot-hero" />
+        <RobotHero
+          key={lang}
+          badgeText={t("hero.badge", "Take your brand to the next level")}
+          headline={t("hero.headline", "We build websites that actually work.")}
+          subline={t("hero.subline", "Design, build, and support after launch.")}
+          primaryCta={{ label: t("hero.cta1", "Get in touch"), href: "#contact" }}
+          secondaryCta={{ label: t("hero.cta2", "See our work"), href: "#work" }}
+          className="robot-hero"
+        />
         <CtrlBrand />
         <WhyStats />
         <WorkCarousel />

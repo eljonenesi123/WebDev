@@ -59,7 +59,7 @@ const PROJECTS = [
     tagFallback: "Coffee shop concept",
     descKey: "work.p3.desc",
     descFallback:
-      "A specialty coffee shop concept in Blloku, Tirana — homepage, menu, about/journal, and contact/reservation forms, with an EN/Albanian toggle and Wolt/Glovo order-ahead links.",
+      "A specialty coffee shop concept in Blloku, Tirana. Includes a homepage, menu, about/journal page, and contact/reservation forms, with an EN/Albanian toggle and Wolt/Glovo order-ahead links.",
     stack: "Next.js · React · TypeScript · Tailwind · GSAP",
     link: "https://eljonenesi123.github.io/kafeneja/",
   },
@@ -313,19 +313,19 @@ export default function WorkCarousel() {
       </div>
 
       <div className="work-controls">
-        <button type="button" className="work-arrow work-arrow-prev" aria-label="Previous project" onClick={() => goTo(current - 1)}>
+        <button type="button" className="work-arrow work-arrow-prev" aria-label={t("work.prev", "Previous project")} onClick={() => goTo(current - 1)}>
           ←
         </button>
         <button
           type="button"
           className="work-play-pause"
-          aria-label={playing ? "Pause autoplay" : "Play autoplay"}
+          aria-label={playing ? t("work.pause", "Pause autoplay") : t("work.play", "Play autoplay")}
           aria-pressed={playing}
           onClick={() => setPlaying((p) => !p)}
         >
           {playing ? <PauseIcon /> : <PlayIcon />}
         </button>
-        <button type="button" className="work-arrow work-arrow-next" aria-label="Next project" onClick={() => goTo(current + 1)}>
+        <button type="button" className="work-arrow work-arrow-next" aria-label={t("work.next", "Next project")} onClick={() => goTo(current + 1)}>
           →
         </button>
       </div>

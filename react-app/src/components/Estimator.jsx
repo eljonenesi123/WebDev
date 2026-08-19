@@ -1,10 +1,10 @@
 import { useState } from "react";
+import { useTranslation } from "../i18n";
 
 // Cost estimator: rough, honest ballpark based on the same pricing logic as
 // the pricing cards above. Never claims to be a final price. Presented as an
 // itemized receipt — each choice becomes a line item with a running total,
 // instead of a flat form with a number at the bottom.
-const PAGES_LABELS = { "3": "2–3 pages", "6": "4–6 pages", "10": "7+ pages" };
 
 // Low/high per type, matching the Services price sheet's own published
 // ranges (Landing page is explicitly "€100 – 150" there) rather than a
@@ -25,9 +25,9 @@ const TYPE_PRICES = {
 // the sheet (only the monthly Maintenance plans do), so it stays a flat
 // single price with no separate high.
 const EXTRAS = {
-  lang: { label: "Multiple languages", low: 40, high: 60 },
-  form: { label: "Contact / booking form", low: 40, high: 60 },
-  updates: { label: "Ongoing content updates", low: 30, high: 30 },
+  lang: { labelKey: "estimator.extraLang", labelFallback: "Multiple languages", low: 40, high: 60 },
+  form: { labelKey: "estimator.extraForm", labelFallback: "Contact / booking form", low: 40, high: 60 },
+  updates: { labelKey: "estimator.extraUpdates", labelFallback: "Ongoing content updates", low: 30, high: 30 },
 };
 
 // Every option button shows its own price impact (not just the receipt),
@@ -42,10 +42,17 @@ function OptionButton({ active, onClick, label, price }) {
 }
 
 export default function Estimator() {
+  const { t } = useTranslation();
   const [type, setType] = useState("landing");
   const [pages, setPages] = useState(0);
   const [pagesValue, setPagesValue] = useState("3");
   const [extraKeys, setExtraKeys] = useState([]); // e.g. ["lang", "form"]
+
+  const PAGES_LABELS = {
+    "3": t("estimator.pages23Full", "2–3 pages"),
+    "6": t("estimator.pages46Full", "4–6 pages"),
+    "10": t("estimator.pages7plusFull", "7+ pages"),
+  };
 
   const typePrice = TYPE_PRICES[type];
   const selectedExtras = extraKeys.map((k) => EXTRAS[k]);
@@ -71,53 +78,54 @@ export default function Estimator() {
     setExtraKeys((prev) => (prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]));
   };
 
-  const items = [{ label: type === "landing" ? "Landing page" : "Multi-page site", price: typePrice.low }];
+  const typeLabel = type === "landing" ? t("estimator.landing", "Landing page") : t("estimator.multi", "Multi-page site");
+  const items = [{ label: typeLabel, price: typePrice.low }];
   if (type === "multi" && pages > 0) items.push({ label: PAGES_LABELS[pagesValue], price: pages });
-  extraKeys.forEach((k) => items.push({ label: EXTRAS[k].label, price: EXTRAS[k].low }));
+  extraKeys.forEach((k) => items.push({ label: t(EXTRAS[k].labelKey, EXTRAS[k].labelFallback), price: EXTRAS[k].low }));
 
   return (
     <section className="estimator-section" id="estimator-section">
-      <h2 className="section-title">Cost Estimator</h2>
-      <p className="estimator-label">Not sure where you land? Build your order below.</p>
+      <h2 className="section-title">{t("estimator.title", "Cost Estimator")}</h2>
+      <p className="estimator-label">{t("estimator.label", "Not sure where you land? Build your order below.")}</p>
 
       <div className="estimator-layout">
         <div className="estimator-controls">
           <div className="estimator-row">
-            <span className="estimator-question">What are you building?</span>
+            <span className="estimator-question">{t("estimator.q1", "What are you building?")}</span>
             <div className="estimator-options" data-group="type">
-              <OptionButton active={type === "landing"} onClick={() => handleType("landing")} label="Landing page" price="€100 – 150" />
-              <OptionButton active={type === "multi"} onClick={() => handleType("multi")} label="Multi-page site" price="€150+" />
+              <OptionButton active={type === "landing"} onClick={() => handleType("landing")} label={t("estimator.landing", "Landing page")} price="€100 – 150" />
+              <OptionButton active={type === "multi"} onClick={() => handleType("multi")} label={t("estimator.multi", "Multi-page site")} price="€150+" />
             </div>
           </div>
 
           <div className="estimator-row" style={{ display: type === "multi" ? "flex" : "none" }}>
-            <span className="estimator-question">How many pages, roughly?</span>
+            <span className="estimator-question">{t("estimator.q2", "How many pages, roughly?")}</span>
             <div className="estimator-options" data-group="pages">
-              <OptionButton active={pagesValue === "3"} onClick={() => handlePages("3", 0)} label="2–3" price="Included" />
-              <OptionButton active={pagesValue === "6"} onClick={() => handlePages("6", 45)} label="4–6" price="+€45" />
-              <OptionButton active={pagesValue === "10"} onClick={() => handlePages("10", 90)} label="7+" price="+€90" />
+              <OptionButton active={pagesValue === "3"} onClick={() => handlePages("3", 0)} label={t("estimator.pages23", "2–3")} price={t("estimator.included", "Included")} />
+              <OptionButton active={pagesValue === "6"} onClick={() => handlePages("6", 45)} label={t("estimator.pages46", "4–6")} price="+€45" />
+              <OptionButton active={pagesValue === "10"} onClick={() => handlePages("10", 90)} label={t("estimator.pages7plus", "7+")} price="+€90" />
             </div>
           </div>
 
           <div className="estimator-row">
-            <span className="estimator-question">Anything extra?</span>
+            <span className="estimator-question">{t("estimator.q3", "Anything extra?")}</span>
             <div className="estimator-options estimator-options-multi" data-group="extras">
               <OptionButton
                 active={extraKeys.includes("lang")}
                 onClick={() => toggleExtra("lang")}
-                label="Multiple languages"
+                label={t("estimator.extraLang", "Multiple languages")}
                 price="+€40–60"
               />
               <OptionButton
                 active={extraKeys.includes("form")}
                 onClick={() => toggleExtra("form")}
-                label="Contact / booking form"
+                label={t("estimator.extraForm", "Contact / booking form")}
                 price="+€40–60"
               />
               <OptionButton
                 active={extraKeys.includes("updates")}
                 onClick={() => toggleExtra("updates")}
-                label="Ongoing content updates"
+                label={t("estimator.extraUpdates", "Ongoing content updates")}
                 price="+€30"
               />
             </div>
@@ -125,7 +133,7 @@ export default function Estimator() {
         </div>
 
         <div className="receipt">
-          <p className="receipt-title">RECEIPT</p>
+          <p className="receipt-title">{t("estimator.receiptTitle", "Receipt").toUpperCase()}</p>
           <div className="receipt-items">
             {items.map((it) => (
               <div className="receipt-item" key={it.label}>
@@ -136,18 +144,20 @@ export default function Estimator() {
             ))}
           </div>
           <div className="receipt-total-row">
-            <span>TOTAL</span>
+            <span>{t("estimator.total", "Total").toUpperCase()}</span>
             <span className="receipt-item-dots" aria-hidden="true" />
             <span>
               €{low}–{high}
             </span>
           </div>
           <p className="receipt-note">
-            Rough starting point, not a final price. I'll confirm the exact number once we talk
-            about what you actually need.
+            {t(
+              "estimator.note",
+              "Rough starting point, not a final price. I'll confirm the exact number once we talk about what you actually need."
+            )}
           </p>
           <a href="#contact" className="btn-line receipt-cta">
-            Get my exact quote
+            {t("estimator.cta", "Get my exact quote")}
           </a>
         </div>
       </div>

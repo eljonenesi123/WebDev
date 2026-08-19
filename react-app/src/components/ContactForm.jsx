@@ -12,13 +12,13 @@ const FORM_ACTION = "https://formspree.io/f/xvzeaydo";
 export default function ContactForm() {
   const { t } = useTranslation();
   const [sending, setSending] = useState(false);
-  const [status, setStatus] = useState({ text: "", kind: "" });
+  const [status, setStatus] = useState({ textKey: "", textFallback: "", kind: "" });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const form = e.target;
     setSending(true);
-    setStatus({ text: "", kind: "" });
+    setStatus({ textKey: "", textFallback: "", kind: "" });
 
     try {
       const response = await fetch(FORM_ACTION, {
@@ -30,19 +30,22 @@ export default function ContactForm() {
       if (response.ok) {
         form.reset();
         setStatus({
-          text: "Thanks — your message is on its way. I'll reply within a day or two.",
+          textKey: "contact.successMsg",
+          textFallback: "Thanks. Your message is on its way. I'll reply within a day or two.",
           kind: "success",
         });
         trackEvent("form_submit_success");
       } else {
         setStatus({
-          text: "Something went wrong sending that. Try again, or message me directly on WhatsApp.",
+          textKey: "contact.errorMsg",
+          textFallback: "Something went wrong sending that. Try again, or message me directly on WhatsApp.",
           kind: "error",
         });
       }
     } catch {
       setStatus({
-        text: "Couldn't send that — check your connection, or message me directly on WhatsApp.",
+        textKey: "contact.networkErrorMsg",
+        textFallback: "Couldn't send that. Check your connection, or message me directly on WhatsApp.",
         kind: "error",
       });
     } finally {
@@ -56,12 +59,12 @@ export default function ContactForm() {
 
       <div className="field">
         <input type="text" id="cf-name" name="Name" placeholder=" " required />
-        <label htmlFor="cf-name">Name *</label>
+        <label htmlFor="cf-name">{t("contact.name", "Name")} *</label>
       </div>
 
       <div className="field">
         <input type="text" id="cf-company" name="Company" placeholder=" " />
-        <label htmlFor="cf-company">Company / Business (optional)</label>
+        <label htmlFor="cf-company">{t("contact.company", "Company / Business (optional)")}</label>
       </div>
 
       <div className="field">
@@ -71,7 +74,7 @@ export default function ContactForm() {
 
       <div className="field">
         <input type="tel" id="cf-phone" name="Phone" placeholder=" " required />
-        <label htmlFor="cf-phone">Phone *</label>
+        <label htmlFor="cf-phone">{t("contact.phone", "Phone")} *</label>
       </div>
 
       <div className="field">
@@ -82,23 +85,23 @@ export default function ContactForm() {
       <label className="terms-check">
         <input type="checkbox" id="cf-terms" name="Agreed" required />
         <span>
-          I agree to the{" "}
+          {t("contact.agreePrefix", "I agree to the")}{" "}
           <a href={asset("/terms.html")} target="_blank" rel="noopener">
-            Terms &amp; Conditions
+            {t("contact.terms", "Terms & Conditions")}
           </a>{" "}
-          and{" "}
+          {t("contact.agreeAnd", "and")}{" "}
           <a href={asset("/privacy.html")} target="_blank" rel="noopener">
-            Privacy Policy
-          </a>{" "}
-          *
+            {t("contact.privacy", "Privacy Policy")}
+          </a>
+          {t("contact.termsSuffix", "") && " " + t("contact.termsSuffix", "")} *
         </span>
       </label>
 
       <button type="submit" className="btn-primary" disabled={sending}>
-        {sending ? "Sending..." : t("contact.send", "Send message")}
+        {sending ? t("contact.sending", "Sending...") : t("contact.send", "Send message")}
       </button>
       <p className={"form-status" + (status.kind ? " " + status.kind : "")} id="form-status" aria-live="polite">
-        {status.text}
+        {status.textKey ? t(status.textKey, status.textFallback) : ""}
       </p>
     </form>
   );

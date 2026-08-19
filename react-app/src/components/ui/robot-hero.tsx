@@ -4,6 +4,7 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Environment, ContactShadows, Html } from "@react-three/drei";
 import * as THREE from "three";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "../../i18n";
 
 // Suspense only catches the *pending* state of Environment's async HDRI
 // load — a load that actively fails (network error, CORS, or the CDN
@@ -805,6 +806,7 @@ const NAV_BUBBLE_FADE_MS = 500;
 // *rotation* — the bubble stays flat/upright rather than tilting with the
 // head, tracking position only.
 function RobotSpeechBubble({ stage }: { stage: AssistantStage }) {
+  const { t } = useTranslation();
   if (stage === "dismissed") return null;
 
   return (
@@ -815,7 +817,7 @@ function RobotSpeechBubble({ stage }: { stage: AssistantStage }) {
             className="rounded-2xl px-4 py-2 font-mono text-sm font-semibold shadow-lg border whitespace-nowrap"
             style={{ background: "var(--surface)", color: "var(--text)", borderColor: "var(--line)" }}
           >
-            Press me
+            {t("hero.pressMe", "Press me")}
           </div>
           <div className="w-3 h-3 mx-auto -mt-1.5 rotate-45 border-r border-b" style={{ background: "var(--surface)", borderColor: "var(--line)" }} />
         </div>
@@ -834,13 +836,13 @@ function RobotSpeechBubble({ stage }: { stage: AssistantStage }) {
             className="rounded-2xl px-5 py-4 text-center shadow-lg w-[240px] border"
             style={{ background: "var(--surface)", color: "var(--text)", borderColor: "var(--line)" }}
           >
-            <p className="font-sans text-sm mb-3">Looking for something? Try:</p>
+            <p className="font-sans text-sm mb-3">{t("hero.lookingFor", "Looking for something? Try:")}</p>
             <div className="flex gap-2 justify-center flex-wrap">
               <a href="#services" className="rounded-full px-3 py-1.5 font-mono text-xs font-bold" style={{ background: "var(--text)", color: "var(--bg)" }}>
-                Services
+                {t("nav.services", "Services")}
               </a>
               <a href="#contact" className="rounded-full px-3 py-1.5 font-mono text-xs font-bold border" style={{ borderColor: "var(--text)", color: "var(--text)" }}>
-                Contact
+                {t("nav.contact", "Contact")}
               </a>
             </div>
           </div>

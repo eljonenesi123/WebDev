@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import SketchBadges from "./SketchBadges";
+import { useTranslation } from "../i18n";
 
 // Real numbers, cross-checked (not invented) since this section's whole
 // pitch is credibility — even without on-page citations, they aren't
@@ -9,25 +10,29 @@ const STATS = [
     value: 75,
     decimals: 0,
     suffix: "%",
-    label: "of visitors judge a business's credibility based on its website design",
+    labelKey: "whyStats.stat1",
+    labelFallback: "of visitors judge a business's credibility based on its website design",
   },
   {
     value: 94,
     decimals: 0,
     suffix: "%",
-    label: "of people form their first opinion of a business within 0.05 seconds of seeing its website",
+    labelKey: "whyStats.stat2",
+    labelFallback: "of people form their first opinion of a business within 0.05 seconds of seeing its website",
   },
   {
     value: 88.5,
     decimals: 1,
     suffix: "%",
-    label: "of users leave a website because of slow load times",
+    labelKey: "whyStats.stat3",
+    labelFallback: "of users leave a website because of slow load times",
   },
   {
     value: 11,
     decimals: 0,
     suffix: "%",
-    label: "higher conversion rates on mobile-responsive sites — plus 20% more engagement",
+    labelKey: "whyStats.stat4",
+    labelFallback: "higher conversion rates on mobile-responsive sites, plus 20% more engagement",
   },
 ];
 
@@ -64,6 +69,7 @@ function StatRing({ progress, negative }) {
 }
 
 export default function WhyStats() {
+  const { t } = useTranslation();
   const gridRef = useRef(null);
   const [revealed, setRevealed] = useState(false);
   const [displayValues, setDisplayValues] = useState(() => STATS.map(() => 0));
@@ -104,11 +110,11 @@ export default function WhyStats() {
       <StatSparkle className="stats-sparkle stats-sparkle-2" />
 
       <div className="why-stats-head">
-        <h2 className="section-title">Why This Matters</h2>
+        <h2 className="section-title">{t("whyStats.title", "Why This Matters")}</h2>
         <svg className="stats-underline" viewBox="0 0 260 20" preserveAspectRatio="none" aria-hidden="true">
           <path d="M4,12 C60,4 130,17 180,9 C210,4 235,10 256,7" />
         </svg>
-        <p className="stats-sub">A good website isn't a nice-to-have — the numbers make the case.</p>
+        <p className="stats-sub">{t("whyStats.sub", "A good website isn't a nice-to-have. The numbers make the case.")}</p>
       </div>
 
       {/* Moved here from the hero (where they were only loosely placed
@@ -119,7 +125,7 @@ export default function WhyStats() {
 
       <div className={"stats-grid" + (revealed ? " is-revealed" : "")} ref={gridRef}>
         {STATS.map((s, i) => (
-          <div className="stat-card" key={s.label} style={{ "--i": i }}>
+          <div className="stat-card" key={s.labelKey} style={{ "--i": i }}>
             <div className="stat-ring-wrap">
               <StatRing progress={displayValues[i] / 100} negative={s.negative} />
               <p className="stat-number">
@@ -128,7 +134,7 @@ export default function WhyStats() {
                 {s.suffix}
               </p>
             </div>
-            <p className="stat-label">{s.label}</p>
+            <p className="stat-label">{t(s.labelKey, s.labelFallback)}</p>
           </div>
         ))}
       </div>

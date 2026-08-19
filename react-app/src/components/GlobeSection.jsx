@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "../i18n";
 
 export default function GlobeSection() {
+  const { t } = useTranslation();
   const sectionRef = useRef(null);
   const containerRef = useRef(null);
   const [nearby, setNearby] = useState(false);
@@ -38,8 +40,8 @@ export default function GlobeSection() {
 
   return (
     <section className="globe-section" id="global-reach" ref={sectionRef}>
-      <h2 className="section-title">Global Reach</h2>
-      <p className="globe-sub">Remote-first — I build for clients wherever they are. Drag to rotate, scroll to zoom.</p>
+      <h2 className="section-title">{t("globe.title", "Global Reach")}</h2>
+      <p className="globe-sub">{t("globe.sub", "Remote-first. I build for clients wherever they are. Drag to rotate, scroll to zoom.")}</p>
       <div className="globe-canvas-wrap" ref={containerRef} aria-hidden="true"></div>
     </section>
   );
