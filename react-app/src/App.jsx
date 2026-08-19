@@ -302,14 +302,6 @@ function Skills() {
           "We build with a focused set of tools we actually know well, rather than a long list we barely use. HTML, CSS, and JavaScript are the foundation of everything we ship. When a project needs more, like a CMS or a Node backend, we bring in exactly what fits and nothing more."
         )}
       </p>
-      <p className="skills-copy">
-        {t("skills.p2Before", "For a fuller look at our background and experience, visit our")}{" "}
-        <a href="https://www.linkedin.com/in/eljonenesi/" target="_blank" rel="noopener" className="skills-link">
-          LinkedIn
-        </a>
-        .
-      </p>
-
       <div className={"skills-grid" + (revealed ? " is-revealed" : "")} ref={gridRef}>
         {SKILLS.map((s, i) => (
           <div
