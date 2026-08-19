@@ -2081,20 +2081,20 @@ main, .site-footer {
 /* These screenshots are real page captures, not app splash screens — some
    (e.g. Kafeneja) have their own nav/logo sitting right at the true top, so
    a soft top-fading scrim wasn't enough to keep the overlay legible; it let
-   real text/icons show through and visually collide with "9:41". A solid
-   translucent bar (plus a slight blur where supported) reliably obscures
-   whatever's behind it regardless of what a given screenshot has up there. */
+   real text/icons show through and visually collide with "9:41". A fully
+   opaque bar reliably obscures whatever's behind it regardless of what a
+   given screenshot has up there — a translucent version (even blurred)
+   still let that real header text/logo show through and visibly overlap
+   the fake clock/battery/signal. */
 .phone-status-bar::before {
   content: "";
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(3px);
-  -webkit-backdrop-filter: blur(3px);
+  background: #0a0a0a;
 }
 .phone-status-bar.is-dark::before {
-  background: rgba(255, 255, 255, 0.72);
+  background: #ffffff;
 }
 .phone-status-bar.is-light { color: #fff; }
 .phone-status-bar.is-dark { color: #0a0a0a; }
