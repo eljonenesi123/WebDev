@@ -6,6 +6,30 @@ import { useState } from "react";
 // instead of a flat form with a number at the bottom.
 const PAGES_LABELS = { "3": "2–3 pages", "6": "4–6 pages", "10": "7+ pages" };
 
+// Low/high per type, matching the Services price sheet's own published
+// ranges (Landing page is explicitly "€100 – 150" there) rather than a
+// flat "+20%" applied to whatever was picked — that flat multiplier used
+// to undercut the real quoted range (€100–120 instead of €100–150) once
+// prices were updated to the new sheet. Multi-page site is only quoted
+// as "€150+" with no upper bound given, so it gets the same 1.5x spread
+// as Landing for consistency rather than an invented different ratio.
+const TYPE_PRICES = {
+  landing: { low: 100, high: 150 },
+  multi: { low: 150, high: 225 },
+};
+
+// Same reasoning for the two add-ons that have their own quoted ranges in
+// the Services sheet (Extra language / Booking-contact form system, both
+// "€40–60") — using their real high end instead of the low end doubling
+// as both. "Ongoing content updates" has no equivalent one-time line on
+// the sheet (only the monthly Maintenance plans do), so it stays a flat
+// single price with no separate high.
+const EXTRAS = {
+  lang: { label: "Multiple languages", low: 40, high: 60 },
+  form: { label: "Contact / booking form", low: 40, high: 60 },
+  updates: { label: "Ongoing content updates", low: 30, high: 30 },
+};
+
 // Every option button shows its own price impact (not just the receipt),
 // so the cost of a choice is visible right where you make it.
 function OptionButton({ active, onClick, label, price }) {
@@ -19,18 +43,19 @@ function OptionButton({ active, onClick, label, price }) {
 
 export default function Estimator() {
   const [type, setType] = useState("landing");
-  const [typeBase, setTypeBase] = useState(100);
   const [pages, setPages] = useState(0);
   const [pagesValue, setPagesValue] = useState("3");
-  const [extras, setExtras] = useState({}); // { value: price }
+  const [extraKeys, setExtraKeys] = useState([]); // e.g. ["lang", "form"]
 
-  const extrasSum = Object.values(extras).reduce((sum, p) => sum + p, 0);
-  const low = typeBase + pages + extrasSum;
-  const high = Math.round(low * 1.2);
+  const typePrice = TYPE_PRICES[type];
+  const selectedExtras = extraKeys.map((k) => EXTRAS[k]);
+  const extrasLow = selectedExtras.reduce((sum, e) => sum + e.low, 0);
+  const extrasHigh = selectedExtras.reduce((sum, e) => sum + e.high, 0);
+  const low = typePrice.low + pages + extrasLow;
+  const high = typePrice.high + pages + extrasHigh;
 
-  const handleType = (value, price) => {
+  const handleType = (value) => {
     setType(value);
-    setTypeBase(price);
     if (value === "landing") {
       setPages(0);
       setPagesValue("3");
@@ -42,20 +67,13 @@ export default function Estimator() {
     setPages(price);
   };
 
-  const toggleExtra = (value, price) => {
-    setExtras((prev) => {
-      const next = { ...prev };
-      if (next[value] !== undefined) delete next[value];
-      else next[value] = price;
-      return next;
-    });
+  const toggleExtra = (key) => {
+    setExtraKeys((prev) => (prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]));
   };
 
-  const items = [{ label: type === "landing" ? "Landing page" : "Multi-page site", price: typeBase }];
+  const items = [{ label: type === "landing" ? "Landing page" : "Multi-page site", price: typePrice.low }];
   if (type === "multi" && pages > 0) items.push({ label: PAGES_LABELS[pagesValue], price: pages });
-  if (extras.lang !== undefined) items.push({ label: "Multiple languages", price: extras.lang });
-  if (extras.form !== undefined) items.push({ label: "Contact / booking form", price: extras.form });
-  if (extras.updates !== undefined) items.push({ label: "Ongoing content updates", price: extras.updates });
+  extraKeys.forEach((k) => items.push({ label: EXTRAS[k].label, price: EXTRAS[k].low }));
 
   return (
     <section className="estimator-section" id="estimator-section">
@@ -67,8 +85,8 @@ export default function Estimator() {
           <div className="estimator-row">
             <span className="estimator-question">What are you building?</span>
             <div className="estimator-options" data-group="type">
-              <OptionButton active={type === "landing"} onClick={() => handleType("landing", 100)} label="Landing page" price="€100" />
-              <OptionButton active={type === "multi"} onClick={() => handleType("multi", 150)} label="Multi-page site" price="€150" />
+              <OptionButton active={type === "landing"} onClick={() => handleType("landing")} label="Landing page" price="€100 – 150" />
+              <OptionButton active={type === "multi"} onClick={() => handleType("multi")} label="Multi-page site" price="€150+" />
             </div>
           </div>
 
@@ -85,20 +103,20 @@ export default function Estimator() {
             <span className="estimator-question">Anything extra?</span>
             <div className="estimator-options estimator-options-multi" data-group="extras">
               <OptionButton
-                active={extras.lang !== undefined}
-                onClick={() => toggleExtra("lang", 40)}
+                active={extraKeys.includes("lang")}
+                onClick={() => toggleExtra("lang")}
                 label="Multiple languages"
-                price="+€40"
+                price="+€40–60"
               />
               <OptionButton
-                active={extras.form !== undefined}
-                onClick={() => toggleExtra("form", 40)}
+                active={extraKeys.includes("form")}
+                onClick={() => toggleExtra("form")}
                 label="Contact / booking form"
-                price="+€40"
+                price="+€40–60"
               />
               <OptionButton
-                active={extras.updates !== undefined}
-                onClick={() => toggleExtra("updates", 30)}
+                active={extraKeys.includes("updates")}
+                onClick={() => toggleExtra("updates")}
                 label="Ongoing content updates"
                 price="+€30"
               />
