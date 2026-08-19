@@ -193,7 +193,7 @@ export const translations = {
     "faq.q7": "How much does a website cost?",
     "faq.a7": "It starts at €100–150 for a landing page and €150+ for a multi-page business site. Exact pricing depends on scope, see the Services section above for details.",
 
-    "footer.bio": "We build websites and small web apps for businesses, coaches, and independent projects.",
+    "footer.bio": "We build custom websites for businesses and independent brands.",
     "footer.statYears": "Years experience",
     "footer.statCerts": "Certifications",
     "footer.statProjects": "Live projects",
@@ -403,7 +403,7 @@ export const translations = {
     "faq.q7": "Sa kushton një website?",
     "faq.a7": "Fillon nga €100–150 për një landing page dhe €150+ për një website me shumë faqe. Çmimi i saktë varet nga vëllimi i punës, shihni seksionin Shërbimet më sipër për detaje.",
 
-    "footer.bio": "Ne ndërtojmë website dhe web app të vogla për biznese, coach-a, dhe projekte të pavarura.",
+    "footer.bio": "Ndërtojmë website të personalizuara për biznese dhe marka të pavarura.",
     "footer.statYears": "Vite eksperiencë",
     "footer.statCerts": "Certifikime",
     "footer.statProjects": "Projekte live",
@@ -613,7 +613,7 @@ export const translations = {
     "faq.q7": "Was kostet eine Website?",
     "faq.a7": "Sie beginnt bei 100 bis 150 Euro für eine Landingpage und 150 Euro aufwärts für eine mehrseitige Business-Website. Der genaue Preis hängt vom Umfang ab, Details findest du oben im Bereich Leistungen.",
 
-    "footer.bio": "Wir bauen Websites und kleine Web-Apps für Unternehmen, Coaches, und unabhängige Projekte.",
+    "footer.bio": "Wir bauen maßgeschneiderte Websites für Unternehmen und unabhängige Marken.",
     "footer.statYears": "Jahre Erfahrung",
     "footer.statCerts": "Zertifizierungen",
     "footer.statProjects": "Live-Projekte",
