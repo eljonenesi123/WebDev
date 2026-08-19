@@ -19,7 +19,7 @@ function OptionButton({ active, onClick, label, price }) {
 
 export default function Estimator() {
   const [type, setType] = useState("landing");
-  const [typeBase, setTypeBase] = useState(75);
+  const [typeBase, setTypeBase] = useState(100);
   const [pages, setPages] = useState(0);
   const [pagesValue, setPagesValue] = useState("3");
   const [extras, setExtras] = useState({}); // { value: price }
@@ -67,8 +67,8 @@ export default function Estimator() {
           <div className="estimator-row">
             <span className="estimator-question">What are you building?</span>
             <div className="estimator-options" data-group="type">
-              <OptionButton active={type === "landing"} onClick={() => handleType("landing", 75)} label="Landing page" price="€75" />
-              <OptionButton active={type === "multi"} onClick={() => handleType("multi", 100)} label="Multi-page site" price="€100" />
+              <OptionButton active={type === "landing"} onClick={() => handleType("landing", 100)} label="Landing page" price="€100" />
+              <OptionButton active={type === "multi"} onClick={() => handleType("multi", 150)} label="Multi-page site" price="€150" />
             </div>
           </div>
 
@@ -92,9 +92,9 @@ export default function Estimator() {
               />
               <OptionButton
                 active={extras.form !== undefined}
-                onClick={() => toggleExtra("form", 25)}
+                onClick={() => toggleExtra("form", 40)}
                 label="Contact / booking form"
-                price="+€25"
+                price="+€40"
               />
               <OptionButton
                 active={extras.updates !== undefined}
