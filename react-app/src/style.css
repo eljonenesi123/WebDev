@@ -2412,43 +2412,38 @@ main, .site-footer {
   .services-annotation { display: none; }
 }
 
-/* Segmented toggle switching which tier the single card below shows. */
+/* Segmented toggle switching which tier the single card below shows. Five
+   tiers of very different label lengths ("Landing page" vs "Redesign
+   existing site") don't fit the old two-tab sliding-thumb technique (a
+   single element whose width/position assumed exactly two equal-width
+   tabs) — wraps instead, with each button carrying its own active
+   background rather than one shared element chasing an active index. */
 .tier-toggle {
-  position: relative;
   display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
   background: var(--surface);
   border: 1px solid var(--line);
-  border-radius: 999px;
-  padding: 0.35rem;
+  border-radius: 1.1rem;
+  padding: 0.4rem;
   margin-bottom: 1.8rem;
   width: 100%;
 }
-.tier-toggle-thumb {
-  position: absolute;
-  top: 0.3rem;
-  left: 0.3rem;
-  width: calc(50% - 0.3rem);
-  height: calc(100% - 0.6rem);
-  background: var(--accent);
-  border-radius: 999px;
-  transition: transform 0.4s cubic-bezier(0.65, 0, 0.35, 1);
-}
 .tier-toggle-btn {
-  position: relative;
-  z-index: 1;
-  flex: 1;
-  padding: 0.75rem 1rem;
+  flex: 1 1 auto;
+  padding: 0.65rem 0.9rem;
   border: none;
   background: transparent;
   font-family: var(--mono);
-  font-size: 0.88rem;
+  font-size: 0.82rem;
   color: var(--text-dim);
   cursor: pointer;
-  border-radius: 999px;
-  transition: color 0.3s ease;
+  border-radius: 0.7rem;
+  transition: color 0.2s ease, background 0.2s ease;
   white-space: nowrap;
 }
-.tier-toggle-btn.is-active { color: var(--bg); }
+.tier-toggle-btn:hover { color: var(--text); }
+.tier-toggle-btn.is-active { color: var(--bg); background: var(--accent); }
 
 .price-card-single {
   position: relative;
@@ -2483,15 +2478,10 @@ main, .site-footer {
 
 .price-amount {
   font-family: var(--mono);
-  font-size: 3.4rem;
+  font-size: clamp(2rem, 5.5vw, 3rem);
   font-weight: 700;
   color: var(--text);
   margin-bottom: 1rem;
-}
-.price-amount span {
-  font-size: 1.2rem;
-  color: var(--text-dim);
-  font-weight: 400;
 }
 .price-desc { margin-bottom: 1.3rem; font-size: 1.02rem; }
 
@@ -2551,6 +2541,67 @@ main, .site-footer {
   text-align: center;
 }
 .price-example-link:hover { color: var(--accent); }
+
+/* Maintenance plans + add-ons, below the main tier card — a plain two-
+   column list rather than another card-with-toggle, since these are flat
+   add-ons rather than mutually-exclusive tiers a visitor picks between. */
+.services-extra {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.6rem 2.4rem;
+  width: 100%;
+  max-width: 600px;
+  margin: 2rem auto 0;
+  text-align: left;
+}
+.services-extra-title {
+  font-family: var(--sans);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0 0 0.8rem;
+}
+.services-extra-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.services-extra-list li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.8rem;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  border-bottom: 1px dotted var(--line);
+  padding-bottom: 0.5rem;
+}
+.services-extra-list li span:last-child {
+  color: var(--text);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.services-payment-terms {
+  width: 100%;
+  max-width: 600px;
+  margin: 1.6rem auto 0;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  text-align: left;
+}
+.services-payment-terms strong { color: var(--text); }
+
+@media (max-width: 560px) {
+  .services-extra { grid-template-columns: 1fr; gap: 1.4rem; }
+}
 
 @media (max-height: 900px) and (min-width: 901px) {
   .service-list { gap: 1.4rem 2.5rem; }

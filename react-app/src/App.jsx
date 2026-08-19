@@ -314,15 +314,26 @@ function Skills() {
   );
 }
 
+const MAINTENANCE_PLANS = [
+  { label: "services.maintenance.basic", fallback: "Basic — updates, backups, uptime", price: "€50/mo" },
+  { label: "services.maintenance.standard", fallback: "Standard — + small content edits", price: "€40/mo" },
+];
+
+const ADDONS = [
+  { label: "services.addons.i1", fallback: "Extra language", price: "€40–60" },
+  { label: "services.addons.i2", fallback: "Booking/contact form system", price: "€40–60" },
+  { label: "services.addons.i3", fallback: "Analytics/SEO setup", price: "€20–50" },
+  { label: "services.addons.i4", fallback: "Domain and DNS setup", price: "€30" },
+];
+
 function Services() {
   const { t } = useTranslation();
   const [tier, setTier] = useState(0);
-  const [displayAmount, setDisplayAmount] = useState(75);
 
   const TIERS = [
     {
       tag: t("services.p1.tag", "Landing page"),
-      amount: 75,
+      price: "€100 – 150",
       desc: t("services.p1.desc", "A single, focused page — for a business, event, or launch. Fast to build, fast to load."),
       items: [
         t("services.p1.i1", "Custom design, no templates"),
@@ -333,8 +344,8 @@ function Services() {
       example: "https://eljonenesi123.github.io/CV/",
     },
     {
-      tag: t("services.p2.tag", "Multi-page website"),
-      amount: 100,
+      tag: t("services.p2.tag", "Multi-page business site"),
+      price: "€150+",
       desc: t("services.p2.desc", "Several pages, a contact form, and content structured the way your visitors actually browse."),
       items: [
         t("services.p2.i1", "Everything in Landing page"),
@@ -345,29 +356,41 @@ function Services() {
       example: "https://eljonenesi123.github.io/TopLevelPerformance/",
       popular: true,
     },
+    {
+      tag: t("services.p3.tag", "E-commerce store"),
+      price: "€500+",
+      desc: t("services.p3.desc", "A full online store — product catalog, cart, and checkout — built so customers can browse and buy without friction."),
+      items: [
+        t("services.p3.i1", "Product catalog & cart"),
+        t("services.p3.i2", "Secure checkout & payments"),
+        t("services.p3.i3", "Order & inventory basics"),
+      ],
+      eta: "~2–4 weeks",
+    },
+    {
+      tag: t("services.p4.tag", "Custom web app"),
+      price: "€700+",
+      desc: t("services.p4.desc", "Booking systems, calculators, dashboards — anything interactive beyond a static page."),
+      items: [
+        t("services.p4.i1", "Frontend + backend as needed"),
+        t("services.p4.i2", "API integrations"),
+        t("services.p4.i3", "Scoped after a short call"),
+      ],
+      eta: "~3–6 weeks",
+    },
+    {
+      tag: t("services.p5.tag", "Redesign existing site"),
+      price: "€150+",
+      desc: t("services.p5.desc", "A rebuild of a site you already have — same content, modern design and performance, or a fresh direction entirely."),
+      items: [
+        t("services.p5.i1", "Audit of your current site"),
+        t("services.p5.i2", "Modern design & faster load times"),
+        t("services.p5.i3", "Content migrated for you"),
+      ],
+      eta: "~1–2 weeks",
+    },
   ];
   const current = TIERS[tier];
-
-  // Count the price up/down between tiers instead of just snapping to the
-  // new number, so switching tiers reads as a single continuous motion
-  // rather than a hard cut.
-  useEffect(() => {
-    const from = displayAmount;
-    const to = current.amount;
-    if (from === to) return;
-    const start = performance.now();
-    const duration = 400;
-    let raf;
-    function step(now) {
-      const p = Math.min(1, (now - start) / duration);
-      const eased = 1 - Math.pow(1 - p, 3);
-      setDisplayAmount(Math.round(from + (to - from) * eased));
-      if (p < 1) raf = requestAnimationFrame(step);
-    }
-    raf = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(raf);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tier]);
 
   return (
     <section className="services" id="services">
@@ -377,7 +400,6 @@ function Services() {
       <div className="services-layout">
         <div className="services-pricing">
           <div className="tier-toggle" role="tablist">
-            <div className="tier-toggle-thumb" style={{ transform: `translateX(${tier * 100}%)` }} aria-hidden="true" />
             {TIERS.map((tr, i) => (
               <button
                 key={tr.tag}
@@ -394,12 +416,9 @@ function Services() {
 
           <div className={"price-card-single" + (current.popular ? " price-card-featured" : "")}>
             {current.popular && <span className="price-badge">Popular</span>}
-            <p className="price-from">{t("services.startingAt", "Starting at")}</p>
-            <p className="price-amount">
-              €{displayAmount}
-              <span>{t("services.from", "+")}</span>
-            </p>
             <div key={tier} className="price-fade">
+              <p className="price-from">{t("services.startingAt", "Starting at")}</p>
+              <p className="price-amount">{current.price}</p>
               <p className="price-desc">{current.desc}</p>
               <ul className="price-list">
                 {current.items.map((it) => (
@@ -415,9 +434,11 @@ function Services() {
             >
               {t("services.cta", "Get a quote")}
             </a>
-            <a href={current.example} target="_blank" rel="noopener" className="price-example-link">
-              {t("services.example", "See an example ↗")}
-            </a>
+            {current.example && (
+              <a href={current.example} target="_blank" rel="noopener" className="price-example-link">
+                {t("services.example", "See an example ↗")}
+              </a>
+            )}
           </div>
 
           <div className="services-annotation" aria-hidden="true">
@@ -443,6 +464,37 @@ function Services() {
             </p>
           </div>
         </div>
+
+        <div className="services-extra">
+          <div className="services-extra-col">
+            <h3 className="services-extra-title">{t("services.maintenance.title", "Maintenance (monthly)")}</h3>
+            <ul className="services-extra-list">
+              {MAINTENANCE_PLANS.map((item) => (
+                <li key={item.label}>
+                  <span>{t(item.label, item.fallback)}</span>
+                  <span>{item.price}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="services-extra-col">
+            <h3 className="services-extra-title">{t("services.addons.title", "Add-ons")}</h3>
+            <ul className="services-extra-list">
+              {ADDONS.map((item) => (
+                <li key={item.label}>
+                  <span>{t(item.label, item.fallback)}</span>
+                  <span>{item.price}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <p className="services-payment-terms">
+          <strong>{t("services.payment.title", "Payment terms")}:</strong>{" "}
+          {t("services.payment.deposit", "Deposit")} — {t("services.payment.depositValue", "50% upfront, 50% on delivery")}.{" "}
+          {t("services.payment.maintenance", "Maintenance")} — {t("services.payment.maintenanceValue", "paid upfront, monthly")}.
+        </p>
       </div>
     </section>
   );
@@ -455,7 +507,7 @@ const FAQ_ITEMS = [
   { q: "Can you redesign a site I already have?", a: "Yes. I can rebuild it from scratch or work with what's already there, depending on what shape it's in." },
   { q: "Who owns the code and the domain afterward?", a: "You do, fully. You buy your own domain, and you get the full source code once the project is done." },
   { q: "What happens after the site goes live?", a: "I stay reachable for fixes and small changes. If you need something bigger added later, we just talk about it like a new small project." },
-  { q: "How much does a website cost?", a: "It starts at €75 for a single page and €100 for a multi-page site. Exact pricing depends on scope, see the Services section above for details." },
+  { q: "How much does a website cost?", a: "It starts at €100–150 for a landing page and €150+ for a multi-page business site. Exact pricing depends on scope, see the Services section above for details." },
 ];
 
 function FaqChevron() {
@@ -591,6 +643,8 @@ function Footer({ onOpenCookieSettings }) {
           <p className="footer-heading">Services</p>
           <a href="#services">Landing pages</a>
           <a href="#services">Multi-page websites</a>
+          <a href="#services">E-commerce stores</a>
+          <a href="#services">Custom web apps</a>
           <a href="#services">Redesigns</a>
           <a href="#contact">Ongoing support</a>
         </div>
