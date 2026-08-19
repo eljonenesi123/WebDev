@@ -72,7 +72,7 @@
   font-weight: 700;
   font-size: 1.4rem;
   border-radius: 12px;
-  animation: splashMarkIn 0.6s ease both;
+  animation: splashMarkIn 0.6s ease both, splashRing 1.8s ease-in-out 0.6s infinite;
 }
 .loading-splash-name {
   font-family: var(--sans);
@@ -89,6 +89,22 @@
   text-align: center;
   animation: splashFadeIn 0.6s ease 0.3s both;
 }
+.loading-splash-bar {
+  width: 140px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--line);
+  overflow: hidden;
+  margin-top: 0.4rem;
+  animation: splashFadeIn 0.6s ease 0.4s both;
+}
+.loading-splash-bar-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--accent);
+  border-radius: 2px;
+  animation: splashBarFill 1.3s cubic-bezier(0.4, 0, 0.2, 1) 0.2s forwards;
+}
 @keyframes splashMarkIn {
   from { opacity: 0; transform: scale(0.8); }
   to { opacity: 1; transform: scale(1); }
@@ -96,6 +112,14 @@
 @keyframes splashFadeIn {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
+}
+@keyframes splashRing {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 45%, transparent); }
+  50% { box-shadow: 0 0 0 8px color-mix(in srgb, var(--accent) 0%, transparent); }
+}
+@keyframes splashBarFill {
+  from { width: 0%; }
+  to { width: 100%; }
 }
 
 html { transition: background 0.25s ease; }

@@ -216,7 +216,7 @@ export const translations = {
     "footer.loc": "© 2026. All rights reserved.",
 
     "loading.name": "Eljon Enesi",
-    "loading.quote": "Websites that work, load fast, and don't need explaining.",
+    "loading.quote": "Empowering Your Online Presence",
 
     "theme.toDark": "Switch to dark mode",
     "theme.toLight": "Switch to light mode",
@@ -428,7 +428,7 @@ export const translations = {
     "footer.loc": "© 2026. Të gjitha të drejtat e rezervuara.",
 
     "loading.name": "Eljon Enesi",
-    "loading.quote": "Website që funksionojnë, ngarkohen shpejt, dhe nuk kanë nevojë për shpjegime.",
+    "loading.quote": "Fuqizojmë Praninë Tuaj Online",
 
     "theme.toDark": "Kalo në mënyrën e errët",
     "theme.toLight": "Kalo në mënyrën e ndritshme",
@@ -640,7 +640,7 @@ export const translations = {
     "footer.loc": "© 2026. Alle Rechte vorbehalten.",
 
     "loading.name": "Eljon Enesi",
-    "loading.quote": "Websites, die funktionieren, schnell laden, und keine Erklärung brauchen.",
+    "loading.quote": "Wir stärken Ihre Online-Präsenz",
 
     "theme.toDark": "Zum dunklen Modus wechseln",
     "theme.toLight": "Zum hellen Modus wechseln",

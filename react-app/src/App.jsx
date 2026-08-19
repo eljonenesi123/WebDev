@@ -68,7 +68,8 @@ function LoadingSplash() {
     <div className={"loading-splash" + (hiding ? " is-hiding" : "")} aria-hidden="true">
       <div className="loading-splash-mark">EE</div>
       <p className="loading-splash-name">{t("loading.name", "Eljon Enesi")}</p>
-      <p className="loading-splash-quote">{t("loading.quote", "Websites that work, load fast, and don't need explaining.")}</p>
+      <p className="loading-splash-quote">{t("loading.quote", "Empowering Your Online Presence")}</p>
+      <div className="loading-splash-bar"><div className="loading-splash-bar-fill" /></div>
     </div>
   );
 }
