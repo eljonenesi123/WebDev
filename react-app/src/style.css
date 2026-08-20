@@ -3274,6 +3274,7 @@ main, .site-footer {
 
 .faq { text-align: center; }
 .faq .section-title { text-align: center; font-family: "Fraunces", serif; }
+.faq-reveal-btn { margin: 0 auto 2rem; }
 
 /* ---------- FAQ AS AN iMESSAGE THREAD ---------- */
 /* Classic iOS Messages bubbles: grey "received" on the left (the question),

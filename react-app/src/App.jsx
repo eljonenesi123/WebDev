@@ -440,27 +440,35 @@ function FaqChevron() {
 
 function Faq() {
   const { t } = useTranslation();
+  const [revealed, setRevealed] = useState(false);
   return (
     <section className="faq" id="faq">
       <h2 className="section-title">{t("faq.title", "FAQ")}</h2>
-      <div className="imessage-thread">
-        <p className="imessage-date">Today</p>
-        {/* All open by default so the answers are visible on load — the
-            `open` attribute is only ever passed the literal `true`, so
-            React never re-forces a user's manual collapse back open on a
-            later re-render (it only touches the DOM when the prop value
-            itself changes between renders, not when it re-reads the
-            current value), while the chevron/collapse toggle stays live. */}
-        {FAQ_ITEMS.map((item) => (
-          <details className="imessage-pair" key={item.qKey} open>
-            <summary className="imessage-bubble imessage-received">
-              <span className="imessage-bubble-text">{t(item.qKey, item.qFallback)}</span>
-              <FaqChevron />
-            </summary>
-            <p className="imessage-bubble imessage-sent">{t(item.aKey, item.aFallback)}</p>
-          </details>
-        ))}
-      </div>
+      <button type="button" className="btn-primary faq-reveal-btn" onClick={() => setRevealed((v) => !v)}>
+        {revealed
+          ? t("faq.hideCta", "Hide frequently asked questions")
+          : t("faq.revealCta", "Show frequently asked questions")}
+      </button>
+      {revealed && (
+        <div className="imessage-thread">
+          <p className="imessage-date">Today</p>
+          {/* All open by default so the answers are visible on load — the
+              `open` attribute is only ever passed the literal `true`, so
+              React never re-forces a user's manual collapse back open on a
+              later re-render (it only touches the DOM when the prop value
+              itself changes between renders, not when it re-reads the
+              current value), while the chevron/collapse toggle stays live. */}
+          {FAQ_ITEMS.map((item) => (
+            <details className="imessage-pair" key={item.qKey} open>
+              <summary className="imessage-bubble imessage-received">
+                <span className="imessage-bubble-text">{t(item.qKey, item.qFallback)}</span>
+                <FaqChevron />
+              </summary>
+              <p className="imessage-bubble imessage-sent">{t(item.aKey, item.aFallback)}</p>
+            </details>
+          ))}
+        </div>
+      )}
     </section>
   );
 }
@@ -525,16 +533,6 @@ function Footer({ onOpenCookieSettings }) {
             <span className="brand-mark footer-mark" aria-hidden="true">EE</span>
           </span>
           <p>{t("footer.bio", "We build custom websites for businesses and independent brands.")}</p>
-          <div className="footer-stats">
-            <div className="footer-stat">
-              <span className="footer-stat-num">3+</span>
-              <span className="footer-stat-label">{t("footer.statYears", "Years experience")}</span>
-            </div>
-            <div className="footer-stat">
-              <span className="footer-stat-num">10+</span>
-              <span className="footer-stat-label">{t("footer.statCerts", "Certifications")}</span>
-            </div>
-          </div>
           <div className="footer-socials">
             <a href="https://instagram.com/eljonenesi" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8"><rect x="2.5" y="2.5" width="19" height="19" rx="5" /><circle cx="12" cy="12" r="4.2" /><circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none" /></svg></a>
             <a href="https://www.linkedin.com/in/eljonenesi/" target="_blank" rel="noopener" aria-label="LinkedIn"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3V9zm7 0h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.9c0-1.4-.03-3.2-1.95-3.2-1.96 0-2.26 1.53-2.26 3.1V21h-4V9z" /></svg></a>

@@ -791,7 +791,7 @@ export interface RobotHeroProps {
 // needs the element to stay mounted while the class changes rather than
 // disappearing the instant state flips.
 type AssistantStage = "prompt" | "nav" | "fading" | "dismissed";
-const NAV_BUBBLE_VISIBLE_MS = 6000;
+const NAV_BUBBLE_VISIBLE_MS = 5000;
 const NAV_BUBBLE_FADE_MS = 500;
 
 // Rendered via drei's <Html>, as a child of the robot's own group (see
@@ -871,7 +871,7 @@ export function RobotHero({
   const [assistantStage, setAssistantStage] = useState<AssistantStage>("prompt");
 
   const handleRobotActivate = () => {
-    setAssistantStage((stage) => (stage === "prompt" ? "nav" : stage));
+    setAssistantStage((stage) => (stage === "nav" ? stage : "nav"));
   };
 
   useEffect(() => {
