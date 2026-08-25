@@ -496,8 +496,8 @@ function Contact() {
           <p className="contact-sub">{t("contact.sub", "Tell us what you're trying to build. We'll reply within a day or two.")}</p>
 
           <div className="contact-direct">
-            <a href="mailto:eljonenesi9@gmail.com" className="contact-direct-link" onClick={socialClick("Email")}>
-              eljonenesi9@gmail.com
+            <a href="mailto:studioscriptline@gmail.com" className="contact-direct-link" onClick={socialClick("Email")}>
+              studioscriptline@gmail.com
             </a>
             <a href="https://wa.me/355688944708" target="_blank" rel="noopener" className="contact-direct-link" onClick={socialClick("WhatsApp")}>
               WhatsApp: +355 68 894 4708
@@ -561,7 +561,7 @@ function Footer({ onOpenCookieSettings }) {
         <div className="footer-col">
           <p className="footer-heading">{t("footer.contactHeading", "Contact")}</p>
           <a href="tel:+355688944708">+355 68 894 4708</a>
-          <a href="mailto:eljonenesi9@gmail.com">eljonenesi9@gmail.com</a>
+          <a href="mailto:studioscriptline@gmail.com">studioscriptline@gmail.com</a>
         </div>
       </div>
 
