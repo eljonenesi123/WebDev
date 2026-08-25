@@ -15,7 +15,7 @@
      labels, and the process step marks. */
   --serif: "Abril Fatface", serif;
 
-  --header-h: 92px;
+  --header-h: 132px;
 }
 
 :root[data-theme="dark"] {
@@ -59,28 +59,14 @@
 }
 .loading-splash.is-hiding { transform: translateY(-100%); }
 
-.loading-splash-mark {
-  width: 56px;
-  height: 56px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--text);
-  color: var(--bg);
-  font-family: var(--serif);
-  font-style: italic;
-  font-weight: 700;
-  font-size: 1.4rem;
-  border-radius: 12px;
-  animation: splashMarkIn 0.6s ease both, splashRing 1.8s ease-in-out 0.6s infinite;
+.loading-splash-logo {
+  width: min(220px, 60vw);
+  height: auto;
+  animation: splashMarkIn 0.6s ease both;
 }
-.loading-splash-name {
-  font-family: var(--sans);
-  font-weight: 800;
-  font-size: 1.3rem;
-  color: var(--text);
-  animation: splashFadeIn 0.6s ease 0.15s both;
-}
+.loading-splash-logo-dark { display: none; }
+:root[data-theme="dark"] .loading-splash-logo-light { display: none; }
+:root[data-theme="dark"] .loading-splash-logo-dark { display: block; }
 .loading-splash-quote {
   font-family: var(--mono);
   font-size: 0.85rem;
@@ -299,7 +285,8 @@ main { padding-top: var(--header-h); }
   scroll-margin-top: var(--header-h);
 }
 @media (max-width: 760px) {
-  :root { --header-h: 80px; }
+  :root { --header-h: 96px; }
+  .brand-logo { height: 56px; }
 }
 
 .brand {
@@ -311,21 +298,14 @@ main { padding-top: var(--header-h); }
   gap: 0.65rem;
   letter-spacing: -0.01em;
 }
-.brand-mark {
-  width: 32px;
-  height: 32px;
+.brand-logo {
+  height: 78px;
+  width: auto;
   flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--text);
-  color: var(--bg);
-  font-family: var(--serif);
-  font-style: italic;
-  font-weight: 700;
-  font-size: 0.92rem;
-  border-radius: 8px;
 }
+.brand-logo-dark { display: none; }
+:root[data-theme="dark"] .brand-logo-light { display: none; }
+:root[data-theme="dark"] .brand-logo-dark { display: block; }
 
 .topnav { display: flex; gap: 1.8rem; }
 .topnav a {
@@ -3071,7 +3051,7 @@ main, .site-footer {
 .footer-brand-col p { font-size: 0.82rem; line-height: 1.6; margin: 0.3rem 0 0.2rem; color: var(--text); }
 
 .footer-brand { display: flex; align-items: center; gap: 0.6rem; color: var(--text); font-weight: 800; font-family: var(--sans); }
-.footer-mark { width: 26px; height: 26px; font-size: 0.78rem; border-radius: 6px; }
+.footer-mark { height: 130px; width: auto; }
 
 .footer-stats { display: flex; gap: 1.6rem; margin: 0.4rem 0 0.2rem; }
 .footer-stat { display: flex; flex-direction: column; gap: 0.15rem; }

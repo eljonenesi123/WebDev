@@ -22,7 +22,7 @@ function SiteFavicon() {
   return (
     <svg className="desk-tab-favicon" viewBox="0 0 24 24" aria-hidden="true">
       <rect width="24" height="24" rx="5" fill="#0a0a0a" />
-      <text x="12" y="16.5" textAnchor="middle" fontFamily="Georgia, serif" fontStyle="italic" fontWeight="700" fontSize="11" fill="#f3ecdc">EE</text>
+      <text x="12" y="16.5" textAnchor="middle" fontFamily="Arial, sans-serif" fontWeight="800" fontSize="9" fill="#f3ecdc">SL</text>
     </svg>
   );
 }
@@ -113,7 +113,7 @@ export default function DeskMock() {
             <div className="desk-tabs">
               <span className="desk-tab desk-tab-active">
                 <SiteFavicon />
-                <span className="desk-tab-label">Eljon Enesi</span>
+                <span className="desk-tab-label">Scriptline Studio</span>
                 <span className="desk-tab-close">×</span>
               </span>
               <span className="desk-tab">
@@ -136,12 +136,12 @@ export default function DeskMock() {
             <span className="desk-toolbar-icon">‹</span>
             <span className="desk-toolbar-icon desk-toolbar-icon-dim">›</span>
             <span className="desk-toolbar-icon">⟳</span>
-            <span className="desk-toolbar-url">eljonenesi.com</span>
+            <span className="desk-toolbar-url">scriptlinestudio.com</span>
           </div>
         </div>
 
         <div className="desk-nav" aria-hidden="true">
-          <span className="desk-nav-mark">EE</span>
+          <span className="desk-nav-mark">SL</span>
           <span className="desk-nav-links">
             <span>Work</span>
             <span>Services</span>

@@ -66,8 +66,16 @@ function LoadingSplash() {
 
   return (
     <div className={"loading-splash" + (hiding ? " is-hiding" : "")} aria-hidden="true">
-      <div className="loading-splash-mark">EE</div>
-      <p className="loading-splash-name">{t("loading.name", "Eljon Enesi")}</p>
+      <img
+        className="loading-splash-logo loading-splash-logo-light"
+        src={asset("/assets/logo-light.png")}
+        alt={t("loading.name", "Scriptline Studio")}
+      />
+      <img
+        className="loading-splash-logo loading-splash-logo-dark"
+        src={asset("/assets/logo-dark.png")}
+        alt={t("loading.name", "Scriptline Studio")}
+      />
       <p className="loading-splash-quote">{t("loading.quote", "Empowering Your Online Presence")}</p>
       <div className="loading-splash-bar"><div className="loading-splash-bar-fill" /></div>
     </div>
@@ -121,8 +129,8 @@ function Header({ lang, setLang, menuOpen, setMenuOpen, theme, setTheme }) {
   return (
     <header className="topbar">
       <a href="#top" className="brand">
-        <span className="brand-mark" aria-hidden="true">EE</span>
-        Eljon Enesi
+        <img className="brand-logo brand-logo-light" src={asset("/assets/logo-compact-light.png")} alt="Scriptline Studio" />
+        <img className="brand-logo brand-logo-dark" src={asset("/assets/logo-compact-dark.png")} alt="Scriptline Studio" />
       </a>
 
       <nav className="topnav">
@@ -530,7 +538,8 @@ function Footer({ onOpenCookieSettings }) {
       <div className="footer-top">
         <div className="footer-col footer-brand-col">
           <span className="footer-brand">
-            <span className="brand-mark footer-mark" aria-hidden="true">EE</span>
+            <img className="brand-logo footer-mark brand-logo-light" src={asset("/assets/logo-compact-light.png")} alt="Scriptline Studio" />
+            <img className="brand-logo footer-mark brand-logo-dark" src={asset("/assets/logo-compact-dark.png")} alt="Scriptline Studio" />
           </span>
           <p>{t("footer.bio", "We build custom websites for businesses and independent brands.")}</p>
           <div className="footer-socials">

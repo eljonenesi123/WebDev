@@ -1,6 +1,5 @@
-// One-off generator for the site favicon set, derived from the actual "EE"
-// brand mark (black rounded square, bold white "EE") instead of the stale
-// unrelated hexagon/code-bracket icon that was wired up as favicon before.
+// One-off generator for the site favicon set, derived from the "SL"
+// (Scriptline) brand mark (black rounded square, bold white "SL").
 // Not part of the build — run manually with `node scripts/gen-favicons.js`.
 const sharp = require("sharp");
 const fs = require("fs");
@@ -19,7 +18,7 @@ const svg = `
   <rect width="${SIZE}" height="${SIZE}" rx="112" fill="#0A0A0A"/>
   <text x="50%" y="54%" text-anchor="middle" dominant-baseline="central"
         font-family="Arial, Helvetica, sans-serif" font-weight="800"
-        font-size="240" letter-spacing="2" fill="#F2F0EB">EE</text>
+        font-size="220" letter-spacing="2" fill="#F2F0EB">SL</text>
 </svg>`;
 
 const targets = [

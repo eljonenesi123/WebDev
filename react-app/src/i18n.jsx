@@ -217,7 +217,7 @@ export const translations = {
     "footer.backToTop": "Back to top",
     "footer.loc": "© 2026. All rights reserved.",
 
-    "loading.name": "Eljon Enesi",
+    "loading.name": "Scriptline Studio",
     "loading.quote": "Empowering Your Online Presence",
 
     "theme.toDark": "Switch to dark mode",
@@ -431,7 +431,7 @@ export const translations = {
     "footer.backToTop": "Kthehu lart",
     "footer.loc": "© 2026. Të gjitha të drejtat e rezervuara.",
 
-    "loading.name": "Eljon Enesi",
+    "loading.name": "Scriptline Studio",
     "loading.quote": "Fuqizojmë Praninë Tuaj Online",
 
     "theme.toDark": "Kalo në mënyrën e errët",
@@ -645,7 +645,7 @@ export const translations = {
     "footer.backToTop": "Nach oben",
     "footer.loc": "© 2026. Alle Rechte vorbehalten.",
 
-    "loading.name": "Eljon Enesi",
+    "loading.name": "Scriptline Studio",
     "loading.quote": "Wir stärken Ihre Online-Präsenz",
 
     "theme.toDark": "Zum dunklen Modus wechseln",
