@@ -105,6 +105,20 @@ const PROJECTS = [
     stack: "HTML · CSS · JavaScript · Responsive layout",
     link: "https://eljonenesi123.github.io/CV/",
   },
+  {
+    id: "straka",
+    name: "Straka Apartments",
+    img: "/assets/Straka.png",
+    fit: "cover",
+    statusBar: "dark",
+    tagKey: "work.p7.tag",
+    tagFallback: "Apartment rental site",
+    descKey: "work.p7.desc",
+    descFallback:
+      "A booking site for a short-term rental apartment, with a photo tour of each room, amenities, and a clear path to book a stay.",
+    stack: "HTML · CSS · JavaScript",
+    link: "https://eljonenesi123.github.io/StrakaApartments/",
+  },
 ];
 
 const TOTAL = PROJECTS.length;
