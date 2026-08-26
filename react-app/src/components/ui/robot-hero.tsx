@@ -1032,13 +1032,14 @@ export function RobotHero({
       <div className="relative z-20 flex flex-col items-center text-center px-6">
         {badgeText && (
           <span
-            className="hero-rise-in pointer-events-auto inline-flex items-center gap-2 rounded-full px-5 py-2 font-mono text-[0.85rem] font-medium uppercase tracking-[0.18em] mb-7"
+            className="hero-rise-in pointer-events-auto inline-flex items-center gap-2 rounded-full px-5 py-2 font-mono font-medium uppercase tracking-[0.18em] mb-7 whitespace-nowrap"
             style={{
               background: "color-mix(in srgb, var(--text) 6%, transparent)",
               color: "var(--text-dim)",
               border: "1px solid color-mix(in srgb, var(--hero-mint) 30%, var(--line))",
               boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
               animationDelay: "0ms",
+              fontSize: "clamp(0.55rem, 2.6vw, 0.85rem)",
             }}
           >
             <span className="hero-badge-dot" aria-hidden="true" />
