@@ -21,9 +21,12 @@ export default function ContactForm() {
     setStatus({ textKey: "", textFallback: "", kind: "" });
 
     try {
+      const formData = new FormData(form);
+      formData.set("_replyto", formData.get("Email"));
+
       const response = await fetch(FORM_ACTION, {
         method: "POST",
-        body: new FormData(form),
+        body: formData,
         headers: { Accept: "application/json" },
       });
 
