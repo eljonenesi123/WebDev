@@ -1032,7 +1032,7 @@ export function RobotHero({
       <div className="relative z-20 flex flex-col items-center text-center px-6">
         {badgeText && (
           <span
-            className="hero-rise-in pointer-events-auto inline-flex items-center gap-2 rounded-full px-4 py-1.5 font-mono text-[0.65rem] font-medium uppercase tracking-[0.18em] mb-7"
+            className="hero-rise-in pointer-events-auto inline-flex items-center gap-2 rounded-full px-5 py-2 font-mono text-[0.85rem] font-medium uppercase tracking-[0.18em] mb-7"
             style={{
               background: "color-mix(in srgb, var(--text) 6%, transparent)",
               color: "var(--text-dim)",
