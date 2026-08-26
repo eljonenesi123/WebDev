@@ -8,6 +8,10 @@ import { asset } from "../asset";
 // page. Shows an inline success/error message instead. Ported 1:1 from
 // script.js's contact-form IIFE — same endpoint, same fields, same statuses.
 const FORM_ACTION = "https://formspree.io/f/xvzeaydo";
+// Fires the same submission at Zapier so it can trigger the Gmail
+// autoresponder — Formspree's own autoresponder plugin needs a paid plan,
+// this sidesteps that. Best-effort: never blocks or fails the real submit.
+const ZAPIER_WEBHOOK = "https://hooks.zapier.com/hooks/catch/28658657/4t7u63e/";
 
 export default function ContactForm() {
   const { t } = useTranslation();
@@ -23,6 +27,12 @@ export default function ContactForm() {
     try {
       const formData = new FormData(form);
       formData.set("_replyto", formData.get("Email"));
+
+      fetch(ZAPIER_WEBHOOK, {
+        method: "POST",
+        body: JSON.stringify(Object.fromEntries(formData)),
+        headers: { "Content-Type": "application/json" },
+      }).catch(() => {});
 
       const response = await fetch(FORM_ACTION, {
         method: "POST",
