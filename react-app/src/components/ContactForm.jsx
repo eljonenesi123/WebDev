@@ -30,8 +30,7 @@ export default function ContactForm() {
 
       fetch(ZAPIER_WEBHOOK, {
         method: "POST",
-        body: JSON.stringify(Object.fromEntries(formData)),
-        headers: { "Content-Type": "application/json" },
+        body: formData,
       }).catch(() => {});
 
       const response = await fetch(FORM_ACTION, {
