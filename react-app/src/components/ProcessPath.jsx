@@ -21,6 +21,7 @@ export default function ProcessPath() {
   const isActiveRef = useRef(false);
   const isSteppingRef = useRef(false);
   const touchStartY = useRef(0);
+  const wheelAccumRef = useRef(0);
   const pathRef = useRef(null);
   const [pathLen, setPathLen] = useState(0);
   const mobilePathRef = useRef(null);
@@ -46,7 +47,10 @@ export default function ProcessPath() {
     const el = sectionRef.current;
     if (!el) return;
     const observer = new IntersectionObserver(
-      ([entry]) => { isActiveRef.current = entry.intersectionRatio > 0.85; },
+      ([entry]) => {
+        isActiveRef.current = entry.intersectionRatio > 0.85;
+        wheelAccumRef.current = 0;
+      },
       { threshold: [0, 0.85, 0.95, 1] }
     );
     observer.observe(el);
@@ -57,6 +61,29 @@ export default function ProcessPath() {
   // scrolls into view — no hijacking, the page just keeps scrolling.
   useEffect(() => {
     if (!isMobileRef.current) return;
+    const els = pointRefs.current.filter(Boolean);
+    if (!els.length) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          const i = Number(entry.target.dataset.index);
+          setStep((s) => Math.max(s, i + 1));
+        });
+      },
+      { threshold: 0.4 }
+    );
+    els.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
+
+  // Desktop safety net: the wheel/touch hijack below drives the normal
+  // step-by-step reveal, but it can miss events (a fast trackpad fling that
+  // never crosses its delta threshold, or a scroll that outruns it). This
+  // watches each point independently of that logic, so a point that ends up
+  // in the viewport by any means always gets marked revealed.
+  useEffect(() => {
+    if (isMobileRef.current) return;
     const els = pointRefs.current.filter(Boolean);
     if (!els.length) return;
     const observer = new IntersectionObserver(
@@ -87,10 +114,25 @@ export default function ProcessPath() {
       return true;
     }
 
+    // A mouse wheel fires one large deltaY per notch (~100+); a trackpad
+    // fires many small deltas (~2-10) in quick succession. Accumulating
+    // instead of gating on a single event's size means both drive the same
+    // step logic — a trackpad just takes a few events to cross the same
+    // distance a wheel notch covers in one.
     function onWheel(e) {
       if (!isActiveRef.current) return;
-      if (Math.abs(e.deltaY) < 10) return;
-      if (tryStep(e.deltaY > 0)) {
+      wheelAccumRef.current += e.deltaY;
+      const STEP_DISTANCE = 40;
+      if (Math.abs(wheelAccumRef.current) < STEP_DISTANCE) {
+        // Not enough accumulated yet, but we're still consuming the
+        // gesture — prevent it from leaking a normal page scroll.
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        return;
+      }
+      const forward = wheelAccumRef.current > 0;
+      wheelAccumRef.current = 0;
+      if (tryStep(forward)) {
         e.preventDefault();
         e.stopImmediatePropagation();
       } else if (isSteppingRef.current) {
