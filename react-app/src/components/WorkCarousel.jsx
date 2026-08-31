@@ -33,7 +33,7 @@ const PROJECTS = [
     descFallback:
       "A tool for groups who can't agree on what to watch. Spin a wheel, describe a mood, or swipe through picks together. Includes four built-in games, works offline as an installable app, and is available in three languages.",
     stack: "Vanilla JS · TMDB API · PWA",
-    link: "https://eljonenesi123.github.io/JustPickSomething/",
+    link: "https://eljonenesi123.github.io/MovieDecider/",
   },
   {
     id: "top",
